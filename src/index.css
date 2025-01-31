@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+}
+
+:root {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 0;
+}
+
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+}
+
+.font-cabinet {
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+
+a {
+  text-decoration: none !important;
+}

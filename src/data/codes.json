@@ -1,0 +1,1406 @@
+[
+  {
+    "countryName": "Afghanistan",
+    "countryCode": "AF",
+    "callingCode": "+93",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Afghanistan.svg"
+  },
+  {
+    "countryName": "Aland Islands",
+    "countryCode": "AX",
+    "callingCode": "+358",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/52/Flag_of_%C3%85land.svg"
+  },
+  {
+    "countryName": "Albania",
+    "countryCode": "AL",
+    "callingCode": "+355",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/36/Flag_of_Albania.svg"
+  },
+  {
+    "countryName": "Algeria",
+    "countryCode": "DZ",
+    "callingCode": "+213",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_Algeria.svg"
+  },
+  {
+    "countryName": "American Samoa",
+    "countryCode": "AS",
+    "callingCode": "+1 684",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/87/Flag_of_American_Samoa.svg"
+  },
+  {
+    "countryName": "Andorra",
+    "countryCode": "AD",
+    "callingCode": "+376",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/19/Flag_of_Andorra.svg"
+  },
+  {
+    "countryName": "Angola",
+    "countryCode": "AO",
+    "callingCode": "+244",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Angola.svg"
+  },
+  {
+    "countryName": "Anguilla",
+    "countryCode": "AI",
+    "callingCode": "+1 264",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Flag_of_Anguilla.svg"
+  },
+  {
+    "countryName": "Antigua and Barbuda",
+    "countryCode": "AG",
+    "callingCode": "+1268",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/89/Flag_of_Antigua_and_Barbuda.svg"
+  },
+  {
+    "countryName": "Argentina",
+    "countryCode": "AR",
+    "callingCode": "+54",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg"
+  },
+  {
+    "countryName": "Armenia",
+    "countryCode": "AM",
+    "callingCode": "+374",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Flag_of_Armenia.svg"
+  },
+  {
+    "countryName": "Aruba",
+    "countryCode": "AW",
+    "callingCode": "+297",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Flag_of_Aruba.svg"
+  },
+  {
+    "countryName": "Australia",
+    "countryCode": "AU",
+    "callingCode": "+61",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/88/Flag_of_Australia_%28converted%29.svg"
+  },
+  {
+    "countryName": "Austria",
+    "countryCode": "AT",
+    "callingCode": "+43",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_Austria.svg"
+  },
+  {
+    "countryName": "Azerbaijan",
+    "countryCode": "AZ",
+    "callingCode": "+994",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Flag_of_Azerbaijan.svg"
+  },
+  {
+    "countryName": "Bahamas",
+    "countryCode": "BS",
+    "callingCode": "+1 242",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/93/Flag_of_the_Bahamas.svg"
+  },
+  {
+    "countryName": "Bahrain",
+    "countryCode": "BH",
+    "callingCode": "+973",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Bahrain.svg"
+  },
+  {
+    "countryName": "Bangladesh",
+    "countryCode": "BD",
+    "callingCode": "+880",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Flag_of_Bangladesh.svg"
+  },
+  {
+    "countryName": "Barbados",
+    "countryCode": "BB",
+    "callingCode": "+1 246",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Flag_of_Barbados.svg"
+  },
+  {
+    "countryName": "Belarus",
+    "countryCode": "BY",
+    "callingCode": "+375",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/85/Flag_of_Belarus.svg"
+  },
+  {
+    "countryName": "Belgium",
+    "countryCode": "BE",
+    "callingCode": "+32",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/65/Flag_of_Belgium.svg"
+  },
+  {
+    "countryName": "Belize",
+    "countryCode": "BZ",
+    "callingCode": "+501",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Flag_of_Belize.svg"
+  },
+  {
+    "countryName": "Benin",
+    "countryCode": "BJ",
+    "callingCode": "+229",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Benin.svg"
+  },
+  {
+    "countryName": "Bermuda",
+    "countryCode": "BM",
+    "callingCode": "+1 441",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Flag_of_Bermuda.svg"
+  },
+  {
+    "countryName": "Bhutan",
+    "countryCode": "BT",
+    "callingCode": "+975",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/91/Flag_of_Bhutan.svg"
+  },
+  {
+    "countryName": "Bolivia",
+    "countryCode": "BO",
+    "callingCode": "+591",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Bandera_de_Bolivia_%28Estado%29.svg"
+  },
+  {
+    "countryName": "Bosnia and Herzegovina",
+    "countryCode": "BA",
+    "callingCode": "+387",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Flag_of_Bosnia_and_Herzegovina.svg"
+  },
+  {
+    "countryName": "Botswana",
+    "countryCode": "BW",
+    "callingCode": "+267",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_Botswana.svg"
+  },
+  {
+    "countryName": "Brazil",
+    "countryCode": "BR",
+    "callingCode": "+55",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg"
+  },
+  {
+    "countryName": "British Indian Ocean Territory",
+    "countryCode": "IO",
+    "callingCode": "+246",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Flag_of_the_British_Indian_Ocean_Territory.svg"
+  },
+  {
+    "countryName": "Brunei Darussalam",
+    "countryCode": "BN",
+    "callingCode": "+673",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Flag_of_Brunei.svg"
+  },
+  {
+    "countryName": "Bulgaria",
+    "countryCode": "BG",
+    "callingCode": "+359",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Bulgaria.svg"
+  },
+  {
+    "countryName": "Burkina Faso",
+    "countryCode": "BF",
+    "callingCode": "+226",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/31/Flag_of_Burkina_Faso.svg"
+  },
+  {
+    "countryName": "Burundi",
+    "countryCode": "BI",
+    "callingCode": "+257",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/50/Flag_of_Burundi.svg"
+  },
+  {
+    "countryName": "Cambodia",
+    "countryCode": "KH",
+    "callingCode": "+855",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_Cambodia.svg"
+  },
+  {
+    "countryName": "Cameroon",
+    "countryCode": "CM",
+    "callingCode": "+237",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Flag_of_Cameroon.svg"
+  },
+  {
+    "countryName": "Canada",
+    "countryCode": "CA",
+    "callingCode": "+1",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/c/cf/Flag_of_Canada.svg"
+  },
+  {
+    "countryName": "Cape Verde",
+    "countryCode": "CV",
+    "callingCode": "+238",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/38/Flag_of_Cape_Verde.svg"
+  },
+  {
+    "countryName": "Cayman Islands",
+    "countryCode": "KY",
+    "callingCode": "+ 345",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Flag_of_the_Cayman_Islands.svg"
+  },
+  {
+    "countryName": "Central African Republic",
+    "countryCode": "CF",
+    "callingCode": "+236",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg"
+  },
+  {
+    "countryName": "Chad",
+    "countryCode": "TD",
+    "callingCode": "+235",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Flag_of_Chad.svg"
+  },
+  {
+    "countryName": "Chile",
+    "countryCode": "CL",
+    "callingCode": "+56",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/78/Flag_of_Chile.svg"
+  },
+  {
+    "countryName": "China",
+    "countryCode": "CN",
+    "callingCode": "+86",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_the_People%27s_Republic_of_China.svg"
+  },
+  {
+    "countryName": "Christmas Island",
+    "countryCode": "CX",
+    "callingCode": "+61",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/67/Flag_of_Christmas_Island.svg"
+  },
+  {
+    "countryName": "Cocos (Keeling) Islands",
+    "countryCode": "CC",
+    "callingCode": "+61",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/74/Flag_of_the_Cocos_%28Keeling%29_Islands.svg"
+  },
+  {
+    "countryName": "Colombia",
+    "countryCode": "CO",
+    "callingCode": "+57",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Colombia.svg"
+  },
+  {
+    "countryName": "Comoros",
+    "countryCode": "KM",
+    "callingCode": "+269",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/94/Flag_of_the_Comoros.svg"
+  },
+  {
+    "countryName": "Congo",
+    "countryCode": "CG",
+    "callingCode": "+242",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/92/Flag_of_the_Republic_of_the_Congo.svg"
+  },
+  {
+    "countryName": "Congo, The Democratic Republic of the Congo",
+    "countryCode": "CD",
+    "callingCode": "+243",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Democratic_Republic_of_the_Congo.svg"
+  },
+  {
+    "countryName": "Cook Islands",
+    "countryCode": "CK",
+    "callingCode": "+682",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/35/Flag_of_the_Cook_Islands.svg"
+  },
+  {
+    "countryName": "Costa Rica",
+    "countryCode": "CR",
+    "callingCode": "+506",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Costa_Rica_%28state%29.svg"
+  },
+  {
+    "countryName": "Croatia",
+    "countryCode": "HR",
+    "callingCode": "+385",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Croatia.svg"
+  },
+  {
+    "countryName": "Cuba",
+    "countryCode": "CU",
+    "callingCode": "+53",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Flag_of_Cuba.svg"
+  },
+  {
+    "countryName": "Cyprus",
+    "countryCode": "CY",
+    "callingCode": "+357",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Cyprus.svg"
+  },
+  {
+    "countryName": "Czech Republic",
+    "countryCode": "CZ",
+    "callingCode": "+420",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_Czech_Republic.svg"
+  },
+  {
+    "countryName": "Denmark",
+    "countryCode": "DK",
+    "callingCode": "+45",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Flag_of_Denmark.svg"
+  },
+  {
+    "countryName": "Djibouti",
+    "countryCode": "DJ",
+    "callingCode": "+253",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/34/Flag_of_Djibouti.svg"
+  },
+  {
+    "countryName": "Dominica",
+    "countryCode": "DM",
+    "callingCode": "+1 767",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Flag_of_Dominica.svg"
+  },
+  {
+    "countryName": "Dominican Republic",
+    "countryCode": "DO",
+    "callingCode": "+1 849",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_the_Dominican_Republic.svg"
+  },
+  {
+    "countryName": "Ecuador",
+    "countryCode": "EC",
+    "callingCode": "+593",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Flag_of_Ecuador.svg"
+  },
+  {
+    "countryName": "Egypt",
+    "countryCode": "EG",
+    "callingCode": "+20",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_Egypt.svg"
+  },
+  {
+    "countryName": "El Salvador",
+    "countryCode": "SV",
+    "callingCode": "+503",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/34/Flag_of_El_Salvador.svg"
+  },
+  {
+    "countryName": "Equatorial Guinea",
+    "countryCode": "GQ",
+    "callingCode": "+240",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/31/Flag_of_Equatorial_Guinea.svg"
+  },
+  {
+    "countryName": "Eritrea",
+    "countryCode": "ER",
+    "callingCode": "+291",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/29/Flag_of_Eritrea.svg"
+  },
+  {
+    "countryName": "Estonia",
+    "countryCode": "EE",
+    "callingCode": "+372",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Flag_of_Estonia.svg"
+  },
+  {
+    "countryName": "Ethiopia",
+    "countryCode": "ET",
+    "callingCode": "+251",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/71/Flag_of_Ethiopia.svg"
+  },
+  {
+    "countryName": "Falkland Islands (Malvinas)",
+    "countryCode": "FK",
+    "callingCode": "+500",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_the_Falkland_Islands.svg"
+  },
+  {
+    "countryName": "Faroe Islands",
+    "countryCode": "FO",
+    "callingCode": "+298",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Flag_of_the_Faroe_Islands.svg"
+  },
+  {
+    "countryName": "Fiji",
+    "countryCode": "FJ",
+    "callingCode": "+679",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Fiji.svg"
+  },
+  {
+    "countryName": "Finland",
+    "countryCode": "FI",
+    "callingCode": "+358",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Finland.svg"
+  },
+  {
+    "countryName": "France",
+    "countryCode": "FR",
+    "callingCode": "+33",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"
+  },
+  {
+    "countryName": "French Guiana",
+    "countryCode": "GF",
+    "callingCode": "+594",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/29/Flag_of_French_Guiana.svg"
+  },
+  {
+    "countryName": "French Polynesia",
+    "countryCode": "PF",
+    "callingCode": "+689",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/db/Flag_of_French_Polynesia.svg"
+  },
+  {
+    "countryName": "Gabon",
+    "countryCode": "GA",
+    "callingCode": "+241",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/04/Flag_of_Gabon.svg"
+  },
+  {
+    "countryName": "Gambia",
+    "countryCode": "GM",
+    "callingCode": "+220",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_The_Gambia.svg"
+  },
+  {
+    "countryName": "Georgia",
+    "countryCode": "GE",
+    "callingCode": "+995",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Flag_of_Georgia.svg"
+  },
+  {
+    "countryName": "Germany",
+    "countryCode": "DE",
+    "callingCode": "+49",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg"
+  },
+  {
+    "countryName": "Ghana",
+    "countryCode": "GH",
+    "callingCode": "+233",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/19/Flag_of_Ghana.svg"
+  },
+  {
+    "countryName": "Gibraltar",
+    "countryCode": "GI",
+    "callingCode": "+350",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/02/Flag_of_Gibraltar.svg"
+  },
+  {
+    "countryName": "Greece",
+    "countryCode": "GR",
+    "callingCode": "+30",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg"
+  },
+  {
+    "countryName": "Greenland",
+    "countryCode": "GL",
+    "callingCode": "+299",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_Greenland.svg"
+  },
+  {
+    "countryName": "Grenada",
+    "countryCode": "GD",
+    "callingCode": "+1 473",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Grenada.svg"
+  },
+  {
+    "countryName": "Guadeloupe",
+    "countryCode": "GP",
+    "callingCode": "+590",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/04/Flag_of_Guadeloupe_%28local%29.svg"
+  },
+  {
+    "countryName": "Guam",
+    "countryCode": "GU",
+    "callingCode": "+1 671",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/07/Flag_of_Guam.svg"
+  },
+  {
+    "countryName": "Guatemala",
+    "countryCode": "GT",
+    "callingCode": "+502",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Flag_of_Guatemala.svg"
+  },
+  {
+    "countryName": "Guernsey",
+    "countryCode": "GG",
+    "callingCode": "+44",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_Guernsey.svg"
+  },
+  {
+    "countryName": "Guinea",
+    "countryCode": "GN",
+    "callingCode": "+224",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Flag_of_Guinea.svg"
+  },
+  {
+    "countryName": "Guinea-Bissau",
+    "countryCode": "GW",
+    "callingCode": "+245",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_Guinea-Bissau.svg"
+  },
+  {
+    "countryName": "Guyana",
+    "countryCode": "GY",
+    "callingCode": "+595",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_Guyana.svg"
+  },
+  {
+    "countryName": "Haiti",
+    "countryCode": "HT",
+    "callingCode": "+509",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/56/Flag_of_Haiti.svg"
+  },
+  {
+    "countryName": "Holy See (Vatican City State)",
+    "countryCode": "VA",
+    "callingCode": "+379",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_the_Vatican_City.svg"
+  },
+  {
+    "countryName": "Honduras",
+    "countryCode": "HN",
+    "callingCode": "+504",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/82/Flag_of_Honduras.svg"
+  },
+  {
+    "countryName": "Hong Kong",
+    "countryCode": "HK",
+    "callingCode": "+852",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Flag_of_Hong_Kong.svg"
+  },
+  {
+    "countryName": "Hungary",
+    "countryCode": "HU",
+    "callingCode": "+36",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Flag_of_Hungary.svg"
+  },
+  {
+    "countryName": "Iceland",
+    "countryCode": "IS",
+    "callingCode": "+354",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Flag_of_Iceland.svg"
+  },
+  {
+    "countryName": "India",
+    "countryCode": "IN",
+    "callingCode": "+91",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg"
+  },
+  {
+    "countryName": "Indonesia",
+    "countryCode": "ID",
+    "callingCode": "+62",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_Indonesia.svg"
+  },
+  {
+    "countryName": "Iran",
+    "countryCode": "IR",
+    "callingCode": "+98",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Flag_of_Iran.svg"
+  },
+  {
+    "countryName": "Iraq",
+    "countryCode": "IQ",
+    "callingCode": "+964",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Flag_of_Iraq.svg"
+  },
+  {
+    "countryName": "Ireland",
+    "countryCode": "IE",
+    "callingCode": "+353",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/45/Flag_of_Ireland.svg"
+  },
+  {
+    "countryName": "Isle of Man",
+    "countryCode": "IM",
+    "callingCode": "+44",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_the_Isle_of_Man.svg"
+  },
+  {
+    "countryName": "Israel",
+    "countryCode": "IL",
+    "callingCode": "+972",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Israel.svg"
+  },
+  {
+    "countryName": "Italy",
+    "countryCode": "IT",
+    "callingCode": "+39",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg"
+  },
+  {
+    "countryName": "Ivory Coast",
+    "countryCode": "CI",
+    "callingCode": "+225",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg"
+  },
+  {
+    "countryName": "Jamaica",
+    "countryCode": "JM",
+    "callingCode": "+1 876",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg"
+  },
+  {
+    "countryName": "Japan",
+    "countryCode": "JP",
+    "callingCode": "+81",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/9/9e/Flag_of_Japan.svg"
+  },
+  {
+    "countryName": "Jersey",
+    "countryCode": "JE",
+    "callingCode": "+44",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Flag_of_Jersey.svg"
+  },
+  {
+    "countryName": "Jordan",
+    "countryCode": "JO",
+    "callingCode": "+962",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg"
+  },
+  {
+    "countryName": "Kazakhstan",
+    "countryCode": "KZ",
+    "callingCode": "+7 7",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Flag_of_Kazakhstan.svg"
+  },
+  {
+    "countryName": "Kenya",
+    "countryCode": "KE",
+    "callingCode": "+254",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg"
+  },
+  {
+    "countryName": "Kiribati",
+    "countryCode": "KI",
+    "callingCode": "+686",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Flag_of_Kiribati.svg"
+  },
+  {
+    "countryName": "Korea, Democratic People's Republic of Korea",
+    "countryCode": "KP",
+    "callingCode": "+850",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/51/Flag_of_North_Korea.svg"
+  },
+  {
+    "countryName": "Korea, Republic of South Korea",
+    "countryCode": "KR",
+    "callingCode": "+82",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg"
+  },
+  {
+    "countryName": "Kuwait",
+    "countryCode": "KW",
+    "callingCode": "+965",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Flag_of_Kuwait.svg"
+  },
+  {
+    "countryName": "Kyrgyzstan",
+    "countryCode": "KG",
+    "callingCode": "+996",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Flag_of_Kyrgyzstan.svg"
+  },
+  {
+    "countryName": "Laos",
+    "countryCode": "LA",
+    "callingCode": "+856",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/56/Flag_of_Laos.svg"
+  },
+  {
+    "countryName": "Latvia",
+    "countryCode": "LV",
+    "callingCode": "+371",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Latvia.svg"
+  },
+  {
+    "countryName": "Lebanon",
+    "countryCode": "LB",
+    "callingCode": "+961",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/59/Flag_of_Lebanon.svg"
+  },
+  {
+    "countryName": "Lesotho",
+    "countryCode": "LS",
+    "callingCode": "+266",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Flag_of_Lesotho.svg"
+  },
+  {
+    "countryName": "Liberia",
+    "countryCode": "LR",
+    "callingCode": "+231",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Flag_of_Liberia.svg"
+  },
+  {
+    "countryName": "Libya",
+    "countryCode": "LY",
+    "callingCode": "+218",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/05/Flag_of_Libya.svg"
+  },
+  {
+    "countryName": "Liechtenstein",
+    "countryCode": "LI",
+    "callingCode": "+423",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/47/Flag_of_Liechtenstein.svg"
+  },
+  {
+    "countryName": "Lithuania",
+    "countryCode": "LT",
+    "callingCode": "+370",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/11/Flag_of_Lithuania.svg"
+  },
+  {
+    "countryName": "Luxembourg",
+    "countryCode": "LU",
+    "callingCode": "+352",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/da/Flag_of_Luxembourg.svg"
+  },
+  {
+    "countryName": "Macao",
+    "countryCode": "MO",
+    "callingCode": "+853",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/63/Flag_of_Macau.svg"
+  },
+  {
+    "countryName": "Madagascar",
+    "countryCode": "MG",
+    "callingCode": "+261",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Madagascar.svg"
+  },
+  {
+    "countryName": "Malawi",
+    "countryCode": "MW",
+    "callingCode": "+265",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Flag_of_Malawi.svg"
+  },
+  {
+    "countryName": "Malaysia",
+    "countryCode": "MY",
+    "callingCode": "+60",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/66/Flag_of_Malaysia.svg"
+  },
+  {
+    "countryName": "Maldives",
+    "countryCode": "MV",
+    "callingCode": "+960",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Flag_of_Maldives.svg"
+  },
+  {
+    "countryName": "Mali",
+    "countryCode": "ML",
+    "callingCode": "+223",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/92/Flag_of_Mali.svg"
+  },
+  {
+    "countryName": "Malta",
+    "countryCode": "MT",
+    "callingCode": "+356",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_Malta.svg"
+  },
+  {
+    "countryName": "Marshall Islands",
+    "countryCode": "MH",
+    "callingCode": "+692",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Flag_of_the_Marshall_Islands.svg"
+  },
+  {
+    "countryName": "Martinique",
+    "countryCode": "MQ",
+    "callingCode": "+596",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/52/Flag_of_Martinique.svg"
+  },
+  {
+    "countryName": "Mauritania",
+    "countryCode": "MR",
+    "callingCode": "+222",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/43/Flag_of_Mauritania.svg"
+  },
+  {
+    "countryName": "Mauritius",
+    "countryCode": "MU",
+    "callingCode": "+230",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_Mauritius.svg"
+  },
+  {
+    "countryName": "Mayotte",
+    "countryCode": "YT",
+    "callingCode": "+262",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"
+  },
+  {
+    "countryName": "Mexico",
+    "countryCode": "MX",
+    "callingCode": "+52",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Mexico.svg"
+  },
+  {
+    "countryName": "Moldova",
+    "countryCode": "MD",
+    "callingCode": "+373",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/27/Flag_of_Moldova.svg"
+  },
+  {
+    "countryName": "Monaco",
+    "countryCode": "MC",
+    "callingCode": "+377",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Flag_of_Monaco.svg"
+  },
+  {
+    "countryName": "Mongolia",
+    "countryCode": "MN",
+    "callingCode": "+976",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Flag_of_Mongolia.svg"
+  },
+  {
+    "countryName": "Montenegro",
+    "countryCode": "ME",
+    "callingCode": "+382",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/64/Flag_of_Montenegro.svg"
+  },
+  {
+    "countryName": "Montserrat",
+    "countryCode": "MS",
+    "callingCode": "+1664",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Flag_of_Montserrat.svg"
+  },
+  {
+    "countryName": "Morocco",
+    "countryCode": "MA",
+    "callingCode": "+212",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg"
+  },
+  {
+    "countryName": "Mozambique",
+    "countryCode": "MZ",
+    "callingCode": "+258",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Flag_of_Mozambique.svg"
+  },
+  {
+    "countryName": "Myanmar",
+    "countryCode": "MM",
+    "callingCode": "+95",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Flag_of_Myanmar.svg"
+  },
+  {
+    "countryName": "Namibia",
+    "countryCode": "NA",
+    "callingCode": "+264",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Namibia.svg"
+  },
+  {
+    "countryName": "Nauru",
+    "countryCode": "NR",
+    "callingCode": "+674",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/30/Flag_of_Nauru.svg"
+  },
+  {
+    "countryName": "Nepal",
+    "countryCode": "NP",
+    "callingCode": "+977",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Flag_of_Nepal.svg"
+  },
+  {
+    "countryName": "Netherlands",
+    "countryCode": "NL",
+    "callingCode": "+31",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/20/Flag_of_the_Netherlands.svg"
+  },
+  {
+    "countryName": "New Caledonia",
+    "countryCode": "NC",
+    "callingCode": "+687",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/23/Flag_of_New_Caledonia.svg"
+  },
+  {
+    "countryName": "New Zealand",
+    "countryCode": "NZ",
+    "callingCode": "+64",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Flag_of_New_Zealand.svg"
+  },
+  {
+    "countryName": "Nicaragua",
+    "countryCode": "NI",
+    "callingCode": "+505",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/19/Flag_of_Nicaragua.svg"
+  },
+  {
+    "countryName": "Niger",
+    "countryCode": "NE",
+    "callingCode": "+227",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Flag_of_Niger.svg"
+  },
+  {
+    "countryName": "Nigeria",
+    "countryCode": "NG",
+    "callingCode": "+234",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_Nigeria.svg"
+  },
+  {
+    "countryName": "Niue",
+    "countryCode": "NU",
+    "callingCode": "+683",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_Niue.svg"
+  },
+  {
+    "countryName": "Norfolk Island",
+    "countryCode": "NF",
+    "callingCode": "+672",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/48/Flag_of_Norfolk_Island.svg"
+  },
+  {
+    "countryName": "North Macedonia",
+    "countryCode": "MK",
+    "callingCode": "+389",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_North_Macedonia.svg"
+  },
+  {
+    "countryName": "Northern Mariana Islands",
+    "countryCode": "MP",
+    "callingCode": "+1 670",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Flag_of_the_Northern_Mariana_Islands.svg"
+  },
+  {
+    "countryName": "Norway",
+    "countryCode": "NO",
+    "callingCode": "+47",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Norway.svg"
+  },
+  {
+    "countryName": "Oman",
+    "countryCode": "OM",
+    "callingCode": "+968",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Flag_of_Oman.svg"
+  },
+  {
+    "countryName": "Pakistan",
+    "countryCode": "PK",
+    "callingCode": "+92",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg"
+  },
+  {
+    "countryName": "Palau",
+    "countryCode": "PW",
+    "callingCode": "+680",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/48/Flag_of_Palau.svg"
+  },
+  {
+    "countryName": "Panama",
+    "countryCode": "PA",
+    "callingCode": "+507",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Flag_of_Panama.svg"
+  },
+  {
+    "countryName": "Papua New Guinea",
+    "countryCode": "PG",
+    "callingCode": "+675",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Flag_of_Papua_New_Guinea.svg"
+  },
+  {
+    "countryName": "Paraguay",
+    "countryCode": "PY",
+    "callingCode": "+595",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/27/Flag_of_Paraguay.svg"
+  },
+  {
+    "countryName": "Peru",
+    "countryCode": "PE",
+    "callingCode": "+51",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg"
+  },
+  {
+    "countryName": "Philippines",
+    "countryCode": "PH",
+    "callingCode": "+63",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_the_Philippines.svg"
+  },
+  {
+    "countryName": "Pitcairn",
+    "countryCode": "PN",
+    "callingCode": "+872",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/88/Flag_of_the_Pitcairn_Islands.svg"
+  },
+  {
+    "countryName": "Poland",
+    "countryCode": "PL",
+    "callingCode": "+48",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg"
+  },
+  {
+    "countryName": "Portugal",
+    "countryCode": "PT",
+    "callingCode": "+351",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg"
+  },
+  {
+    "countryName": "Puerto Rico",
+    "countryCode": "PR",
+    "callingCode": "+1 939",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/28/Flag_of_Puerto_Rico.svg"
+  },
+  {
+    "countryName": "Qatar",
+    "countryCode": "QA",
+    "callingCode": "+974",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/65/Flag_of_Qatar.svg"
+  },
+  {
+    "countryName": "Romania",
+    "countryCode": "RO",
+    "callingCode": "+40",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_Romania.svg"
+  },
+  {
+    "countryName": "Russia",
+    "countryCode": "RU",
+    "callingCode": "+7",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/f/f3/Flag_of_Russia.svg"
+  },
+  {
+    "countryName": "Rwanda",
+    "countryCode": "RW",
+    "callingCode": "+250",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/17/Flag_of_Rwanda.svg"
+  },
+  {
+    "countryName": "Reunion",
+    "countryCode": "RE",
+    "callingCode": "+262",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Proposed_flag_of_R%C3%A9union_%28VAR%29.svg"
+  },
+  {
+    "countryName": "Saint Barthelemy",
+    "countryCode": "BL",
+    "callingCode": "+590",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"
+  },
+  {
+    "countryName": "Saint Kitts and Nevis",
+    "countryCode": "KN",
+    "callingCode": "+1 869",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_Saint_Kitts_and_Nevis.svg"
+  },
+  {
+    "countryName": "Saint Lucia",
+    "countryCode": "LC",
+    "callingCode": "+1 758",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_Saint_Lucia.svg"
+  },
+  {
+    "countryName": "Saint Pierre and Miquelon",
+    "countryCode": "PM",
+    "callingCode": "+508",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/74/Flag_of_Saint-Pierre_and_Miquelon.svg"
+  },
+  {
+    "countryName": "Saint Vincent and the Grenadines",
+    "countryCode": "VC",
+    "callingCode": "+1 784",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Flag_of_Saint_Vincent_and_the_Grenadines.svg"
+  },
+  {
+    "countryName": "Samoa",
+    "countryCode": "WS",
+    "callingCode": "+685",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/31/Flag_of_Samoa.svg"
+  },
+  {
+    "countryName": "San Marino",
+    "countryCode": "SM",
+    "callingCode": "+378",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Flag_of_San_Marino.svg"
+  },
+  {
+    "countryName": "Sao Tome and Principe",
+    "countryCode": "ST",
+    "callingCode": "+239",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Flag_of_Sao_Tome_and_Principe.svg"
+  },
+  {
+    "countryName": "Saudi Arabia",
+    "countryCode": "SA",
+    "callingCode": "+966",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg"
+  },
+  {
+    "countryName": "Senegal",
+    "countryCode": "SN",
+    "callingCode": "+221",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Flag_of_Senegal.svg"
+  },
+  {
+    "countryName": "Serbia",
+    "countryCode": "RS",
+    "callingCode": "+381",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Flag_of_Serbia.svg"
+  },
+  {
+    "countryName": "Seychelles",
+    "countryCode": "SC",
+    "callingCode": "+248",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Seychelles.svg"
+  },
+  {
+    "countryName": "Sierra Leone",
+    "countryCode": "SL",
+    "callingCode": "+232",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/17/Flag_of_Sierra_Leone.svg"
+  },
+  {
+    "countryName": "Singapore",
+    "countryCode": "SG",
+    "callingCode": "+65",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/48/Flag_of_Singapore.svg"
+  },
+  {
+    "countryName": "Slovakia",
+    "countryCode": "SK",
+    "callingCode": "+421",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Flag_of_Slovakia.svg"
+  },
+  {
+    "countryName": "Slovenia",
+    "countryCode": "SI",
+    "callingCode": "+386",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Flag_of_Slovenia.svg"
+  },
+  {
+    "countryName": "Solomon Islands",
+    "countryCode": "SB",
+    "callingCode": "+677",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/74/Flag_of_the_Solomon_Islands.svg"
+  },
+  {
+    "countryName": "Somalia",
+    "countryCode": "SO",
+    "callingCode": "+252",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Flag_of_Somalia.svg"
+  },
+  {
+    "countryName": "South Africa",
+    "countryCode": "ZA",
+    "callingCode": "+27",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/a/af/Flag_of_South_Africa.svg"
+  },
+  {
+    "countryName": "South Georgia and the South Sandwich Islands",
+    "countryCode": "GS",
+    "callingCode": "+500",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/e…_South_Georgia_and_the_South_Sandwich_Islands.svg"
+  },
+  {
+    "countryName": "Spain",
+    "countryCode": "ES",
+    "callingCode": "+34",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/9/9a/Flag_of_Spain.svg"
+  },
+  {
+    "countryName": "Sri Lanka",
+    "countryCode": "LK",
+    "callingCode": "+94",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/11/Flag_of_Sri_Lanka.svg"
+  },
+  {
+    "countryName": "Sudan",
+    "countryCode": "SD",
+    "callingCode": "+249",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_Sudan.svg"
+  },
+  {
+    "countryName": "Suriname",
+    "countryCode": "SR",
+    "callingCode": "+597",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/60/Flag_of_Suriname.svg"
+  },
+  {
+    "countryName": "Swaziland",
+    "countryCode": "SZ",
+    "callingCode": "+268",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Flag_of_Swaziland.svg"
+  },
+  {
+    "countryName": "Sweden",
+    "countryCode": "SE",
+    "callingCode": "+46",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/4/4c/Flag_of_Sweden.svg"
+  },
+  {
+    "countryName": "Switzerland",
+    "countryCode": "CH",
+    "callingCode": "+41",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/08/Flag_of_Switzerland_%28Pantone%29.svg"
+  },
+  {
+    "countryName": "Syrian Arab Republic",
+    "countryCode": "SY",
+    "callingCode": "+963",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/53/Flag_of_Syria.svg"
+  },
+  {
+    "countryName": "Taiwan",
+    "countryCode": "TW",
+    "callingCode": "+886",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/72/Flag_of_the_Republic_of_China.svg"
+  },
+  {
+    "countryName": "Tajikistan",
+    "countryCode": "TJ",
+    "callingCode": "+992",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Flag_of_Tajikistan.svg"
+  },
+  {
+    "countryName": "Tanzania, United Republic of Tanzania",
+    "countryCode": "TZ",
+    "callingCode": "+255",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/38/Flag_of_Tanzania.svg"
+  },
+  {
+    "countryName": "Thailand",
+    "countryCode": "TH",
+    "callingCode": "+66",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_Thailand.svg"
+  },
+  {
+    "countryName": "Timor-Leste",
+    "countryCode": "TL",
+    "callingCode": "+670",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/26/Flag_of_East_Timor.svg"
+  },
+  {
+    "countryName": "Togo",
+    "countryCode": "TG",
+    "callingCode": "+228",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/68/Flag_of_Togo.svg"
+  },
+  {
+    "countryName": "Tokelau",
+    "countryCode": "TK",
+    "callingCode": "+690",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Flag_of_Tokelau.svg"
+  },
+  {
+    "countryName": "Tonga",
+    "countryCode": "TO",
+    "callingCode": "+676",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Tonga.svg"
+  },
+  {
+    "countryName": "Trinidad and Tobago",
+    "countryCode": "TT",
+    "callingCode": "+1 868",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/64/Flag_of_Trinidad_and_Tobago.svg"
+  },
+  {
+    "countryName": "Tunisia",
+    "countryCode": "TN",
+    "callingCode": "+216",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Flag_of_Tunisia.svg"
+  },
+  {
+    "countryName": "Turkey",
+    "countryCode": "TR",
+    "callingCode": "+90",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Flag_of_Turkey.svg"
+  },
+  {
+    "countryName": "Turkmenistan",
+    "countryCode": "TM",
+    "callingCode": "+993",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Turkmenistan.svg"
+  },
+  {
+    "countryName": "Turks and Caicos Islands",
+    "countryCode": "TC",
+    "callingCode": "+1 649",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Flag_of_the_Turks_and_Caicos_Islands.svg"
+  },
+  {
+    "countryName": "Tuvalu",
+    "countryCode": "TV",
+    "callingCode": "+688",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/3/38/Flag_of_Tuvalu.svg"
+  },
+  {
+    "countryName": "Uganda",
+    "countryCode": "UG",
+    "callingCode": "+256",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Flag_of_Uganda.svg"
+  },
+  {
+    "countryName": "Ukraine",
+    "countryCode": "UA",
+    "callingCode": "+380",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Ukraine.svg"
+  },
+  {
+    "countryName": "United Arab Emirates",
+    "countryCode": "AE",
+    "callingCode": "+971",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg"
+  },
+  {
+    "countryName": "United Kingdom",
+    "countryCode": "GB",
+    "callingCode": "+44",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg"
+  },
+  {
+    "countryName": "United States",
+    "countryCode": "US",
+    "callingCode": "+1",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+  },
+  {
+    "countryName": "Uruguay",
+    "countryCode": "UY",
+    "callingCode": "+598",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_Uruguay.svg"
+  },
+  {
+    "countryName": "Uzbekistan",
+    "countryCode": "UZ",
+    "callingCode": "+998",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Uzbekistan.svg"
+  },
+  {
+    "countryName": "Vanuatu",
+    "countryCode": "VU",
+    "callingCode": "+678",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Vanuatu.svg"
+  },
+  {
+    "countryName": "Venezuela",
+    "countryCode": "VE",
+    "callingCode": "+58",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Flag_of_Venezuela_%28state%29.svg"
+  },
+  {
+    "countryName": "Vietnam",
+    "countryCode": "VN",
+    "callingCode": "+84",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg"
+  },
+  {
+    "countryName": "Virgin Islands, British",
+    "countryCode": "VG",
+    "callingCode": "+1 284",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg"
+  },
+  {
+    "countryName": "Virgin Islands, U.S.",
+    "countryCode": "VI",
+    "callingCode": "+1 340",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg"
+  },
+  {
+    "countryName": "Wallis and Futuna",
+    "countryCode": "WF",
+    "callingCode": "+681",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Flag_of_Wallis_and_Futuna.svg"
+  },
+  {
+    "countryName": "Yemen",
+    "countryCode": "YE",
+    "callingCode": "+967",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/89/Flag_of_Yemen.svg"
+  },
+  {
+    "countryName": "Zambia",
+    "countryCode": "ZM",
+    "callingCode": "+260",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/06/Flag_of_Zambia.svg"
+  },
+  {
+    "countryName": "Zimbabwe",
+    "countryCode": "ZW",
+    "callingCode": "+263",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Flag_of_Zimbabwe.svg"
+  }
+]
