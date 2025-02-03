@@ -12,11 +12,13 @@ interface FormValues {
   back_image: File | null;
 }
 
+type VerificationType = "id" | "poi" | undefined;
+
 const IDCardUpload = ({
   next,
   back,
 }: {
-  next: () => void;
+  next: (type: VerificationType) => void;
   back: () => void;
 }) => {
   const [form] = Form.useForm<FormValues>();
@@ -25,7 +27,7 @@ const IDCardUpload = ({
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
     console.log(values);
-    next();
+    next("id");
   };
 
   const setFieldsValue = useCallback(

@@ -6,6 +6,7 @@ import BusinessInformation from "./BusinessInformation";
 import PersonalInfo from "./PersonalInfo";
 import ProofOfIdentity from "./ProofOfIdentity";
 import { Link } from "react-router";
+import AddShareholders from "./Shareholder/AddShareholders";
 
 const PAGES = [
   {
@@ -32,7 +33,7 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
   const next = useCallback(
     () =>
       setSelectedPage(prev =>
-        prev !== null ? (prev === 2 ? 6 : prev + 1) : 0
+        prev !== null ? (prev === 3 ? 6 : prev + 1) : 0
       ),
     []
   );
@@ -75,8 +76,7 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
                 shape="round"
                 onClick={() => setSelectedPage(0)}
                 className="w-48 bg-primary-50 text-base text-primary hover:bg-primary-100"
-                size="large"
-              >
+                size="large">
                 Back
               </Button>
               <Button
@@ -85,8 +85,7 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
                 shape="round"
                 onClick={nextAction}
                 className="w-48 text-base"
-                size="large"
-              >
+                size="large">
                 Submit Profile
               </Button>
             </div>
@@ -102,11 +101,7 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
                 value: page.index,
               }))}
               onChange={value => {
-                if (value === 3) {
-                  setSelectedPage(6);
-                } else {
-                  setSelectedPage(value);
-                }
+                setSelectedPage(value);
               }}
             />
             <div className="flex items-center justify-end">
@@ -115,15 +110,13 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
                   type="text"
                   icon={<ChevronLeftIcon className="h-4 w-4" />}
                   disabled={!selectedPage}
-                  onClick={() => setSelectedPage(prev => prev! - 1)}
-                >
+                  onClick={() => setSelectedPage(prev => prev! - 1)}>
                   Previous
                 </Button>
                 <Button
                   type="text"
                   icon={<ChevronRightIcon className="h-4 w-4" />}
-                  onClick={next}
-                >
+                  onClick={next}>
                   Next
                 </Button>
               </Space>
@@ -136,6 +129,7 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
       {selectedPage === 2 && (
         <ProofOfIdentity next={next} back={next} isReview />
       )}
+      {selectedPage === 3 && <AddShareholders next={next} isReview />}
     </div>
   );
 };

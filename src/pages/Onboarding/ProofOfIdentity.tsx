@@ -13,12 +13,14 @@ interface FormValues {
   back_image: File | null;
 }
 
+type VerificationType = "id" | "poi" | undefined;
+
 const ProofOfIdentity = ({
   next,
   back,
   isReview,
 }: {
-  next: () => void;
+  next: (type: VerificationType) => void;
   back: () => void;
   isReview?: boolean;
 }) => {
@@ -28,7 +30,7 @@ const ProofOfIdentity = ({
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
     console.log(values);
-    next();
+    next("poi");
   };
 
   const setFieldsValue = useCallback(
@@ -57,8 +59,7 @@ const ProofOfIdentity = ({
         form={form}
         onFinish={onFinish}
         initialValues={{ dial_code: "+44", phone_number: "+44" }}
-        labelCol={{ className: "text-sm text-grey-600 font-medium " }}
-      >
+        labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
         <div className="grid grid-cols-2 items-start gap-6 gap-y-4 max-lg:grid-cols-1">
           <Form.Item name="nin" label="ID Number">
             <Input className="w-full" placeholder="Enter ID Number" />
@@ -96,8 +97,7 @@ const ProofOfIdentity = ({
               shape="round"
               onClick={back}
               className="w-48 bg-primary-50 text-base text-primary hover:bg-primary-100"
-              size="large"
-            >
+              size="large">
               Back
             </Button>
           )}
@@ -106,8 +106,7 @@ const ProofOfIdentity = ({
             htmlType="submit"
             shape="round"
             className="w-48 text-base"
-            size="large"
-          >
+            size="large">
             {isReview ? "Confirm" : "Save & Continue"}
           </Button>
         </div>

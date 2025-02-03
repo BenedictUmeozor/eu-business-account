@@ -1,9 +1,10 @@
-import HeaderTitle from '@/components/ui/HeaderTitle';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import AddShareholderButton from './AddShareholderButton';
-import AddShareholderForm from './AddShareholderForm';
-import { Button } from 'antd';
-import EditShareholder from './EditShareholder';
+import HeaderTitle from "@/components/ui/HeaderTitle";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import AddShareholderButton from "./AddShareholderButton";
+import AddShareholderForm from "./AddShareholderForm";
+import { Button } from "antd";
+import EditShareholder from "./EditShareholder";
+import clsx from "clsx";
 
 export interface Shareholder {
   id: number;
@@ -13,13 +14,19 @@ export interface Shareholder {
   residential_address: string;
   owns_over_25_percent: 1 | 0;
   authorized_signatory: 1 | 0;
-  preferred_means_of_identification: 'NIN' | 'Passport' | 'Drivers License';
+  preferred_means_of_identification: "NIN" | "Passport" | "Drivers License";
   front_image: File | null;
   back_image: File | null;
-  type: 'Individual' | 'Business';
+  type: "Individual" | "Business";
 }
 
-const AddShareholders = ({ next }: { next: () => void }) => {
+const AddShareholders = ({
+  next,
+  isReview,
+}: {
+  next: () => void;
+  isReview?: boolean;
+}) => {
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [shareholders, setShareholders] = useState<Shareholder[]>([]);
@@ -35,7 +42,7 @@ const AddShareholders = ({ next }: { next: () => void }) => {
       setShowForm(false);
       console.log(shareholders);
     },
-    [shareholders],
+    [shareholders]
   );
 
   const handleEditShareholder = useCallback(
@@ -51,7 +58,7 @@ const AddShareholders = ({ next }: { next: () => void }) => {
       setShowEditForm(false);
       setSelectedShareholder(null);
     },
-    [shareholders],
+    [shareholders]
   );
 
   const _setSelectedShareholder = useCallback((shareholder: Shareholder) => {
@@ -60,8 +67,10 @@ const AddShareholders = ({ next }: { next: () => void }) => {
   }, []);
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [shareholders]);
+    if (!isReview) {
+      ref.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [shareholders, isReview]);
 
   if (showForm) {
     return <AddShareholderForm handleAddShareholder={hanldeAddShareholder} />;
@@ -77,7 +86,9 @@ const AddShareholders = ({ next }: { next: () => void }) => {
   }
 
   return (
-    <div className="h-full w-full space-y-8 p-8" ref={ref}>
+    <div
+      className={clsx("h-full w-full space-y-8", !isReview && "p-8")}
+      ref={ref}>
       <HeaderTitle
         headerDescription="Add up to Four (4) key shareholders in your business"
         headerTitle="Add Key Shareholders"
@@ -114,8 +125,7 @@ const AddShareholders = ({ next }: { next: () => void }) => {
           onClick={next}
           className="w-48"
           shape="round"
-          size="large"
-        >
+          size="large">
           Continue
         </Button>
       )}

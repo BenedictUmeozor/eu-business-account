@@ -12,7 +12,7 @@ import OnboardingSuccess from "./OnboardingSuccess";
 
 const steps: StepProps[] = [
   {
-    title: "Business Name Search",
+    title: "Business Verification",
   },
   {
     title: "Business Information",

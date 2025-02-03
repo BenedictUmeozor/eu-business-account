@@ -1,5 +1,5 @@
-import { Button } from 'antd';
-import { memo } from 'react';
+import { Button } from "antd";
+import { memo } from "react";
 
 const Welcome = ({ next }: { next: () => void }) => {
   return (
@@ -15,8 +15,7 @@ const Welcome = ({ next }: { next: () => void }) => {
         <div className="space-y-4">
           <h6 className="text-xl font-medium">Welcome Michelle!</h6>
           <p className="mx-auto max-w-xs text-grey-700">
-            Good to have you onboard, you have a few things to complete to get
-            your account running
+            Set up your business account in a few steps
           </p>
         </div>
         <div className="flex items-center justify-center">
@@ -25,8 +24,7 @@ const Welcome = ({ next }: { next: () => void }) => {
             className="w-48 text-base"
             shape="round"
             size="large"
-            onClick={next}
-          >
+            onClick={next}>
             Get Started
           </Button>
         </div>

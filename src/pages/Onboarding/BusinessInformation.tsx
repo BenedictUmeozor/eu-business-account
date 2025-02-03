@@ -1,5 +1,13 @@
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { Button, DatePicker, Form, FormProps, Input, Select } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  FormProps,
+  Input,
+  Radio,
+  Select,
+} from "antd";
 import { memo, useCallback } from "react";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
@@ -11,12 +19,15 @@ interface FormValues {
   date_of_incorporation: string;
   listing_number: string;
   registered_business_address: string;
-  business_sector: string;
+  city: string;
+  town: string;
+  postal_code: string;
   annual_business_profit: string;
   economic_activity: string;
   business_website: string;
   phone_number: string;
   dial_code: string;
+  licence: number;
 }
 
 const BusinessInformation = ({
@@ -77,16 +88,14 @@ const BusinessInformation = ({
           onFinish={onFinish}
           className="space-y-4"
           initialValues={{ dial_code: "+44", phone_number: "+44" }}
-          labelCol={{ className: "text-sm text-grey-600 font-medium " }}
-        >
+          labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label="Business Name" name="business_name">
               <Input className="w-full" placeholder="Enter business name" />
             </Form.Item>
             <Form.Item
               label="Business Registration Number"
-              name="business_reg_number"
-            >
+              name="business_reg_number">
               <Input
                 className="w-full"
                 placeholder="Enter business registration number"
@@ -96,8 +105,7 @@ const BusinessInformation = ({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
               label="Date of Incorporation"
-              name="date_of_incorporation"
-            >
+              name="date_of_incorporation">
               <DatePicker
                 className="w-full"
                 placeholder="Enter date of incorporation"
@@ -110,37 +118,51 @@ const BusinessInformation = ({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
               label="Registered Business Address"
-              name="registered_business_address"
-            >
+              name="registered_business_address">
               <Input
                 className="w-full"
                 placeholder="Enter Registered Business Address"
               />
             </Form.Item>
-            <Form.Item label="Business Sector" name="business_sector">
+            <Form.Item label="Town/City" name="city">
+              <Input
+                className="w-full"
+                placeholder="Enter Town/City"
+              />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Town"
+              name="town">
               <Select
                 className="w-full"
-                placeholder="Enter Business Sector"
-                options={["IT/Technology", "Finance/Accounting", "Other"].map(
-                  v => ({ label: v, value: v })
-                )}
+                placeholder="Select Town"
+              />
+            </Form.Item>
+            <Form.Item label="Postal Code" name="postal_code">
+              <Input
+                className="w-full"
+                placeholder="Enter Postal Code"
               />
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
               label="Annual Business Profit"
-              name="annual_business_profit"
-            >
-              <Input
+              name="annual_business_profit">
+              <Select
                 className="w-full"
-                placeholder="Enter Annual Business Profit"
+                placeholder="Select Profit Range"
+                options={["100k-1M", "1M-5M", "5M-10M"].map(v => ({
+                  label: v,
+                  value: v,
+                }))}
               />
             </Form.Item>
             <Form.Item
               label="Economic Activity of the Company"
-              name="economic_activity"
-            >
+              name="economic_activity">
               <Input
                 className="w-full"
                 placeholder="Enter Economic Activity of the Company"
@@ -163,13 +185,32 @@ const BusinessInformation = ({
               label="Phone Number"
             />
           </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Does your company require a license to operate?"
+              name="licence">
+              <Radio.Group className="w-full">
+                <div className="grid grid-cols-2 gap-2">
+                  <Radio
+                    value={1}
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                    Yes
+                  </Radio>
+                  <Radio
+                    value={0}
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                    No
+                  </Radio>
+                </div>
+              </Radio.Group>
+            </Form.Item>
+          </div>
           <Button
             htmlType="submit"
             type="primary"
             size="large"
             shape="round"
-            className="w-48 text-base"
-          >
+            className="w-48 text-base">
             {isReview ? "Confirm" : "Next"}
           </Button>
         </Form>

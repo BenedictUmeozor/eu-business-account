@@ -12,7 +12,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
   return (
     <div className="h-full w-full space-y-8 p-8">
       <HeaderTitle
-        headerTitle="Business Name Search"
+        headerTitle="Business Verification"
         headerDescription="Verify your business name to get started"
       />
       <section>
@@ -21,8 +21,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
           autoComplete="off"
           form={form}
           onFinish={onFinish}
-          className="space-y-0"
-        >
+          className="space-y-0">
           <section className="-space-y-4">
             <div className="grid grid-cols-[0.77fr_0.23fr] items-center gap-x-2">
               <Form.Item
@@ -31,8 +30,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
                   <p className="text-sm font-semibold text-grey-600">
                     Enter business name or registration number
                   </p>
-                }
-              >
+                }>
                 <Input
                   placeholder="Enter required details here"
                   className="w-full rounded-full"
@@ -49,8 +47,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
                 type="primary"
                 size="large"
                 disabled={!value}
-                className="h-11"
-              >
+                className="h-11">
                 Search
               </Button>
             </div>
@@ -58,8 +55,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
               className={clsx(
                 "text-sm font-medium",
                 value ? "text-positive" : "text-grey-400"
-              )}
-            >
+              )}>
               {value
                 ? "Business found!"
                 : "Details of the business will appear below if found"}
@@ -83,11 +79,23 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
               </p>
             </div>
             <div className="flex items-center justify-between">
+              <p className="text-grey-500">Country</p>
+              <p className="text-right font-medium text-grey-700">
+                United Kingdom
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
+              <p className="text-grey-500">Registered Office Address</p>
+              <p className="text-right font-medium text-grey-700">
+                44B Mclauren bronx wc
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
               <p className="text-grey-500">City</p>
               <p className="text-right font-medium text-grey-700">Birmingham</p>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-grey-500">State/Province</p>
+              <p className="text-grey-500">Province</p>
               <p className="text-right font-medium text-grey-700">
                 Wolverhampton
               </p>
@@ -115,8 +123,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
         disabled={!value}
         className="w-48 text-base"
         shape="round"
-        onClick={next}
-      >
+        onClick={next}>
         Save & Continue
       </Button>
     </div>
