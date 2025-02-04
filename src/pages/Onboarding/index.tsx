@@ -1,4 +1,4 @@
-import { StepProps, Steps } from "antd";
+import { StepProps, Steps, Tag } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import Welcome from "./Welcome";
@@ -9,6 +9,7 @@ import IdentityVerification from "./IdentityVerification";
 import AddShareholders from "./Shareholder/AddShareholders";
 import Review from "./Review";
 import OnboardingSuccess from "./OnboardingSuccess";
+import AddDocuments from "./AddDocuments";
 
 const steps: StepProps[] = [
   {
@@ -27,12 +28,16 @@ const steps: StepProps[] = [
     title: "Add Shareholders",
   },
   {
+    title: "Add Documents",
+  },
+  {
     title: "Review",
   },
 ];
 
 const Onboarding = () => {
   const [current, setCurrent] = useState<number>(-1);
+  const [showLicense, setShowLicense] = useState<1 | 0>(0);
   const ref = useRef<HTMLDivElement>(null);
 
   const next = useCallback(() => {
@@ -50,10 +55,13 @@ const Onboarding = () => {
     <section className="no-scrollbar grid grid-cols-[300px_1fr] overflow-hidden rounded-xl">
       <aside className="grid h-full max-w-[600px] grid-rows-[1fr_auto] gap-12 border border-r-0 border-solid border-grey-200 bg-primary-50 pb-8 pt-12">
         <section>
-          <div className="bg-primary-100 px-4 py-3 text-lg">
+          <div className="bg-primary-100 px-4 py-3 text-lg flex items-center space-x-2">
             <h2 className="text-center text-lg font-medium">
-              Business Account onboarding
+              Get Business Account
             </h2>
+            <Tag color="#ebf4ff" className="rounded-2xl text-primary-600">
+              Corporate
+            </Tag>
           </div>
           <div className="mx-auto my-8 flex w-[80%] items-center justify-center">
             <Steps
@@ -73,16 +81,18 @@ const Onboarding = () => {
       </aside>
       <div
         ref={ref}
-        className="grid h-full place-items-center border border-solid border-grey-200"
-      >
+        className="grid h-full place-items-center border border-solid border-grey-200">
         {current === -1 && <Welcome next={next} />}
         {current === 0 && <BusinessNameSearch next={next} />}
-        {current === 1 && <BusinessInformation next={next} />}
+        {current === 1 && (
+          <BusinessInformation setLicense={setShowLicense} next={next} />
+        )}
         {current === 2 && <PersonalInfo next={next} />}
         {current === 3 && <IdentityVerification next={next} />}
         {current === 4 && <AddShareholders next={next} />}
-        {current === 5 && <Review nextAction={next} />}
-        {current === 6 && <OnboardingSuccess />}
+        {current === 5 && <AddDocuments next={next} license={showLicense} />}
+        {current === 6 && <Review nextAction={next} />}
+        {current === 7 && <OnboardingSuccess />}
       </div>
     </section>
   );

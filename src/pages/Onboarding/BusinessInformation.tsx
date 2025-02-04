@@ -1,62 +1,74 @@
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   Button,
-  DatePicker,
   Form,
   FormProps,
   Input,
   Radio,
   Select,
+  Space,
+  Tag,
 } from "antd";
-import { memo, useCallback } from "react";
+import { memo, useState } from "react";
 import HeaderTitle from "@/components/ui/HeaderTitle";
-import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import clsx from "clsx";
+import { CURRENCIES, TRANSACTIONS_VOLUMES } from "./constants";
+import countries from "@/data/codes.json";
 
 interface FormValues {
-  business_name: string;
-  business_reg_number: string;
-  date_of_incorporation: string;
-  listing_number: string;
-  registered_business_address: string;
-  city: string;
-  town: string;
-  postal_code: string;
-  annual_business_profit: string;
+  business_type: string;
+  business_industry: string;
+  purpose: string;
   economic_activity: string;
   business_website: string;
-  phone_number: string;
-  dial_code: string;
-  licence: number;
+  transaction_volume: string;
+  currencies_usage: string;
+  top_countries_send: string;
+  top_countries_receive: string;
+  top_partners_incoming: string;
+  top_partners_outgoing: string;
+  license: 1 | 0;
 }
 
 const BusinessInformation = ({
   next,
   isReview,
+  setLicense,
 }: {
   next: () => void;
+  setLicense: (value: 1 | 0) => void;
   isReview?: boolean;
 }) => {
   const [form] = Form.useForm<FormValues>();
+  const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([]);
+  const [selectedSendCountries, setSelectedSendCountries] = useState<string[]>(
+    []
+  );
+  const [selectedReceiveCountries, setSelectedReceiveCountries] = useState<
+    string[]
+  >([]);
 
-  const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    console.log(values);
-    next();
+  const handleSendCountries = (code: string) => {
+    const filtered = selectedSendCountries.filter(c => c !== code);
+    setSelectedSendCountries(filtered);
   };
 
-  const setFieldsValue = useCallback(
-    ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
-      form.setFieldsValue({ dial_code: dialCode, phone_number: phoneNumber });
-    },
-    [form]
-  );
+  const handleReceiveCountries = (code: string) => {
+    const filtered = selectedReceiveCountries.filter(c => c !== code);
+    setSelectedReceiveCountries(filtered);
+  };
 
-  const setPhoneValue = useCallback(
-    (phoneNumber: string) => {
-      form.setFieldsValue({ phone_number: phoneNumber });
-    },
-    [form]
-  );
+  const handleCurrencies = (code: string) => {
+    const filtered = selectedCurrencies.filter(c => c !== code);
+    setSelectedCurrencies(filtered);
+  };
+
+  const onFinish: FormProps<FormValues>["onFinish"] = values => {
+    if (!isReview) {
+      setLicense(values.license);
+    }
+    next();
+  };
 
   return (
     <div className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
@@ -86,78 +98,28 @@ const BusinessInformation = ({
           autoComplete="off"
           form={form}
           onFinish={onFinish}
-          className="space-y-4"
+          className="space-y-2"
           initialValues={{ dial_code: "+44", phone_number: "+44" }}
           labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Business Name" name="business_name">
-              <Input className="w-full" placeholder="Enter business name" />
-            </Form.Item>
-            <Form.Item
-              label="Business Registration Number"
-              name="business_reg_number">
-              <Input
-                className="w-full"
-                placeholder="Enter business registration number"
-              />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item
-              label="Date of Incorporation"
-              name="date_of_incorporation">
-              <DatePicker
-                className="w-full"
-                placeholder="Enter date of incorporation"
-              />
-            </Form.Item>
-            <Form.Item label="Listing Number" name="listing_number">
-              <Input className="w-full" placeholder="Enter Listing Number" />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item
-              label="Registered Business Address"
-              name="registered_business_address">
-              <Input
-                className="w-full"
-                placeholder="Enter Registered Business Address"
-              />
-            </Form.Item>
-            <Form.Item label="Town/City" name="city">
-              <Input
-                className="w-full"
-                placeholder="Enter Town/City"
-              />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item
-              label="Town"
-              name="town">
+            <Form.Item label="Type of Business" name="business_name">
               <Select
                 className="w-full"
-                placeholder="Select Town"
+                placeholder="Select Type of Business"
               />
             </Form.Item>
-            <Form.Item label="Postal Code" name="postal_code">
-              <Input
+            <Form.Item label="Business Industry" name="business_industry">
+              <Select
                 className="w-full"
-                placeholder="Enter Postal Code"
+                placeholder="Select Business Industry"
               />
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item
-              label="Annual Business Profit"
-              name="annual_business_profit">
+            <Form.Item label="Purpose of Account" name="purpose">
               <Select
                 className="w-full"
-                placeholder="Select Profit Range"
-                options={["100k-1M", "1M-5M", "5M-10M"].map(v => ({
-                  label: v,
-                  value: v,
-                }))}
+                placeholder="Select Purpose of Account"
               />
             </Form.Item>
             <Form.Item
@@ -170,25 +132,175 @@ const BusinessInformation = ({
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Business Website" name="business_website">
-              <Input
+            <Form.Item
+              label="Business website/Social media link"
+              name="business_website">
+              <Input className="w-full" placeholder="www.xyz.com" />
+            </Form.Item>
+            <Form.Item
+              label="Expected Transaction Volume (Monthly)"
+              name="transaction_volume">
+              <Select
                 className="w-full"
-                type="url"
-                placeholder="https://www.xyz.com"
+                placeholder="Select Range"
+                options={TRANSACTIONS_VOLUMES.map(v => ({
+                  label: v,
+                  value: v,
+                }))}
               />
             </Form.Item>
-            <PhoneNumberInput
-              dialCodeName="dial_code"
-              name="phone_number"
-              setFieldsValue={setFieldsValue}
-              setPhoneValue={setPhoneValue}
-              label="Phone Number"
-            />
           </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start">
+            <Form.Item
+              label="Expected currencies usage"
+              name="currencies_usage">
+              <Select
+                className="w-full"
+                placeholder="Select currencies"
+                maxCount={5}
+                maxTagCount={0}
+                mode="multiple"
+                value={selectedCurrencies}
+                onChange={value => setSelectedCurrencies(value)}
+                options={CURRENCIES.map(v => ({
+                  label: `${v.code} - ${v.name}`,
+                  value: v.code,
+                }))}
+              />
+              <div className="mt-1 flex flex-wrap gap-y-1">
+                {selectedCurrencies.map(v => (
+                  <Tag
+                    color="#ebf4ff"
+                    className="text-primary rounded-3xl flex items-center font-medium p-1.5"
+                    closable
+                    onClose={() => handleCurrencies(v)}
+                    closeIcon={<XMarkIcon className="text-primary w-4" />}>
+                    {v}
+                  </Tag>
+                ))}
+              </div>
+            </Form.Item>
+            <Form.Item
+              label="Top 5 countries you send money to"
+              name="top_countries_send">
+              <Select
+                className="w-full"
+                placeholder="Select Countries"
+                maxCount={5}
+                maxTagCount={0}
+                mode="multiple"
+                value={selectedSendCountries}
+                onChange={value => setSelectedSendCountries(value)}
+                options={countries.map(v => ({
+                  label: (
+                    <Space>
+                      <img
+                        src={v.flag}
+                        alt={v.countryName}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      {v.countryName}
+                    </Space>
+                  ),
+                  value: v.countryCode,
+                }))}
+              />
+              <div className="mt-1 flex flex-wrap gap-y-1">
+                {selectedSendCountries?.map(code => {
+                  const country = countries.find(c => c.countryCode === code)!;
+                  return (
+                    <Tag
+                      color="#ebf4ff"
+                      className="text-primary rounded-3xl flex items-center font-medium p-1.5"
+                      closable
+                      onClose={() => handleSendCountries(code)}
+                      closeIcon={<XMarkIcon className="text-primary w-4" />}>
+                      <Space>
+                        <img
+                          src={country.flag}
+                          alt={country.countryCode}
+                          className="h-3 w-3 rounded-full"
+                        />
+                        {country.countryCode}
+                      </Space>
+                    </Tag>
+                  );
+                })}
+              </div>
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start">
+            <Form.Item
+              label="Top 5 countries you receive money from"
+              name="top_countries_receive">
+              <Select
+                className="w-full"
+                placeholder="Select Countries"
+                maxCount={5}
+                maxTagCount={0}
+                mode="multiple"
+                value={selectedReceiveCountries}
+                onChange={value => setSelectedReceiveCountries(value)}
+                options={countries.map(v => ({
+                  label: (
+                    <Space>
+                      <img
+                        src={v.flag}
+                        alt={v.countryName}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      {v.countryName}
+                    </Space>
+                  ),
+                  value: v.countryCode,
+                }))}
+              />
+              <div className="mt-1 flex flex-wrap gap-y-1">
+                {selectedReceiveCountries?.map(code => {
+                  const country = countries.find(c => c.countryCode === code)!;
+                  return (
+                    <Tag
+                      color="#ebf4ff"
+                      className="text-primary rounded-3xl flex items-center font-medium p-1.5"
+                      closable
+                      onClose={() => handleReceiveCountries(code)}
+                      closeIcon={<XMarkIcon className="text-primary w-4" />}>
+                      <Space>
+                        <img
+                          src={country.flag}
+                          alt={country.countryCode}
+                          className="h-3 w-3 rounded-full"
+                        />
+                        {country.countryCode}
+                      </Space>
+                    </Tag>
+                  );
+                })}
+              </div>
+            </Form.Item>
+            <Form.Item
+              name="top_partners_incoming"
+              label="Top 5 transacting partners - Incoming">
+              <Input
+                className="w-full"
+                placeholder="Enter names and separate with commas"
+              />
+            </Form.Item>
+          </div>
+
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
+              name="top_partners_outgoing"
+              label="Top 5 transacting partners - Outgoing">
+              <Input
+                className="w-full"
+                placeholder="Enter names and separate with commas"
+              />
+            </Form.Item>
+            <Form.Item
               label="Does your company require a license to operate?"
-              name="licence">
+              name="license">
               <Radio.Group className="w-full">
                 <div className="grid grid-cols-2 gap-2">
                   <Radio
@@ -211,11 +323,12 @@ const BusinessInformation = ({
             size="large"
             shape="round"
             className="w-48 text-base">
-            {isReview ? "Confirm" : "Next"}
+            {isReview ? "Confirm" : "Save & Continue"}
           </Button>
         </Form>
       </section>
     </div>
   );
 };
+
 export default memo(BusinessInformation);

@@ -14,6 +14,7 @@ interface PhoneNumberInputProps {
     dialCode: string;
     phoneNumber: string;
   }) => void;
+  disabled?: boolean;
 }
 
 const PhoneNumberInput = ({
@@ -22,6 +23,7 @@ const PhoneNumberInput = ({
   name,
   setFieldsValue,
   setPhoneValue,
+  disabled = false,
 }: PhoneNumberInputProps) => {
   const [phoneNumber, setPhoneNumber] = useState("+44");
   const [dialCode, setDialCode] = useState("+44");
@@ -48,6 +50,7 @@ const PhoneNumberInput = ({
         className="w-full"
         placeholder="+234 8000 303 004"
         type="tel"
+        disabled={disabled}
         value={phoneNumber}
         onChange={handlePhoneChange}
         addonBefore={
@@ -55,6 +58,7 @@ const PhoneNumberInput = ({
             <Select
               showSearch
               className="w-20"
+              disabled={disabled}
               dropdownStyle={{ minWidth: "200px" }}
               onChange={handleCodeChange}
               value={dialCode}

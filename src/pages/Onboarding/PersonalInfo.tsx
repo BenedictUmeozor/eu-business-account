@@ -6,6 +6,7 @@ import {
   Radio,
   Button,
   FormProps,
+  Checkbox,
 } from "antd";
 import { memo, useCallback } from "react";
 import { PencilIcon } from "@heroicons/react/24/outline";
@@ -26,6 +27,7 @@ interface FormValues {
   occupation: string;
   id_number: string;
   hold_stake: 1 | 0;
+  role_in_business: string;
 }
 
 const PersonalInfo = ({
@@ -86,8 +88,7 @@ const PersonalInfo = ({
           onFinish={onFinish}
           className="space-y-4"
           initialValues={{ dial_code: "+44", phone_number: "+44" }}
-          labelCol={{ className: "text-sm text-grey-600 font-medium " }}
-        >
+          labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label="First Name" name="first_name">
               <Input className="w-full" placeholder="e.g John" />
@@ -135,28 +136,33 @@ const PersonalInfo = ({
             </Form.Item>
             <Form.Item
               label="ID Number (BVN/NIN/Passport/Driver’s License)"
-              name="id_number"
-            >
+              name="id_number">
               <Input className="w-full" placeholder="Enter ID Number" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item label="Role in Business" name="role_in_business">
+              <Checkbox.Group className="w-full">
+                <div className="flex items-center gap-1.5">
+                  <Checkbox value="owner">Owner</Checkbox>
+                  <Checkbox value="shareholder">Shareholder</Checkbox>
+                  <Checkbox value="director">Director</Checkbox>
+                </div>
+              </Checkbox.Group>
+            </Form.Item>
             <Form.Item
               label="Do you hold over 25% stake of the business?"
-              name="hold_stake"
-            >
+              name="hold_stake">
               <Radio.Group className="w-full">
                 <div className="grid grid-cols-2 gap-2">
                   <Radio
                     value={1}
-                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2"
-                  >
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                     Yes
                   </Radio>
                   <Radio
                     value={0}
-                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2"
-                  >
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                     No
                   </Radio>
                 </div>
@@ -169,8 +175,7 @@ const PersonalInfo = ({
               type="primary"
               size="large"
               className="text-base w-48"
-              shape="round"
-            >
+              shape="round">
               {isReview ? "Confirm" : "Save & Continue"}
             </Button>
           </div>
