@@ -1,7 +1,7 @@
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Button, Checkbox, Select, Space } from "antd";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import BusinessInformation from "./BusinessInformation";
 import PersonalInfo from "./PersonalInfo";
 import ProofOfIdentity from "./ProofOfIdentity";
@@ -27,8 +27,15 @@ const PAGES = [
   },
 ];
 
-const Review = ({ nextAction }: { nextAction: () => void }) => {
+const Review = ({
+  nextAction,
+  setLicense,
+}: {
+  nextAction: () => void;
+  setLicense: (value: 1 | 0) => void;
+}) => {
   const [selectedPage, setSelectedPage] = useState<number | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const next = useCallback(
     () =>
@@ -38,8 +45,15 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
     []
   );
 
+  useEffect(() => {
+    ref.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [selectedPage]);
+
   return (
-    <div className="h-full w-full space-y-12 p-8">
+    <div className="h-full w-full space-y-12 p-8" ref={ref}>
       <section className="space-y-8">
         <HeaderTitle
           headerTitle="Review Information"
@@ -49,24 +63,26 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
           <section className="space-y-8">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Checkbox />
-                <p className="text-grey-500 font-medium">
-                  I have read through my submitted details and confirmed they
-                  are correct
-                </p>
+                <Checkbox>
+                  <p className="text-grey-500 font-medium text-base">
+                    I have read through my submitted details and confirmed they
+                    are correct
+                  </p>
+                </Checkbox>
               </div>
               <div className="flex items-center gap-2">
-                <Checkbox />
-                <p className="text-grey-500 font-medium">
-                  By clicking “submit profile”, i accept the{" "}
-                  <Link to="#" className="font-medium text-primary">
-                    terms
-                  </Link>{" "}
-                  and{" "}
-                  <Link to="#" className="font-medium text-primary">
-                    condtitions
-                  </Link>
-                </p>
+                <Checkbox>
+                  <p className="text-grey-500 font-medium text-base">
+                    By clicking “submit profile”, I accept the{" "}
+                    <Link to="#" className="font-medium text-primary">
+                      terms
+                    </Link>{" "}
+                    and{" "}
+                    <Link to="#" className="font-medium text-primary">
+                      conditions
+                    </Link>
+                  </p>
+                </Checkbox>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -124,7 +140,9 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
           </div>
         )}
       </section>
-      {selectedPage === 0 && <BusinessInformation next={next} isReview />}
+      {selectedPage === 0 && (
+        <BusinessInformation next={next} isReview setLicense={setLicense} />
+      )}
       {selectedPage === 1 && <PersonalInfo next={next} isReview />}
       {selectedPage === 2 && (
         <ProofOfIdentity next={next} back={next} isReview />

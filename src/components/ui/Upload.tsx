@@ -61,7 +61,7 @@ const Upload = ({
         <div className="flex h-44 items-center justify-center rounded-lg bg-primary-50">
           <div className="flex flex-col items-center justify-center gap-4">
             <div
-              className={`flex aspect-[1.8] items-center justify-center ${className}`}
+              className={`flex aspect-[1.8] items-center justify-center overflow-hidden ${className}`}
             >
               {file ? (
                 <DocumentPreview file={file} />

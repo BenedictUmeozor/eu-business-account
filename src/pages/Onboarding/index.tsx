@@ -52,7 +52,7 @@ const Onboarding = () => {
   }, [current]);
 
   return (
-    <section className="no-scrollbar grid grid-cols-[300px_1fr] overflow-hidden rounded-xl">
+    <section className="no-scrollbar grid grid-cols-[312px_1fr] overflow-hidden rounded-xl">
       <aside className="grid h-full max-w-[600px] grid-rows-[1fr_auto] gap-12 border border-r-0 border-solid border-grey-200 bg-primary-50 pb-8 pt-12">
         <section>
           <div className="bg-primary-100 px-4 py-3 text-lg flex items-center space-x-2">
@@ -91,7 +91,7 @@ const Onboarding = () => {
         {current === 3 && <IdentityVerification next={next} />}
         {current === 4 && <AddShareholders next={next} />}
         {current === 5 && <AddDocuments next={next} license={showLicense} />}
-        {current === 6 && <Review nextAction={next} />}
+        {current === 6 && <Review nextAction={next} setLicense={setShowLicense} />}
         {current === 7 && <OnboardingSuccess />}
       </div>
     </section>

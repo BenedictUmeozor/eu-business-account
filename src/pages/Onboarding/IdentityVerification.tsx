@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   CheckCircleIcon,
   IdentificationIcon,
@@ -15,6 +15,8 @@ const IdentityVerfication = ({ next }: { next: () => void }) => {
   const [choosenVerificationType, setChoosenVerificationType] =
     useState<VerificationType>();
 
+  const ref = useRef<HTMLDivElement>(null);
+
   const chooseVerificationType = useCallback(
     (type: VerificationType) => setChoosenVerificationType(type),
     []
@@ -22,13 +24,20 @@ const IdentityVerfication = ({ next }: { next: () => void }) => {
 
   const back = useCallback(() => setVerificationType(undefined), []);
 
+  useEffect(() => {
+    ref.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [choosenVerificationType]);
+
   if (verificationType === "id" && !choosenVerificationType)
     return <IDCardUpload next={chooseVerificationType} back={back} />;
   if (verificationType === "poi" && !choosenVerificationType)
     return <ProofOfIdentity next={chooseVerificationType} back={back} />;
 
   return (
-    <div className="h-full w-full space-y-8 p-8">
+    <div className="h-full w-full space-y-8 p-8" ref={ref}>
       <HeaderTitle
         headerDescription="Select one preferred means of identification"
         headerTitle="Identity Verification"

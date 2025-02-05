@@ -27,10 +27,18 @@ const AddDocuments = ({
     license: false,
   });
 
-  const allDocIsUploaded = useMemo(
-    () => Object.values(uploadState).every(Boolean),
-    [uploadState]
-  );
+  const allDocIsUploaded = useMemo(() => {
+    if (license) {
+      return (
+        uploadState.inc &&
+        uploadState.pos &&
+        uploadState.pob &&
+        uploadState.license
+      );
+    } else {
+      return uploadState.inc && uploadState.pos && uploadState;
+    }
+  }, [uploadState, license]);
 
   const back = useCallback(() => setDocumentType(undefined), []);
   const updateState = useCallback((type: keyof typeof uploadState) => {

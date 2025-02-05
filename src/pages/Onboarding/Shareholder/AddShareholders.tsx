@@ -9,6 +9,8 @@ import clsx from "clsx";
 export interface Shareholder {
   id: number;
   business_name: string;
+  first_name: string;
+  last_name: string;
   email_address: string;
   role: string;
   residential_address: string;

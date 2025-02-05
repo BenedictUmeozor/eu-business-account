@@ -12,7 +12,13 @@ import {
 import { memo, useState } from "react";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
-import { CURRENCIES, TRANSACTIONS_VOLUMES } from "./constants";
+import {
+  BUSINESS_INDUSTRIES,
+  CURRENCIES,
+  PURPOSES_OF_ACCOUNT,
+  TRANSACTIONS_VOLUMES,
+  TYPES_OF_BUSINESS,
+} from "./constants";
 import countries from "@/data/codes.json";
 
 interface FormValues {
@@ -106,12 +112,18 @@ const BusinessInformation = ({
               <Select
                 className="w-full"
                 placeholder="Select Type of Business"
+                showSearch
+                allowClear
+                options={TYPES_OF_BUSINESS.map(v => ({ label: v, value: v }))}
               />
             </Form.Item>
             <Form.Item label="Business Industry" name="business_industry">
               <Select
                 className="w-full"
                 placeholder="Select Business Industry"
+                showSearch
+                allowClear
+                options={BUSINESS_INDUSTRIES.map(v => ({ label: v, value: v }))}
               />
             </Form.Item>
           </div>
@@ -120,6 +132,9 @@ const BusinessInformation = ({
               <Select
                 className="w-full"
                 placeholder="Select Purpose of Account"
+                showSearch
+                allowClear
+                options={PURPOSES_OF_ACCOUNT.map(v => ({ label: v, value: v }))}
               />
             </Form.Item>
             <Form.Item
