@@ -14,15 +14,16 @@ import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
 import {
   BUSINESS_INDUSTRIES,
+  BUSINESS_TYPES,
   CURRENCIES,
   PURPOSES_OF_ACCOUNT,
   TRANSACTIONS_VOLUMES,
-  TYPES_OF_BUSINESS,
 } from "./constants";
 import countries from "@/data/codes.json";
+import { useOnboardingContext } from "@/contexts/onboarding";
 
 interface FormValues {
-  business_type: string;
+  business_type: HM.BusinessType;
   business_industry: string;
   purpose: string;
   economic_activity: string;
@@ -39,10 +40,8 @@ interface FormValues {
 const BusinessInformation = ({
   next,
   isReview,
-  setLicense,
 }: {
   next: () => void;
-  setLicense: (value: 1 | 0) => void;
   isReview?: boolean;
 }) => {
   const [form] = Form.useForm<FormValues>();
@@ -53,6 +52,8 @@ const BusinessInformation = ({
   const [selectedReceiveCountries, setSelectedReceiveCountries] = useState<
     string[]
   >([]);
+
+  const { setShowLicense, setBusinessType } = useOnboardingContext();
 
   const handleSendCountries = (code: string) => {
     const filtered = selectedSendCountries.filter(c => c !== code);
@@ -71,8 +72,9 @@ const BusinessInformation = ({
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
     if (!isReview) {
-      setLicense(values.license);
+      setShowLicense(values.license);
     }
+    setBusinessType(values.business_type);
     next();
   };
 
@@ -108,13 +110,18 @@ const BusinessInformation = ({
           initialValues={{ dial_code: "+44", phone_number: "+44" }}
           labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Type of Business" name="business_name">
+            <Form.Item
+              label="Type of Business"
+              name="business_type"
+              rules={[
+                { required: true, message: "Please select type of business" },
+              ]}>
               <Select
                 className="w-full"
                 placeholder="Select Type of Business"
                 showSearch
                 allowClear
-                options={TYPES_OF_BUSINESS.map(v => ({ label: v, value: v }))}
+                options={BUSINESS_TYPES}
               />
             </Form.Item>
             <Form.Item label="Business Industry" name="business_industry">

@@ -9,16 +9,11 @@ import IncorporationDocument from "./IncorporationDocument";
 import BusinessAddress from "./BusinessAddress";
 import SourceOfFunds from "./SourceOfFunds";
 import LicenseUpload from "./LicenseUpload";
+import { useOnboardingContext } from "@/contexts/onboarding";
 
 type DocumentType = "inc" | "pos" | "pob" | "license" | undefined;
 
-const AddDocuments = ({
-  next,
-  license,
-}: {
-  next: () => void;
-  license: 1 | 0;
-}) => {
+const AddDocuments = ({ next }: { next: () => void }) => {
   const [documentType, setDocumentType] = useState<DocumentType>();
   const [uploadState, setUploadState] = useState({
     inc: false,
@@ -26,9 +21,10 @@ const AddDocuments = ({
     pob: false,
     license: false,
   });
+  const { showLicense } = useOnboardingContext();
 
   const allDocIsUploaded = useMemo(() => {
-    if (license) {
+    if (showLicense) {
       return (
         uploadState.inc &&
         uploadState.pos &&
@@ -38,7 +34,7 @@ const AddDocuments = ({
     } else {
       return uploadState.inc && uploadState.pos && uploadState;
     }
-  }, [uploadState, license]);
+  }, [uploadState, showLicense]);
 
   const back = useCallback(() => setDocumentType(undefined), []);
   const updateState = useCallback((type: keyof typeof uploadState) => {
@@ -147,7 +143,7 @@ const AddDocuments = ({
             )}
           </Space>
         </Card>
-        {license && (
+        {showLicense && (
           <Card
             size="small"
             role="button"

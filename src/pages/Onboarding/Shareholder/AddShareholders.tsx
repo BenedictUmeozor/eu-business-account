@@ -2,24 +2,10 @@ import HeaderTitle from "@/components/ui/HeaderTitle";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import AddShareholderButton from "./AddShareholderButton";
 import AddShareholderForm from "./AddShareholderForm";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import EditShareholder from "./EditShareholder";
 import clsx from "clsx";
-
-export interface Shareholder {
-  id: number;
-  business_name: string;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  role: string;
-  residential_address: string;
-  owns_over_25_percent: 1 | 0;
-  authorized_signatory: 1 | 0;
-  preferred_means_of_identification: "NIN" | "Passport" | "Drivers License";
-  front_image: File | null;
-  back_image: File | null;
-}
+import { Shareholder, useOnboardingContext } from "@/contexts/onboarding";
 
 const AddShareholders = ({
   next,
@@ -30,12 +16,21 @@ const AddShareholders = ({
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
-  const [shareholders, setShareholders] = useState<Shareholder[]>([]);
   const [selectedShareholder, setSelectedShareholder] =
     useState<Shareholder | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
-  const _setShowForm = useCallback(() => setShowForm(true), []);
+  const { shareholders, setShareholders, stakePercentage } =
+    useOnboardingContext();
+
+  const _setShowForm = useCallback(() => {
+    if (stakePercentage === 100) {
+      message.error("You already have 100% stake in the business");
+      return;
+    }
+    setShowForm(true);
+  }, [stakePercentage]);
+  
   const hanldeAddShareholder = useCallback(
     (shareholder: Shareholder) => {
       const length = shareholders.length;
@@ -43,7 +38,7 @@ const AddShareholders = ({
       setShowForm(false);
       console.log(shareholders);
     },
-    [shareholders]
+    [shareholders, setShareholders]
   );
 
   const handleEditShareholder = useCallback(
@@ -59,7 +54,7 @@ const AddShareholders = ({
       setShowEditForm(false);
       setSelectedShareholder(null);
     },
-    [shareholders]
+    [shareholders, setShareholders]
   );
 
   const _setSelectedShareholder = useCallback((shareholder: Shareholder) => {

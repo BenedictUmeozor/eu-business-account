@@ -1,5 +1,5 @@
 import { StepProps, Steps, Tag } from "antd";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Link } from "react-router";
 import Welcome from "./Welcome";
 import BusinessNameSearch from "./BusinessNameSearch";
@@ -9,7 +9,9 @@ import IdentityVerification from "./IdentityVerification";
 import AddShareholders from "./Shareholder/AddShareholders";
 import Review from "./Review";
 import OnboardingSuccess from "./OnboardingSuccess";
-import AddDocuments from "./AddDocuments";
+import AddDocuments from "./Documents";
+import OnboardingProvider from "@/providers/OnboardingContext";
+import { useOnboardingContext } from "@/contexts/onboarding";
 
 const steps: StepProps[] = [
   {
@@ -36,13 +38,12 @@ const steps: StepProps[] = [
 ];
 
 const Onboarding = () => {
-  const [current, setCurrent] = useState<number>(-1);
-  const [showLicense, setShowLicense] = useState<1 | 0>(0);
   const ref = useRef<HTMLDivElement>(null);
+  const { current, setCurrent } = useOnboardingContext();
 
   const next = useCallback(() => {
-    setCurrent(prev => (prev === -1 ? 0 : prev + 1));
-  }, []);
+    setCurrent(current + 1);
+  }, [current, setCurrent]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({
@@ -84,20 +85,23 @@ const Onboarding = () => {
         className="grid h-full place-items-center border border-solid border-grey-200">
         {current === -1 && <Welcome next={next} />}
         {current === 0 && <BusinessNameSearch next={next} />}
-        {current === 1 && (
-          <BusinessInformation setLicense={setShowLicense} next={next} />
-        )}
+        {current === 1 && <BusinessInformation next={next} />}
         {current === 2 && <PersonalInfo next={next} />}
         {current === 3 && <IdentityVerification next={next} />}
         {current === 4 && <AddShareholders next={next} />}
-        {current === 5 && <AddDocuments next={next} license={showLicense} />}
-        {current === 6 && <Review nextAction={next} setLicense={setShowLicense} />}
+        {current === 5 && <AddDocuments next={next} />}
+        {current === 6 && <Review nextAction={next} />}
         {current === 7 && <OnboardingSuccess />}
       </div>
     </section>
   );
 };
 
-export const Component = Onboarding;
+const OnboardingWrapper = () => (
+  <OnboardingProvider>
+    <Onboarding />
+  </OnboardingProvider>
+);
 
-export default Onboarding;
+export const Component = OnboardingWrapper;
+export default OnboardingWrapper;

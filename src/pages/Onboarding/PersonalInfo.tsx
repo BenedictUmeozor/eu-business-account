@@ -7,12 +7,14 @@ import {
   Button,
   FormProps,
   Checkbox,
+  InputNumber,
 } from "antd";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import clsx from "clsx";
+import { Shareholder, useOnboardingContext } from "@/contexts/onboarding";
 
 interface FormValues {
   first_name: string;
@@ -25,10 +27,11 @@ interface FormValues {
   residential_address: string;
   postal_code: string;
   occupation: string;
-  id_number: string;
-  hold_stake: 1 | 0;
-  role_in_business: string;
+  stake_percentage: number;
+  appoint_as_authorized_signatory: 1 | 0;
 }
+
+const ROLES = ["Owner", "Director", "Shareholder"];
 
 const PersonalInfo = ({
   next,
@@ -38,9 +41,22 @@ const PersonalInfo = ({
   isReview?: boolean;
 }) => {
   const [form] = Form.useForm<FormValues>();
+  const [roleInBusiness, setRoleInBusiness] = useState<string[]>([]);
+  const [holdOver25Stake, setHoldOver25Stake] = useState<boolean | null>(null);
+
+  const { setStakePercentage, setShareholders, shareholders } =
+    useOnboardingContext();
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    console.log(values);
+    if (holdOver25Stake) {
+      const shareholder = {
+        first_name: values.first_name,
+        last_name: values.last_name,
+        residential_address: values.residential_address,
+        authorized_signatory: values.appoint_as_authorized_signatory,
+      } as Shareholder;
+      setShareholders([...shareholders, shareholder]);
+    }
     next();
   };
 
@@ -57,6 +73,13 @@ const PersonalInfo = ({
     },
     [form]
   );
+
+  const handleHoldStakeChange = (value: boolean) => {
+    setHoldOver25Stake(value);
+    if (value && !roleInBusiness.includes("shareholder")) {
+      setRoleInBusiness([...roleInBusiness, "shareholder"]);
+    }
+  };
 
   return (
     <div className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
@@ -134,25 +157,91 @@ const PersonalInfo = ({
             <Form.Item label="Occupation" name="occupation">
               <Input className="w-full" placeholder="Enter Occupation" />
             </Form.Item>
-            <Form.Item
-              label="ID Number (BVN/NIN/Passport/Driver’s License)"
-              name="id_number">
-              <Input className="w-full" placeholder="Enter ID Number" />
+            <Form.Item label="Do you hold over 25% stake of the business?">
+              <Radio.Group
+                className="w-full"
+                onChange={e => handleHoldStakeChange(e.target.value)}>
+                <div className="grid grid-cols-2 gap-2">
+                  <Radio
+                    value={true}
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                    Yes
+                  </Radio>
+                  <Radio
+                    value={false}
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                    No
+                  </Radio>
+                </div>
+              </Radio.Group>
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Role in Business" name="role_in_business">
-              <Checkbox.Group className="w-full">
-                <div className="flex items-center gap-1.5">
-                  <Checkbox value="owner">Owner</Checkbox>
-                  <Checkbox value="shareholder">Shareholder</Checkbox>
-                  <Checkbox value="director">Director</Checkbox>
-                </div>
+            <Form.Item
+              label="Your Stake Percentage"
+              name="stake_percentage"
+              validateTrigger={["onChange", "onBlur"]}
+              rules={[
+                {
+                  required: !!holdOver25Stake,
+                  message: "Please enter your stake percentage",
+                  validator: async (_, value) => {
+                    if (value === null || value === undefined) {
+                      return Promise.resolve();
+                    }
+
+                    const numValue = Number(value);
+                    if (isNaN(numValue)) {
+                      return Promise.reject(
+                        "Stake percentage must be a number"
+                      );
+                    }
+                    if (numValue > 100) {
+                      return Promise.reject(
+                        "Stake percentage cannot be more than 100"
+                      );
+                    }
+                    if (numValue < 0) {
+                      return Promise.reject(
+                        "Stake percentage cannot be less than 0"
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}>
+              <InputNumber
+                className="w-full"
+                placeholder="Enter Percentage"
+                onChange={value => {
+                  const numValue = Number(value);
+                  if (!isNaN(numValue)) {
+                    const clampedValue = Math.min(Math.max(numValue, 0), 100);
+                    setStakePercentage(clampedValue);
+                    form.validateFields(["stake_percentage"]);
+                  }
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="Role in Business">
+              <Checkbox.Group
+                className="w-full flex items-center gap-1.5"
+                value={roleInBusiness}
+                onChange={checkedValues =>
+                  setRoleInBusiness(checkedValues as string[])
+                }>
+                {ROLES.map(role => (
+                  <Checkbox key={role} value={role.toLowerCase()}>
+                    {role}
+                  </Checkbox>
+                ))}
               </Checkbox.Group>
             </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
-              label="Do you hold over 25% stake of the business?"
-              name="hold_stake">
+              label="Appoint as authorized signatory?"
+              name="appoint_as_authorized_signatory">
               <Radio.Group className="w-full">
                 <div className="grid grid-cols-2 gap-2">
                   <Radio

@@ -1,3 +1,8 @@
+interface BusinessType {
+  label: string;
+  value: HM.BusinessType;
+}
+
 export const TRANSACTIONS_VOLUMES = [
   "£1,000 - £100,000",
   "£100,001 - £500,000",
@@ -17,6 +22,21 @@ export const CURRENCIES = [
   { code: "USD", name: "United States Dollar" },
   { code: "XAF", name: "Central African Franc" },
   { code: "XOF", name: "West African CFA Franc" },
+];
+
+export const BUSINESS_TYPES: BusinessType[] = [
+  {
+    label: "Limited Company",
+    value: "limited_company",
+  },
+  {
+    label: "Limited Liability Partnership",
+    value: "limited_liability_partnership",
+  },
+  {
+    label: "Public Limited Company",
+    value: "public_limited_company",
+  },
 ];
 
 export const TYPES_OF_BUSINESS = [

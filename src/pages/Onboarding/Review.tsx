@@ -27,13 +27,7 @@ const PAGES = [
   },
 ];
 
-const Review = ({
-  nextAction,
-  setLicense,
-}: {
-  nextAction: () => void;
-  setLicense: (value: 1 | 0) => void;
-}) => {
+const Review = ({ nextAction }: { nextAction: () => void }) => {
   const [selectedPage, setSelectedPage] = useState<number | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -140,9 +134,7 @@ const Review = ({
           </div>
         )}
       </section>
-      {selectedPage === 0 && (
-        <BusinessInformation next={next} isReview setLicense={setLicense} />
-      )}
+      {selectedPage === 0 && <BusinessInformation next={next} isReview />}
       {selectedPage === 1 && <PersonalInfo next={next} isReview />}
       {selectedPage === 2 && (
         <ProofOfIdentity next={next} back={next} isReview />
