@@ -48,7 +48,7 @@ const PublicListedCompanyUpload = ({ next }: { next: () => void }) => {
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
-  }, [updateState]);
+  }, [selectedDocument]);
 
   if (selectedDocument === "evidence-of-listing-stock-exchange") {
     return (

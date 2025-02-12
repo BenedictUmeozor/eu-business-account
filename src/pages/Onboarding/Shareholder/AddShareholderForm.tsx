@@ -1,9 +1,9 @@
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import { Segmented } from "antd";
-import { Shareholder } from "./AddShareholders";
 import { useEffect, useRef, useState } from "react";
 import IndividualForm from "./IndividualForm";
 import BusinessForm from "./BusinessForm";
+import { Shareholder } from "@/contexts/onboarding";
 
 const AddShareholderForm = ({
   handleAddShareholder,

@@ -101,7 +101,7 @@ const LimitedCompanyUpload = ({ next }: { next: () => void }) => {
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
-  }, [updateState]);
+  }, [selectedDocument]);
 
   if (selectedDocument === "audited-financial-statements") {
     return (

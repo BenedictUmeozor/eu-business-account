@@ -8,6 +8,8 @@ import {
   FormProps,
   Checkbox,
   InputNumber,
+  Alert,
+  Divider,
 } from "antd";
 import { memo, useCallback, useState } from "react";
 import { PencilIcon } from "@heroicons/react/24/outline";
@@ -20,6 +22,7 @@ interface FormValues {
   first_name: string;
   last_name: string;
   phone_number: string;
+  middle_name: string;
   dial_code: string;
   date_of_birth: string;
   town: string;
@@ -31,7 +34,7 @@ interface FormValues {
   appoint_as_authorized_signatory: 1 | 0;
 }
 
-const ROLES = ["Owner", "Director", "Shareholder"];
+const ROLES = ["UBO", "Director", "Shareholder"];
 
 const PersonalInfo = ({
   next,
@@ -103,6 +106,12 @@ const PersonalInfo = ({
           />
         </div>
       </header>
+      <Alert
+        type="info"
+        message="Kindly fill out the names as displayed on your government issued ID Card"
+        showIcon
+        closable
+      />
       <section>
         <Form
           layout="vertical"
@@ -116,11 +125,14 @@ const PersonalInfo = ({
             <Form.Item label="First Name" name="first_name">
               <Input className="w-full" placeholder="e.g John" />
             </Form.Item>
-            <Form.Item label="Last Name" name="last_name">
-              <Input className="w-full" placeholder="e.g John" />
+            <Form.Item label="Middle Name (Optional)" name="middle_name">
+              <Input className="w-full" placeholder="e.g Jane" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item label="Last Name" name="last_name">
+              <Input className="w-full" placeholder="e.g Doe" />
+            </Form.Item>
             <PhoneNumberInput
               dialCodeName="dial_code"
               name="phone_number"
@@ -128,19 +140,19 @@ const PersonalInfo = ({
               setPhoneValue={setPhoneValue}
               label="Phone Number"
             />
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label="Date of Birth" name="date_of_birth">
               <DatePicker className="w-full" />
             </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label="Residential Address" name="residential_address">
               <Input className="w-full" placeholder="e.g 123 Main St" />
             </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label=" Town/City" name="town">
               <Input className="w-full" placeholder="e.g 12345" />
             </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label="Region/State" name="state">
               <Select
                 className="w-full"
@@ -149,14 +161,21 @@ const PersonalInfo = ({
                 options={[]}
               />
             </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label="Postal Code" name="postal_code">
               <Input className="w-full" placeholder="Enter Postal Code" />
             </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label="Occupation" name="occupation">
               <Input className="w-full" placeholder="Enter Occupation" />
             </Form.Item>
+          </div>
+          <Divider>
+            <span className="text-grey-500 font-medium">
+              Role in the Business
+            </span>
+          </Divider>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item label="Do you hold over 25% stake of the business?">
               <Radio.Group
                 className="w-full"
@@ -175,10 +194,24 @@ const PersonalInfo = ({
                 </div>
               </Radio.Group>
             </Form.Item>
+            <Form.Item label="Role in Business">
+              <Checkbox.Group
+                className="w-full flex items-center gap-1.5"
+                value={roleInBusiness}
+                onChange={checkedValues =>
+                  setRoleInBusiness(checkedValues as string[])
+                }>
+                {ROLES.map(role => (
+                  <Checkbox key={role} value={role.toLowerCase()}>
+                    {role}
+                  </Checkbox>
+                ))}
+              </Checkbox.Group>
+            </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
-              label="Your Stake Percentage"
+              label="Enter your percentage(%) stake"
               name="stake_percentage"
               validateTrigger={["onChange", "onBlur"]}
               rules={[
@@ -223,22 +256,6 @@ const PersonalInfo = ({
                 }}
               />
             </Form.Item>
-            <Form.Item label="Role in Business">
-              <Checkbox.Group
-                className="w-full flex items-center gap-1.5"
-                value={roleInBusiness}
-                onChange={checkedValues =>
-                  setRoleInBusiness(checkedValues as string[])
-                }>
-                {ROLES.map(role => (
-                  <Checkbox key={role} value={role.toLowerCase()}>
-                    {role}
-                  </Checkbox>
-                ))}
-              </Checkbox.Group>
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
               label="Appoint as authorized signatory?"
               name="appoint_as_authorized_signatory">

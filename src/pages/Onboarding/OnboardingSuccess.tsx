@@ -4,9 +4,9 @@ import { memo } from 'react';
 const OnboardSuccess = () => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-8">
-      <div className="flex aspect-square w-64 items-center justify-center">
+      <div className="flex aspect-square w-40 h-40 items-center justify-center">
         <img
-          src="/images/onboard-success.png"
+          src="/images/check.png"
           alt=""
           className="h-full w-full object-contain"
         />

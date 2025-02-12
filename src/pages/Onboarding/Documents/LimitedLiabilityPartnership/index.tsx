@@ -75,7 +75,7 @@ const LimitedLiabilityPartnershipUpload = ({ next }: { next: () => void }) => {
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
-  }, [updateState]);
+  }, [selectedDocument]);
 
   const uploadDone = useMemo(
     () => Object.values(documentState).every(Boolean),
