@@ -1,0 +1,50 @@
+[
+  {
+    "customer": "Mitchell Maduka",
+    "type": "remittance",
+    "transaction_id": "HLM33140001",
+    "date_time": "Thu, 14/08/24 2:30pm",
+    "status": "successful",
+    "amount": "£14.50"
+  },
+  {
+    "customer": "Sarah Thompson",
+    "type": "transfer",
+    "transaction_id": "HLM331400002",
+    "date_time": "Thu, 14/08/24 2:30pm",
+    "status": "successful",
+    "amount": "£21.50"
+  },
+  {
+    "customer": "James Wilson",
+    "type": "remittance",
+    "transaction_id": "HLM331400002",
+    "date_time": "Thu, 14/08/24 2:30pm",
+    "status": "successful",
+    "amount": "£4.50"
+  },
+  {
+    "customer": "Elena Rodriguez",
+    "type": "transfer",
+    "transaction_id": "HLM331400002",
+    "date_time": "Thu, 14/08/24 2:30pm",
+    "status": "successful",
+    "amount": "£33"
+  },
+  {
+    "customer": "David Chen",
+    "type": "remittance",
+    "transaction_id": "HLM331400002",
+    "date_time": "Thu, 14/08/24 2:30pm",
+    "status": "successful",
+    "amount": "£413"
+  },
+  {
+    "customer": "Olivia Parker",
+    "type": "remittance",
+    "transaction_id": "HLM331400002",
+    "date_time": "Thu, 14/08/24 2:30pm",
+    "status": "successful",
+    "amount": "£33.20"
+  }
+]

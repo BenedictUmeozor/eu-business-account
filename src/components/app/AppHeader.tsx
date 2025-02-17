@@ -5,7 +5,7 @@ import Colors from '@/constants/colors';
 
 const AppHeader = () => {
   return (
-    <header className="flex items-center justify-between px-8 py-4">
+    <header className="flex items-center justify-between px-6 py-4 bg-white border-0 border-b border-solid border-grey-200">
       <div className="flex items-center gap-12">
         <h2 className="text-lg font-normal">Good Morning, Michelle</h2>
         <div>

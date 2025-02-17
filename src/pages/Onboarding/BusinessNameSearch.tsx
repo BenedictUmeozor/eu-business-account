@@ -1,15 +1,18 @@
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
+import ENDPOINTS from "@/constants/endpoints";
+import useMutationAction from "@/hooks/use-mutation-action";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { Button, DatePicker, Form, FormProps, Input, Select } from "antd";
 import clsx from "clsx";
 import { Add } from "iconsax-react";
 import { useCallback, useState } from "react";
+import moment, { Moment } from "moment";
 
 interface FormValues {
   business_name: string;
   business_reg_number: string;
-  date_of_incorporation: string;
+  date_of_incorporation: Moment | string;
   listing_number: string;
   registered_business_address: string;
   city: string;
@@ -19,8 +22,6 @@ interface FormValues {
   phone_number: string;
   dial_code: string;
 }
-
-const SEARCH_VALUE = "Brunelle & Botch";
 
 const BusinessNameSearch = ({ next }: { next: () => void }) => {
   const [disabled, setDisabled] = useState(true);
@@ -43,11 +44,36 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
     [form]
   );
 
+  const mutation = useMutationAction<HM.CompanyDetails>({
+    url: ENDPOINTS.SEARCH_COMPANY,
+    method: "POST",
+    mutationKey: ["search-company", searchValue],
+    onSuccess: data => {
+      if (data && !Object.values(data.company_details).includes(null)) {
+        setFoundSearch(true);
+        form.setFieldsValue({
+          business_name: data.company_details.company_name,
+          business_reg_number: data.company_details.company_number,
+          date_of_incorporation: moment(data.company_details.date_of_creation),
+          registered_business_address: `${data.company_details.address_line_1}, ${data.company_details.address_line_2}`,
+          city: data.company_details.locality,
+          state: data.company_details.region,
+          postal_code: data.company_details.postcode,
+          economic_activity: data.company_details.sic_codes,
+        });
+      } else {
+        setFoundSearch(false);
+      }
+    },
+    onError: () => {
+      setFoundSearch(false);
+    },
+  });
+
   const onFilter: FormProps<{ value: string }>["onFinish"] = ({ value }) => {
     setDisabled(true);
-    const similar =
-      !!value && SEARCH_VALUE.toLowerCase().includes(value.toLowerCase());
-    setFoundSearch(similar);
+    setFoundSearch(null);
+    mutation.mutate({ company_number: value });
   };
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
@@ -74,7 +100,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
                 name="value"
                 label={
                   <p className="text-sm font-semibold text-grey-600">
-                    Enter business name or registration number
+                    Enter business registration number
                   </p>
                 }>
                 <Input
@@ -95,6 +121,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
                 type="primary"
                 size="large"
                 disabled={!searchValue}
+                loading={mutation.isPending}
                 className="h-11">
                 Search
               </Button>

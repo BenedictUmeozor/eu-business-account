@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from "react-router";
@@ -17,8 +18,9 @@ const App = () => {
     createRoutesFromElements(
       <Route path="/">
         <Route Component={RootLayout}>
-          <Route index lazy={Dashboard} />
+          <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="onboarding" lazy={Onboarding} />
+          <Route path="dashboard" lazy={Dashboard} />
         </Route>
       </Route>
     )

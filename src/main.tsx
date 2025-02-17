@@ -36,7 +36,7 @@ createRoot(document.getElementById("root")!).render(
               controlHeight: 44,
             },
             Button: {
-              fontSize: 12,
+              fontSize: 13,
             },
           },
         }}>
