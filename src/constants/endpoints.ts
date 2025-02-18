@@ -4,6 +4,9 @@ const ENDPOINTS = {
 
   // Onboarding
   SEARCH_COMPANY: "/search_company",
+  CREATE_ACCOUNT: "/create_account",
+  SEND_OTP: "/send_otp",
+  CONFIRM_OTP: "/confirm_otp",
 };
 
 export default ENDPOINTS;

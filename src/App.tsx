@@ -24,7 +24,7 @@ const App = () => {
       <Route path="/">
         <Route Component={GetStartedLayout}>
           <Route path="get-started" lazy={GetStarted} />
-          <Route path="otp-verification" lazy={OTPVerification} />
+          <Route path="verify-email" lazy={OTPVerification} />
           <Route path="email-verified" lazy={EmailVerified} />
         </Route>
         <Route Component={RootLayout}>

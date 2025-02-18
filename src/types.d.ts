@@ -20,8 +20,13 @@ declare global {
       extra: TableCurrentDataSource<RecordType>;
     };
 
-    interface QueryResponse<T> {
+    interface QueryResponseWithData<T> {
       data: T;
+      message: string;
+      status: number;
+    }
+
+    interface QueryResponse {
       message: string;
       status: number;
     }

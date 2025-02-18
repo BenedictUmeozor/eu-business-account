@@ -1,8 +1,19 @@
-import { Button, Form, FormProps, Input, Radio, Segmented, Select } from "antd";
+import {
+  Button,
+  Form,
+  FormProps,
+  Input,
+  message,
+  Radio,
+  Segmented,
+  Select,
+} from "antd";
 import { useCallback, useState } from "react";
 import countries from "@/data/codes.json";
 import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import useMutationAction from "@/hooks/use-mutation-action";
+import ENDPOINTS from "@/constants/endpoints";
 
 interface FormValues {
   fname: string;
@@ -17,19 +28,41 @@ interface FormValues {
 }
 
 const GetStarted = () => {
-  const [country, setCountry] = useState("United Kingdom");
+  const [country, setCountry] = useState("GB");
   const [form] = Form.useForm<FormValues>();
+  const navigate = useNavigate();
+
+  const findCountryByPhoneCode = useCallback((phoneCode: string) => {
+    const foundCountry = countries.find(c => c.callingCode === phoneCode);
+    return foundCountry?.countryCode || "GB";
+  }, []);
+
+  const getPhoneCodeByCountry = useCallback((countryCode: string) => {
+    const foundCountry = countries.find(c => c.countryCode === countryCode);
+    return foundCountry?.callingCode || "+44";
+  }, []);
 
   const handleCountryChange = (value: string) => {
     setCountry(value);
-    form.setFieldsValue({ country: value });
+    const phoneCode = getPhoneCodeByCountry(value);
+    form.setFieldsValue({
+      country: value,
+      phone_code: phoneCode,
+      phone_number: phoneCode,
+    });
   };
 
   const setFieldsValue = useCallback(
     ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
-      form.setFieldsValue({ phone_code: dialCode, phone_number: phoneNumber });
+      const countryCode = findCountryByPhoneCode(dialCode);
+      setCountry(countryCode);
+      form.setFieldsValue({
+        phone_code: dialCode,
+        phone_number: phoneNumber,
+        country: countryCode,
+      });
     },
-    [form]
+    [form, findCountryByPhoneCode]
   );
 
   const setPhoneValue = useCallback(
@@ -39,12 +72,36 @@ const GetStarted = () => {
     [form]
   );
 
+  const mutation = useMutationAction<HM.QueryResponse, FormValues>({
+    url: ENDPOINTS.CREATE_ACCOUNT,
+    mutationKey: ["create-account"],
+    onSuccess: (data, variables) => {
+      const { email } = variables;
+      message.success(data.message);
+      navigate("/verify-email", { state: { email } });
+    },
+    onError(error) {
+      message.error(error?.message);
+    },
+  });
+
+  const formatPhoneNumber = (phoneNumber: string, phoneCode: string) => {
+    return phoneNumber.replace(phoneCode, "");
+  };
+
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    console.log(values);
+    const formattedValues = {
+      ...values,
+      phone_number: formatPhoneNumber(
+        values.phone_number,
+        values.phone_code
+      ).trim(),
+    };
+    mutation.mutate(formattedValues);
   };
 
   return (
-    <section className="space-y-6 rounded-xl bg-white p-6 shadow-lg lg:max-w-[466px] ml-auto">
+    <section className="ml-auto space-y-6 rounded-xl bg-white p-6 shadow-lg lg:max-w-[466px]">
       <Segmented
         options={[
           { label: "Personal", value: "Personal", disabled: true },
@@ -67,7 +124,7 @@ const GetStarted = () => {
         initialValues={{
           phone_code: "+44",
           phone_number: "+44",
-          country: "United Kingdom",
+          country: "GB",
         }}
         layout="vertical"
         labelCol={{ className: "text-sm font-semibold text-grey-600" }}
@@ -77,7 +134,8 @@ const GetStarted = () => {
             name="country"
             label={
               <p className="text-sm font-semibold text-grey-600">Country</p>
-            }>
+            }
+            rules={[{ required: true, message: "Please select your country" }]}>
             <Select
               showSearch
               className="w-full"
@@ -95,30 +153,40 @@ const GetStarted = () => {
                     <span>{c.countryName}</span>
                   </div>
                 ),
-                value: c.countryName,
+                value: c.countryCode,
               }))}
             />
           </Form.Item>
           <Form.Item
+            name="business_name"
             label={
               <p className="text-sm font-semibold text-grey-600">
                 Business Name
               </p>
-            }>
+            }
+            rules={[
+              { required: true, message: "Please enter your business name" },
+            ]}>
             <Input className="w-full" placeholder="Enter your business name" />
           </Form.Item>
           <Form.Item
             label={
               <p className="text-sm font-semibold text-grey-600">First Name</p>
             }
-            name="fname">
+            name="fname"
+            rules={[
+              { required: true, message: "Please enter your first name" },
+            ]}>
             <Input className="w-full" placeholder="Enter your first name" />
           </Form.Item>
           <Form.Item
             label={
               <p className="text-sm font-semibold text-grey-600">Last Name</p>
             }
-            name="lname">
+            name="lname"
+            rules={[
+              { required: true, message: "Please enter your last name" },
+            ]}>
             <Input className="w-full" placeholder="Enter your last name" />
           </Form.Item>
           <Form.Item
@@ -127,7 +195,11 @@ const GetStarted = () => {
                 Email Address
               </p>
             }
-            name="email">
+            name="email"
+            rules={[
+              { required: true, message: "Please enter your email address" },
+              { type: "email", message: "Please enter a valid email address" },
+            ]}>
             <Input
               className="w-full"
               type="email"
@@ -140,7 +212,11 @@ const GetStarted = () => {
                 Create Password
               </p>
             }
-            name="password">
+            name="password"
+            rules={[
+              { required: true, message: "Please create a password" },
+              { min: 8, message: "Password must be at least 8 characters" },
+            ]}>
             <Input.Password className="w-full" placeholder="Create Password" />
           </Form.Item>
           <Form.Item
@@ -158,11 +234,11 @@ const GetStarted = () => {
             ]}>
             <Radio.Group className="w-full">
               <div className="grid grid-cols-2 gap-2">
-                <Radio
+                {/* <Radio
                   value={"sole-trader"}
                   className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                   Sole Trader
-                </Radio>
+                </Radio> */}
                 <Radio
                   value={"corporate"}
                   className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
@@ -177,7 +253,8 @@ const GetStarted = () => {
               <p className="text-sm font-semibold text-grey-600">
                 Please confirm, this is a registered business
               </p>
-            }>
+            }
+            rules={[{ required: true, message: "Please select an option" }]}>
             <Radio.Group className="w-full">
               <div className="grid grid-cols-2 gap-2">
                 <Radio
@@ -193,26 +270,33 @@ const GetStarted = () => {
               </div>
             </Radio.Group>
           </Form.Item>
-          <PhoneNumberInput
-            dialCodeName="phone_code"
+          <Form.Item
             name="phone_number"
-            setFieldsValue={setFieldsValue}
-            setPhoneValue={setPhoneValue}
-            label={
-              (
-                <p className="text-sm font-semibold text-grey-600">
-                  Business Phone Number
-                </p>
-              ) as unknown as string
-            }
-          />
+            rules={[
+              { required: true, message: "Please enter your phone number" },
+            ]}>
+            <PhoneNumberInput
+              dialCodeName="phone_code"
+              name="phone_number"
+              setFieldsValue={setFieldsValue}
+              setPhoneValue={setPhoneValue}
+              label={
+                (
+                  <p className="text-sm font-semibold text-grey-600">
+                    Business Phone Number
+                  </p>
+                ) as unknown as string
+              }
+            />
+          </Form.Item>
         </section>
         <Button
           className="w-full"
           shape="round"
           type="primary"
           htmlType="submit"
-          size="large">
+          size="large"
+          loading={mutation.isPending}>
           Get Started
         </Button>
         <p className="text-center font-medium text-grey-600">
