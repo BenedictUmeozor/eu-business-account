@@ -1,9 +1,10 @@
-import { Button, Space, Tabs, TabsProps } from "antd";
+import { Button, Card, Space, Tabs, TabsProps } from "antd";
 import BalanceInfo from "./BalanceInfo";
 import { ChevronRightIcon } from "lucide-react";
 import { useMemo } from "react";
 import BritishPounds from "./BritishPounds";
 import Transactions from "./Transactions";
+import AssetLineChart from "./LineChart";
 
 const Dashboard = () => {
   const items: TabsProps["items"] = useMemo(
@@ -60,6 +61,9 @@ const Dashboard = () => {
         </Space>
       </div>
       <Tabs items={items} defaultActiveKey="1" />
+      <Card>
+        <AssetLineChart />
+      </Card>
       <Transactions />
     </section>
   );

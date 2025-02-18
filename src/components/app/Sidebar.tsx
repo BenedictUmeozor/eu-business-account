@@ -25,6 +25,11 @@ interface MenuItem {
 const Sidebar = () => {
   const { pathname } = useLocation();
 
+  const disabled = useMemo(() => {
+    pathname.includes("onboarding");
+    return false;
+  }, [pathname]);
+
   const menuItems: MenuItem[] = useMemo(
     () => [
       {
@@ -94,18 +99,31 @@ const Sidebar = () => {
                   {
                     "bg-secondary-400 border-r-secondary-200": item.active,
                   },
-                  { "border-r-transparent": !item.active }
+                  { "border-r-transparent": !item.active },
+                  { "opacity-50": disabled && !item.active }
                 )}>
-                <Link
-                  to={item.to}
-                  className={clsx(
-                    "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
-                    !item.active && "text-primary-300",
-                    item.active && "text-white"
-                  )}>
-                  {item.icon}
-                  <span>{item.label}</span>
-                </Link>
+                {disabled && !item.active ? (
+                  <p
+                    className={clsx(
+                      "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
+                      !item.active && "text-primary-300",
+                      item.active && "text-white"
+                    )}>
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </p>
+                ) : (
+                  <Link
+                    to={item.to}
+                    className={clsx(
+                      "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
+                      !item.active && "text-primary-300",
+                      item.active && "text-white"
+                    )}>
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
@@ -158,9 +176,15 @@ const Closable = () => {
         className=" self-end !text-[#5D9ADC]"
         onClick={() => setOpen(false)}
       />
-      <p className="font-medium px-2 text-base">Global banking for future-proof businesses</p>
+      <p className="font-medium px-2 text-base">
+        Global banking for future-proof businesses
+      </p>
       <div className="grid place-items-center">
-        <img src="/images/sidebar-banner.png" alt="banner" className="object-contain w-full" />
+        <img
+          src="/images/sidebar-banner.png"
+          alt="banner"
+          className="object-contain w-full"
+        />
       </div>
     </div>
   );
