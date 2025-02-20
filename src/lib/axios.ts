@@ -1,14 +1,15 @@
 import ENDPOINTS from "@/constants/endpoints";
 import axios from "axios";
 import HM_NSP from "@/constants/namespace";
-import { logout } from "./redux/slices/session";
+import store from "./redux/store";
+import { clearSession } from "./redux/slices/session";
 
 const api = axios.create({
   baseURL: ENDPOINTS.APP_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
-  validateStatus: status => status < 500,
+  validateStatus: (status) => status < 500,
 });
 
 export const sharedApi = axios.create({
@@ -16,11 +17,11 @@ export const sharedApi = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  validateStatus: status => status < 500,
+  validateStatus: (status) => status < 500,
 });
 
 api.interceptors.request.use(
-  config => {
+  (config) => {
     const userState = sessionStorage.getItem(HM_NSP.USER);
     const user = userState ? JSON.parse(userState) : null;
 
@@ -30,13 +31,13 @@ api.interceptors.request.use(
     }
     return config;
   },
-  error => {
+  (error) => {
     return Promise.reject(error);
   }
 );
 
 sharedApi.interceptors.request.use(
-  config => {
+  (config) => {
     const userState = sessionStorage.getItem(HM_NSP.USER);
     const user = userState ? JSON.parse(userState) : null;
 
@@ -46,27 +47,28 @@ sharedApi.interceptors.request.use(
     }
     return config;
   },
-  error => {
+  (error) => {
     return Promise.reject(error);
   }
 );
 
-
 api.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     if (error.response?.status === 401) {
-      logout();
+      store.dispatch(clearSession());
+      window.location.href = "/login";  
     }
     return Promise.reject(error);
   }
 );
 
 sharedApi.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     if (error.response?.status === 401) {
-      logout();
+      store.dispatch(clearSession());
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }

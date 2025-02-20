@@ -5,7 +5,7 @@ import { pdfjs } from "react-pdf";
 import "./index.css";
 import App from "./App.tsx";
 import { Provider } from "react-redux";
-import { store } from "./lib/redux/store.ts";
+import store from "./lib/redux/store.ts";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -39,7 +39,8 @@ createRoot(document.getElementById("root")!).render(
               fontSize: 13,
             },
           },
-        }}>
+        }}
+      >
         <App />
       </ConfigProvider>
     </Provider>

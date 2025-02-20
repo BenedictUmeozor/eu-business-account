@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import sessionReducer from "./slices/session";
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     session: sessionReducer,
   },
@@ -9,3 +9,5 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export default store

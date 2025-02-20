@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import HM_NSP from "@/constants/namespace";
-import { store } from "../store";
 
 const userState = sessionStorage.getItem(HM_NSP.USER);
 const businessState = sessionStorage.getItem(HM_NSP.BUSINESS);
@@ -38,11 +37,6 @@ const sessionSlice = createSlice({
     },
   },
 });
-
-export const logout = () => {
-  store.dispatch(clearSession());
-  window.location.href = "/login";
-};
 
 export const { setUser, setBusiness, clearSession } = sessionSlice.actions;
 export default sessionSlice.reducer;

@@ -22,12 +22,14 @@ import ENDPOINTS from "@/constants/endpoints";
 import Loader from "@/components/app/Loader";
 import useMutationAction from "@/hooks/use-mutation-action";
 import _ from "lodash";
+import moment, {Moment} from "moment";
+
 interface FormValues {
   fname: string;
   lname: string;
   oname: string;
   gender: string;
-  dob: string;
+  dob: string | Moment;
   residential_address: string;
   town: string;
   region: string;
@@ -106,6 +108,7 @@ const PersonalInfo = ({
         percentage_stake: data.percentage_stake,
         authorized_signatory: data.authorized_signatory,
         gender: data.gender,
+        dob: data.dob ? moment(data.dob) : undefined,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
