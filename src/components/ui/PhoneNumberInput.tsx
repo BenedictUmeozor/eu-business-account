@@ -1,5 +1,6 @@
 import { memo, useState } from "react";
 import { Input, Select, Form } from "antd";
+import type { Rule } from 'rc-field-form/lib/interface';
 import codes from "@/data/codes.json";
 
 interface PhoneNumberInputProps {
@@ -15,6 +16,8 @@ interface PhoneNumberInputProps {
     phoneNumber: string;
   }) => void;
   disabled?: boolean;
+  dialCodeRules?: Rule[];
+  phoneNumberRules?: Rule[];
 }
 
 const PhoneNumberInput = ({
@@ -24,6 +27,8 @@ const PhoneNumberInput = ({
   setFieldsValue,
   setPhoneValue,
   disabled = false,
+  dialCodeRules,
+  phoneNumberRules,
 }: PhoneNumberInputProps) => {
   const [phoneNumber, setPhoneNumber] = useState("+44");
   const [dialCode, setDialCode] = useState("+44");
@@ -45,7 +50,7 @@ const PhoneNumberInput = ({
   };
 
   return (
-    <Form.Item label={label} name={name}>
+    <Form.Item label={label} name={name} rules={phoneNumberRules}>
       <Input
         className="w-full"
         placeholder="+234 8000 303 004"
@@ -54,7 +59,7 @@ const PhoneNumberInput = ({
         value={phoneNumber}
         onChange={handlePhoneChange}
         addonBefore={
-          <Form.Item name={dialCodeName} noStyle>
+          <Form.Item name={dialCodeName} noStyle rules={dialCodeRules}>
             <Select
               showSearch
               className="w-20"

@@ -6,6 +6,10 @@ import { Button, message } from "antd";
 import EditShareholder from "./EditShareholder";
 import clsx from "clsx";
 import { Shareholder, useOnboardingContext } from "@/contexts/onboarding";
+import { useAppSelector } from "@/hooks";
+import useQueryAction from "@/hooks/use-query-action";
+import ENDPOINTS from "@/constants/endpoints";
+import Loader from "@/components/app/Loader";
 
 const AddShareholders = ({
   next,
@@ -14,23 +18,28 @@ const AddShareholders = ({
   next: () => void;
   isReview?: boolean;
 }) => {
+  const session = useAppSelector(state => state.session);
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [selectedShareholder, setSelectedShareholder] =
     useState<Shareholder | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
-  const { shareholders, setShareholders, stakePercentage } =
-    useOnboardingContext();
+  const { data, isPending } = useQueryAction<PD.PersonalDetails>({
+    url: ENDPOINTS.FETCH_PERSONAL_INFORMATION,
+    key: ["personal_details", session?.user?.email],
+  });
+
+  const { shareholders, setShareholders } = useOnboardingContext();
 
   const _setShowForm = useCallback(() => {
-    if (stakePercentage === 100) {
+    if (data?.percentage_stake == "100") {
       message.error("You already have 100% stake in the business");
       return;
     }
     setShowForm(true);
-  }, [stakePercentage]);
-  
+  }, [data]);
+
   const hanldeAddShareholder = useCallback(
     (shareholder: Shareholder) => {
       const length = shareholders.length;
@@ -85,6 +94,7 @@ const AddShareholders = ({
     <div
       className={clsx("h-full w-full space-y-8", !isReview && "p-8")}
       ref={ref}>
+      {isPending && <Loader />}
       <HeaderTitle
         headerDescription="Add up to Four (4) key shareholders in your business"
         headerTitle="Add Key Shareholders"

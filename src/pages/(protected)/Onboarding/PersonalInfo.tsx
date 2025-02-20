@@ -10,31 +10,40 @@ import {
   InputNumber,
   Alert,
   Divider,
+  message,
 } from "antd";
-import { memo, useCallback, useState } from "react";
+import { memo, useEffect } from "react";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import HeaderTitle from "@/components/ui/HeaderTitle";
-import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import clsx from "clsx";
-import { Shareholder, useOnboardingContext } from "@/contexts/onboarding";
-
+import { useAppSelector } from "@/hooks";
+import useQueryAction from "@/hooks/use-query-action";
+import ENDPOINTS from "@/constants/endpoints";
+import Loader from "@/components/app/Loader";
+import useMutationAction from "@/hooks/use-mutation-action";
+import _ from "lodash";
 interface FormValues {
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  middle_name: string;
-  dial_code: string;
-  date_of_birth: string;
-  town: string;
-  state: string;
+  fname: string;
+  lname: string;
+  oname: string;
+  gender: string;
+  dob: string;
   residential_address: string;
-  postal_code: string;
+  town: string;
+  region: string;
+  postcode: string;
   occupation: string;
-  stake_percentage: number;
-  appoint_as_authorized_signatory: 1 | 0;
+  business_stake: string;
+  business_role: string[];
+  percentage_stake: string;
+  authorized_signatory: string;
 }
 
 const ROLES = ["UBO", "Director", "Shareholder"];
+const GENDER = [
+  { label: "Male", value: "M" },
+  { label: "Female", value: "F" },
+];
 
 const PersonalInfo = ({
   next,
@@ -44,48 +53,77 @@ const PersonalInfo = ({
   isReview?: boolean;
 }) => {
   const [form] = Form.useForm<FormValues>();
-  const [roleInBusiness, setRoleInBusiness] = useState<string[]>([]);
-  const [holdOver25Stake, setHoldOver25Stake] = useState<boolean | null>(null);
+  const session = useAppSelector(state => state.session);
+  const hasBusinessStake = Form.useWatch("business_stake", form);
+  const businessRole = Form.useWatch("business_role", form);
 
-  const { setStakePercentage, setShareholders, shareholders } =
-    useOnboardingContext();
+  const { data, isPending } = useQueryAction<PD.PersonalDetails>({
+    url: ENDPOINTS.FETCH_PERSONAL_INFORMATION,
+    key: ["personal_details", session?.user?.email],
+  });
+
+  const mutation = useMutationAction<HM.QueryResponse>({
+    url: ENDPOINTS.PERSONAL_DETAILS,
+    method: "POST",
+    invalidateQueries: ["personal_details"],
+    onSuccess: data => {
+      message.success(data?.message);
+      next();
+    },
+    onError: error => {
+      message.error(error?.message);
+    },
+  });
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    if (holdOver25Stake) {
-      const shareholder = {
-        first_name: values.first_name,
-        last_name: values.last_name,
-        residential_address: values.residential_address,
-        authorized_signatory: values.appoint_as_authorized_signatory,
-      } as Shareholder;
-      setShareholders([...shareholders, shareholder]);
-    }
-    next();
+    const formattedValues = {
+      ...values,
+      business_role: Array.isArray(values.business_role)
+        ? values.business_role.join(",")
+        : values.business_role || "",
+      oname: values.oname || "",
+      business_stake: values.business_stake || "NO",
+      percentage_stake: values.percentage_stake || "",
+      authorized_signatory: values.authorized_signatory || "NO",
+    };
+
+    const payload = _.omit(formattedValues, ["fname", "lname"]);
+    mutation.mutate(payload);
   };
 
-  const setFieldsValue = useCallback(
-    ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
-      form.setFieldsValue({ dial_code: dialCode, phone_number: phoneNumber });
-    },
-    [form]
-  );
-
-  const setPhoneValue = useCallback(
-    (phoneNumber: string) => {
-      form.setFieldsValue({ phone_number: phoneNumber });
-    },
-    [form]
-  );
-
-  const handleHoldStakeChange = (value: boolean) => {
-    setHoldOver25Stake(value);
-    if (value && !roleInBusiness.includes("shareholder")) {
-      setRoleInBusiness([...roleInBusiness, "shareholder"]);
+  useEffect(() => {
+    if (data && !isPending) {
+      form.setFieldsValue({
+        fname: data.fname,
+        oname: data.oname,
+        lname: data.lname,
+        residential_address: data.address,
+        town: data.city,
+        postcode: data.postcode,
+        occupation: data.occupation,
+        business_stake: data.business_stake,
+        business_role: data.business_role?.split(","),
+        percentage_stake: data.percentage_stake,
+        authorized_signatory: data.authorized_signatory,
+        gender: data.gender,
+      });
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, isPending]);
+
+  useEffect(() => {
+    if (
+      hasBusinessStake === "YES" &&
+      (!businessRole || !businessRole.includes("shareholder"))
+    ) {
+      const updatedRoles = [...(businessRole || []), "shareholder"];
+      form.setFieldValue("business_role", updatedRoles);
+    }
+  }, [hasBusinessStake, businessRole, form]);
 
   return (
     <div className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
+      {isPending && <Loader />}
       <header className="flex items-center justify-between">
         <HeaderTitle
           headerDescription="Let’s know your personal details"
@@ -122,51 +160,79 @@ const PersonalInfo = ({
           initialValues={{ dial_code: "+44", phone_number: "+44" }}
           labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="First Name" name="first_name">
-              <Input className="w-full" placeholder="e.g John" />
+            <Form.Item
+              label="First Name"
+              name="fname"
+              rules={[{ required: true, message: "First name is required" }]}>
+              <Input className="w-full" placeholder="e.g John" disabled />
             </Form.Item>
-            <Form.Item label="Middle Name (Optional)" name="middle_name">
+            <Form.Item label="Middle Name (Optional)" name="oname">
               <Input className="w-full" placeholder="e.g Jane" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Last Name" name="last_name">
-              <Input className="w-full" placeholder="e.g Doe" />
+            <Form.Item
+              label="Last Name"
+              name="lname"
+              rules={[{ required: true, message: "Last name is required" }]}>
+              <Input className="w-full" placeholder="e.g Doe" disabled />
             </Form.Item>
-            <PhoneNumberInput
-              dialCodeName="dial_code"
-              name="phone_number"
-              setFieldsValue={setFieldsValue}
-              setPhoneValue={setPhoneValue}
-              label="Phone Number"
-            />
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Date of Birth" name="date_of_birth">
-              <DatePicker className="w-full" />
-            </Form.Item>
-            <Form.Item label="Residential Address" name="residential_address">
-              <Input className="w-full" placeholder="e.g 123 Main St" />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label=" Town/City" name="town">
-              <Input className="w-full" placeholder="e.g 12345" />
-            </Form.Item>
-            <Form.Item label="Region/State" name="state">
+            <Form.Item
+              name="gender"
+              label="Gender"
+              rules={[
+                { required: true, message: "Please select your gender" },
+              ]}>
               <Select
                 className="w-full"
-                placeholder="Select State"
-                showSearch
-                options={[]}
+                placeholder="Select Gender"
+                options={GENDER}
               />
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Postal Code" name="postal_code">
+            <Form.Item
+              label="Date of Birth"
+              name="dob"
+              rules={[
+                { required: true, message: "Date of birth is required" },
+              ]}>
+              <DatePicker className="w-full" />
+            </Form.Item>
+            <Form.Item
+              label="Residential Address"
+              name="residential_address"
+              rules={[
+                { required: true, message: "Residential address is required" },
+              ]}>
+              <Input className="w-full" placeholder="e.g 123 Main St" />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Town/City"
+              name="town"
+              rules={[{ required: true, message: "Town/City is required" }]}>
+              <Input className="w-full" placeholder="Enter town" />
+            </Form.Item>
+            <Form.Item
+              label="Region/State"
+              name="region"
+              rules={[{ required: true, message: "Region/State is required" }]}>
+              <Input className="w-full" placeholder="Enter Region" />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Post Code"
+              name="postcode"
+              rules={[{ required: true, message: "Post code is required" }]}>
               <Input className="w-full" placeholder="Enter Postal Code" />
             </Form.Item>
-            <Form.Item label="Occupation" name="occupation">
+            <Form.Item
+              label="Occupation"
+              name="occupation"
+              rules={[{ required: true, message: "Occupation is required" }]}>
               <Input className="w-full" placeholder="Enter Occupation" />
             </Form.Item>
           </div>
@@ -176,31 +242,37 @@ const PersonalInfo = ({
             </span>
           </Divider>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Do you hold over 25% stake of the business?">
-              <Radio.Group
-                className="w-full"
-                onChange={e => handleHoldStakeChange(e.target.value)}>
+            <Form.Item
+              name="business_stake"
+              label="Do you hold over 25% stake of the business?"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select whether you hold over 25% stake",
+                },
+              ]}>
+              <Radio.Group className="w-full">
                 <div className="grid grid-cols-2 gap-2">
                   <Radio
-                    value={true}
+                    value="YES"
                     className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                     Yes
                   </Radio>
                   <Radio
-                    value={false}
+                    value="NO"
                     className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                     No
                   </Radio>
                 </div>
               </Radio.Group>
             </Form.Item>
-            <Form.Item label="Role in Business">
-              <Checkbox.Group
-                className="w-full flex items-center gap-1.5"
-                value={roleInBusiness}
-                onChange={checkedValues =>
-                  setRoleInBusiness(checkedValues as string[])
-                }>
+            <Form.Item
+              label="Role in Business"
+              name="business_role"
+              rules={[
+                { required: true, message: "Please select at least one role" },
+              ]}>
+              <Checkbox.Group className="w-full flex items-center gap-1.5">
                 {ROLES.map(role => (
                   <Checkbox key={role} value={role.toLowerCase()}>
                     {role}
@@ -212,11 +284,11 @@ const PersonalInfo = ({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
               label="Enter your percentage(%) stake"
-              name="stake_percentage"
+              name="percentage_stake"
               validateTrigger={["onChange", "onBlur"]}
               rules={[
                 {
-                  required: !!holdOver25Stake,
+                  required: hasBusinessStake === "YES",
                   message: "Please enter your stake percentage",
                   validator: async (_, value) => {
                     if (value === null || value === undefined) {
@@ -243,31 +315,27 @@ const PersonalInfo = ({
                   },
                 },
               ]}>
-              <InputNumber
-                className="w-full"
-                placeholder="Enter Percentage"
-                onChange={value => {
-                  const numValue = Number(value);
-                  if (!isNaN(numValue)) {
-                    const clampedValue = Math.min(Math.max(numValue, 0), 100);
-                    setStakePercentage(clampedValue);
-                    form.validateFields(["stake_percentage"]);
-                  }
-                }}
-              />
+              <InputNumber className="w-full" placeholder="Enter Percentage" />
             </Form.Item>
             <Form.Item
               label="Appoint as authorized signatory?"
-              name="appoint_as_authorized_signatory">
+              name="authorized_signatory"
+              rules={[
+                {
+                  required: true,
+                  message:
+                    "Please select whether you are an authorized signatory",
+                },
+              ]}>
               <Radio.Group className="w-full">
                 <div className="grid grid-cols-2 gap-2">
                   <Radio
-                    value={1}
+                    value={"YES"}
                     className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                     Yes
                   </Radio>
                   <Radio
-                    value={0}
+                    value={"NO"}
                     className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                     No
                   </Radio>
@@ -280,6 +348,7 @@ const PersonalInfo = ({
               htmlType="submit"
               type="primary"
               size="large"
+              loading={mutation.isPending}
               className="text-base w-48"
               shape="round">
               {isReview ? "Confirm" : "Save & Continue"}

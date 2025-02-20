@@ -4,12 +4,13 @@ import {
   Form,
   FormProps,
   Input,
+  message,
   Radio,
   Select,
   Space,
   Tag,
 } from "antd";
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
 import {
@@ -20,21 +21,22 @@ import {
   TRANSACTIONS_VOLUMES,
 } from "./constants";
 import countries from "@/data/codes.json";
-import { useOnboardingContext } from "@/contexts/onboarding";
+import useMutationAction from "@/hooks/use-mutation-action";
+import ENDPOINTS from "@/constants/endpoints";
 
 interface FormValues {
   business_type: HM.BusinessType;
   business_industry: string;
-  purpose: string;
+  account_purpose: string;
+  website: string;
+  monthly_turnover: string;
+  expected_currency: string[];
+  source_countries: string[];
+  target_countries: string[];
+  partners: string;
+  partners_outgoing: string;
   economic_activity: string;
-  business_website: string;
-  transaction_volume: string;
-  currencies_usage: string;
-  top_countries_send: string;
-  top_countries_receive: string;
-  top_partners_incoming: string;
-  top_partners_outgoing: string;
-  license: 1 | 0;
+  business_license: number;
 }
 
 const BusinessInformation = ({
@@ -53,8 +55,6 @@ const BusinessInformation = ({
     string[]
   >([]);
 
-  const { setShowLicense, setBusinessType } = useOnboardingContext();
-
   const handleSendCountries = (code: string) => {
     const filtered = selectedSendCountries.filter(c => c !== code);
     setSelectedSendCountries(filtered);
@@ -70,13 +70,37 @@ const BusinessInformation = ({
     setSelectedCurrencies(filtered);
   };
 
+  const mutation = useMutationAction<HM.QueryResponse>({
+    url: ENDPOINTS.BUSINESS_DETAILS,
+    method: "POST",
+    onSuccess: data => {
+      message.success(data?.message);
+      next();
+    },
+    onError: error => {
+      message.error(error?.message);
+    },
+  });
+
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    if (!isReview) {
-      setShowLicense(values.license);
-    }
-    setBusinessType(values.business_type);
-    next();
+    const formattedValues = {
+      ...values,
+      expected_currency: selectedCurrencies.join(","),
+      source_countries: selectedSendCountries.join(","),
+      target_countries: selectedReceiveCountries.join(","),
+      business_license: values.business_license === 1 ? "YES" : "NO",
+      partners_outgoing: values.partners_outgoing || "",
+      economic_activity: values.economic_activity || "",
+    };
+
+    mutation.mutate(formattedValues);
   };
+
+  useEffect(() => {
+    form.setFieldValue('expected_currency', selectedCurrencies);
+    form.setFieldValue('source_countries', selectedSendCountries);
+    form.setFieldValue('target_countries', selectedReceiveCountries);
+  }, [selectedCurrencies, selectedSendCountries, selectedReceiveCountries, form]);
 
   return (
     <div className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
@@ -124,7 +148,12 @@ const BusinessInformation = ({
                 options={BUSINESS_TYPES}
               />
             </Form.Item>
-            <Form.Item label="Business Industry" name="business_industry">
+            <Form.Item 
+              label="Business Industry" 
+              name="business_industry"
+              rules={[
+                { required: true, message: "Please select business industry" }
+              ]}>
               <Select
                 className="w-full"
                 placeholder="Select Business Industry"
@@ -135,7 +164,12 @@ const BusinessInformation = ({
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item label="Purpose of Account" name="purpose">
+            <Form.Item 
+              label="Purpose of Account" 
+              name="account_purpose"
+              rules={[
+                { required: true, message: "Please select purpose of account" }
+              ]}>
               <Select
                 className="w-full"
                 placeholder="Select Purpose of Account"
@@ -146,7 +180,10 @@ const BusinessInformation = ({
             </Form.Item>
             <Form.Item
               label="Economic Activity of the Company"
-              name="economic_activity">
+              name="economic_activity"
+              rules={[
+                { required: true, message: "Please enter economic activity" }
+              ]}>
               <Input
                 className="w-full"
                 placeholder="Enter Economic Activity of the Company"
@@ -156,12 +193,19 @@ const BusinessInformation = ({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
               label="Business website/Social media link"
-              name="business_website">
+              name="website"
+              rules={[
+                { required: true, message: "Please enter business website" },
+                { type: 'url', message: 'Please enter a valid URL' }
+              ]}>
               <Input className="w-full" placeholder="www.xyz.com" />
             </Form.Item>
             <Form.Item
               label="Expected Transaction Volume (Monthly)"
-              name="transaction_volume">
+              name="monthly_turnover"
+              rules={[
+                { required: true, message: "Please select expected transaction volume" }
+              ]}>
               <Select
                 className="w-full"
                 placeholder="Select Range"
@@ -175,7 +219,10 @@ const BusinessInformation = ({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start">
             <Form.Item
               label="Expected currencies usage"
-              name="currencies_usage">
+              name="expected_currency"
+              rules={[
+                { required: true, message: "Please select at least one currency" }
+              ]}>
               <Select
                 className="w-full"
                 placeholder="Select currencies"
@@ -183,7 +230,10 @@ const BusinessInformation = ({
                 maxTagCount={0}
                 mode="multiple"
                 value={selectedCurrencies}
-                onChange={value => setSelectedCurrencies(value)}
+                onChange={value => {
+                  setSelectedCurrencies(value);
+                  form.setFieldValue('expected_currency', value);
+                }}
                 options={CURRENCIES.map(v => ({
                   label: `${v.code} - ${v.name}`,
                   value: v.code,
@@ -204,7 +254,10 @@ const BusinessInformation = ({
             </Form.Item>
             <Form.Item
               label="Top 5 countries you send money to"
-              name="top_countries_send">
+              name="source_countries"
+              rules={[
+                { required: true, message: "Please select at least one country" }
+              ]}>
               <Select
                 className="w-full"
                 placeholder="Select Countries"
@@ -212,7 +265,10 @@ const BusinessInformation = ({
                 maxTagCount={0}
                 mode="multiple"
                 value={selectedSendCountries}
-                onChange={value => setSelectedSendCountries(value)}
+                onChange={value => {
+                  setSelectedSendCountries(value);
+                  form.setFieldValue('source_countries', value);
+                }}
                 options={countries.map(v => ({
                   label: (
                     <Space>
@@ -255,7 +311,10 @@ const BusinessInformation = ({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start">
             <Form.Item
               label="Top 5 countries you receive money from"
-              name="top_countries_receive">
+              name="target_countries"
+              rules={[
+                { required: true, message: "Please select at least one country" }
+              ]}>
               <Select
                 className="w-full"
                 placeholder="Select Countries"
@@ -263,7 +322,10 @@ const BusinessInformation = ({
                 maxTagCount={0}
                 mode="multiple"
                 value={selectedReceiveCountries}
-                onChange={value => setSelectedReceiveCountries(value)}
+                onChange={value => {
+                  setSelectedReceiveCountries(value);
+                  form.setFieldValue('target_countries', value);
+                }}
                 options={countries.map(v => ({
                   label: (
                     <Space>
@@ -302,8 +364,11 @@ const BusinessInformation = ({
               </div>
             </Form.Item>
             <Form.Item
-              name="top_partners_incoming"
-              label="Top 5 transacting partners - Incoming">
+              name="partners"
+              label="Top 5 transacting partners - Incoming"
+              rules={[
+                { required: true, message: "Please enter your incoming partners" }
+              ]}>
               <Input
                 className="w-full"
                 placeholder="Enter names and separate with commas"
@@ -313,8 +378,11 @@ const BusinessInformation = ({
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
-              name="top_partners_outgoing"
-              label="Top 5 transacting partners - Outgoing">
+              name="partners_outgoing"
+              label="Top 5 transacting partners - Outgoing"
+              rules={[
+                { required: true, message: "Please enter your outgoing partners" }
+              ]}>
               <Input
                 className="w-full"
                 placeholder="Enter names and separate with commas"
@@ -322,7 +390,10 @@ const BusinessInformation = ({
             </Form.Item>
             <Form.Item
               label="Does your company require a license to operate?"
-              name="license">
+              name="business_license"
+              rules={[
+                { required: true, message: "Please select if license is required" }
+              ]}>
               <Radio.Group className="w-full">
                 <div className="grid grid-cols-2 gap-2">
                   <Radio
@@ -344,6 +415,7 @@ const BusinessInformation = ({
             type="primary"
             size="large"
             shape="round"
+            loading={mutation.isPending}
             className="w-48 text-base">
             {isReview ? "Confirm" : "Save & Continue"}
           </Button>

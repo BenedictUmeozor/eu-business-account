@@ -302,7 +302,7 @@ const GetStarted = () => {
         <p className="text-center font-medium text-grey-600">
           Already got an account?{" "}
           <Link
-            to="#"
+            to="/login"
             className="text-primary-600 underline hover:text-primary-700">
             Sign in
           </Link>

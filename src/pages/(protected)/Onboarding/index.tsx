@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { StepProps, Steps, Tag } from "antd";
 import { useCallback, useEffect, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import Welcome from "./Welcome";
 import BusinessNameSearch from "./BusinessNameSearch";
 import BusinessInformation from "./BusinessInformation";
@@ -40,10 +41,17 @@ const steps: StepProps[] = [
 const Onboarding = () => {
   const ref = useRef<HTMLDivElement>(null);
   const { current, setCurrent } = useOnboardingContext();
+  const location = useLocation();
 
   const next = useCallback(() => {
     setCurrent(current + 1);
-  }, [current, setCurrent]);
+  }, [current]);
+
+  useEffect(() => {
+    if (typeof location.state?.current === "number") {
+      setCurrent(location.state.current);
+    }
+  }, [location]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({
@@ -82,7 +90,7 @@ const Onboarding = () => {
       </aside>
       <div
         ref={ref}
-        className="grid h-full place-items-center border border-solid border-grey-200">
+        className="grid h-full place-items-center border border-solid border-grey-200 bg-white">
         {current === -1 && <Welcome next={next} />}
         {current === 0 && <BusinessNameSearch next={next} />}
         {current === 1 && <BusinessInformation next={next} />}

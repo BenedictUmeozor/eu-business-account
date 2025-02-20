@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { Link, useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useEffect } from "react";
 
 interface LocationState {
@@ -37,11 +37,15 @@ const EmailVerified = () => {
             Your email is now verified and you can proceed with your onboarding
           </p>
         </div>
-        <Link to={`/onboarding`} className="block w-full">
-          <Button type="primary" shape="round" size="large" className="w-full">
-            Start Onboarding
-          </Button>
-        </Link>
+
+        <Button
+          type="primary"
+          shape="round"
+          size="large"
+          className="w-full"
+          onClick={() => navigate("/login")}>
+          Proceed to Login
+        </Button>
       </div>
     </section>
   );

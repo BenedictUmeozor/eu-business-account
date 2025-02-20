@@ -26,8 +26,7 @@ const Sidebar = () => {
   const { pathname } = useLocation();
 
   const disabled = useMemo(() => {
-    pathname.includes("onboarding");
-    return false;
+    return pathname.includes("onboarding");
   }, [pathname]);
 
   const menuItems: MenuItem[] = useMemo(

@@ -12,6 +12,7 @@ import GetStartedLayout from "./layout/GetStartedLayout";
 const GetStarted = () => import("./pages/(auth)/GetStarted");
 const OTPVerification = () => import("./pages/(auth)/OTPVerification");
 const EmailVerified = () => import("./pages/(auth)/EmailVerified");
+const Login = () => import("./pages/(auth)/Login");
 
 const Onboarding = () => import("./pages/(protected)/Onboarding");
 const Dashboard = () => import("./pages/(protected)/Dashboard");
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="get-started" lazy={GetStarted} />
           <Route path="verify-email" lazy={OTPVerification} />
           <Route path="email-verified" lazy={EmailVerified} />
+          <Route path="login" lazy={Login} />
         </Route>
         <Route Component={RootLayout}>
           <Route index element={<Navigate to="/dashboard" replace />} />

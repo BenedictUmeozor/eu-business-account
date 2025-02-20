@@ -3,28 +3,30 @@ import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import ENDPOINTS from "@/constants/endpoints";
 import useMutationAction from "@/hooks/use-mutation-action";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import { Button, DatePicker, Form, FormProps, Input, Select } from "antd";
+import { Button, DatePicker, Form, FormProps, Input, message } from "antd";
 import clsx from "clsx";
 import { Add } from "iconsax-react";
 import { useCallback, useState } from "react";
 import moment, { Moment } from "moment";
+import { formatPhoneNumber } from "@/utiils";
 
 interface FormValues {
   business_name: string;
-  business_reg_number: string;
-  date_of_incorporation: Moment | string;
-  listing_number: string;
-  registered_business_address: string;
-  city: string;
-  state: string;
-  postal_code: string;
-  economic_activity: string;
+  incorporation_number: string;
+  sic: string;
+  phone_code: string;
   phone_number: string;
-  dial_code: string;
+  incorporation_date: string | Moment;
+  etag: string;
+  business_address: string;
+  town: string;
+  region: string;
+  postcode: string;
 }
 
+// 02081330
+
 const BusinessNameSearch = ({ next }: { next: () => void }) => {
-  const [disabled, setDisabled] = useState(true);
   const [foundSearch, setFoundSearch] = useState<boolean | null>(null);
   const searchForm = Form.useForm<{ value: string }>()[0];
   const [form] = Form.useForm<FormValues>();
@@ -32,7 +34,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
 
   const setFieldsValue = useCallback(
     ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
-      form.setFieldsValue({ dial_code: dialCode, phone_number: phoneNumber });
+      form.setFieldsValue({ phone_code: dialCode, phone_number: phoneNumber });
     },
     [form]
   );
@@ -49,17 +51,17 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
     method: "POST",
     mutationKey: ["search-company", searchValue],
     onSuccess: data => {
-      if (data && !Object.values(data.company_details).includes(null)) {
+      if (data && !!data?.company_details.company_name) {
         setFoundSearch(true);
         form.setFieldsValue({
           business_name: data.company_details.company_name,
-          business_reg_number: data.company_details.company_number,
-          date_of_incorporation: moment(data.company_details.date_of_creation),
-          registered_business_address: `${data.company_details.address_line_1}, ${data.company_details.address_line_2}`,
-          city: data.company_details.locality,
-          state: data.company_details.region,
-          postal_code: data.company_details.postcode,
-          economic_activity: data.company_details.sic_codes,
+          incorporation_number: data.company_details.company_number,
+          incorporation_date: moment(data.company_details.date_of_creation),
+          business_address: data.company_details.address_line_1,
+          town: data.company_details.locality,
+          region: data.company_details.region,
+          postcode: data.company_details.postcode,
+          sic: data.company_details.sic_codes,
         });
       } else {
         setFoundSearch(false);
@@ -71,14 +73,39 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
   });
 
   const onFilter: FormProps<{ value: string }>["onFinish"] = ({ value }) => {
-    setDisabled(true);
     setFoundSearch(null);
     mutation.mutate({ company_number: value });
   };
 
+  const verifyMutation = useMutationAction<HM.QueryResponse>({
+    url: ENDPOINTS.VERIFY_BUSINESS,
+    mutationKey: ["verify-business"],
+    onSuccess: data => {
+      message.success(data?.message);
+      next();
+    },
+    onError: error => {
+      message.error(error?.message);
+    },
+  });
+
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    console.log(values);
-    next();
+    const phoneNumber = formatPhoneNumber(
+      values.phone_number,
+      values.phone_code
+    ).trim();
+
+    if (!phoneNumber) {
+      form.setFields([
+        { name: "phone_number", errors: ["Phone number is required"] },
+      ]);
+      return;
+    }
+
+    verifyMutation.mutate({
+      ...values,
+      phone_number: phoneNumber,
+    });
   };
 
   return (
@@ -93,6 +120,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
           autoComplete="off"
           form={searchForm}
           onFinish={onFilter}
+          initialValues={{ phone_code: "+44" }}
           className="space-y-0">
           <section className="-space-y-4">
             <div className="grid grid-cols-[0.77fr_0.23fr] items-center gap-x-2">
@@ -157,8 +185,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
                 type="text"
                 icon={<Add className="h-4 w-4 text-primary" />}
                 iconPosition="end"
-                className="text-primary !text-sm"
-                onClick={() => setDisabled(false)}>
+                className="text-primary !text-sm">
                 Add manually
               </Button>
             )}
@@ -169,104 +196,110 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
             labelAlign="left"
             onFinish={onFinish}
             autoComplete="off"
-            initialValues={{ dial_code: "+44", phone_number: "+44" }}
+            initialValues={{ phone_code: "+44", phone_number: "+44" }}
             className="space-y-2">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Form.Item label="Business Name" name="business_name">
-                <Input
-                  className="w-full"
-                  placeholder="Enter business name"
-                  disabled={disabled}
-                />
+              <Form.Item
+                label="Business Name"
+                name="business_name"
+                rules={[
+                  { required: true, message: "Business name is required" },
+                  {
+                    min: 2,
+                    message: "Business name must be at least 2 characters",
+                  },
+                ]}>
+                <Input className="w-full" placeholder="Enter business name" />
               </Form.Item>
               <Form.Item
                 label="Business Registration Number"
-                name="business_reg_number">
+                name="incorporation_number"
+                rules={[
+                  {
+                    required: true,
+                    message: "Registration number is required",
+                  },
+                ]}>
                 <Input
                   className="w-full"
                   placeholder="Enter business registration number"
-                  disabled={disabled}
                 />
               </Form.Item>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Form.Item
                 label="Date of Incorporation"
-                name="date_of_incorporation">
+                name="incorporation_date"
+                rules={[
+                  { required: true, message: "Incorporation date is required" },
+                ]}>
                 <DatePicker
                   className="w-full"
                   placeholder="Enter date of incorporation"
-                  disabled={disabled}
                 />
               </Form.Item>
-              <Form.Item label="Listing Number" name="listing_number">
-                <Input
-                  className="w-full"
-                  placeholder="Enter Listing Number"
-                  disabled={disabled}
-                />
+              <Form.Item
+                label="SIC Code"
+                name="sic"
+                rules={[{ required: true, message: "SIC code is required" }]}>
+                <Input className="w-full" placeholder="Enter SIC Code" />
               </Form.Item>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Form.Item
-                label="Registered Business Address"
-                name="registered_business_address">
+                label="Business Address"
+                name="business_address"
+                rules={[
+                  { required: true, message: "Business address is required" },
+                ]}>
                 <Input
                   className="w-full"
-                  placeholder="Enter Registered Business Address"
-                  disabled={disabled}
+                  placeholder="Enter Business Address"
                 />
               </Form.Item>
-              <Form.Item label="Town/City" name="city">
-                <Input
-                  className="w-full"
-                  placeholder="Enter Town/City"
-                  disabled={disabled}
-                />
-              </Form.Item>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Form.Item label="Region/State" name="state">
-                <Select
-                  className="w-full"
-                  placeholder="Select Town"
-                  disabled={disabled}
-                />
-              </Form.Item>
-              <Form.Item label="Postal Code" name="postal_code">
-                <Input
-                  className="w-full"
-                  placeholder="Enter Postal Code"
-                  disabled={disabled}
-                />
+              <Form.Item
+                label="Town"
+                name="town"
+                rules={[{ required: true, message: "Town is required" }]}>
+                <Input className="w-full" placeholder="Enter Town" />
               </Form.Item>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Form.Item
-                label="Economic Activity of the Company"
-                name="economic_activity">
-                <Input
-                  className="w-full"
-                  placeholder="Enter Economic Activity of the Company"
-                  disabled={disabled}
-                />
+                label="Region"
+                name="region"
+                rules={[{ required: true, message: "Region is required" }]}>
+                <Input className="w-full" placeholder="Enter Region" />
               </Form.Item>
+              <Form.Item
+                label="Postcode"
+                name="postcode"
+                rules={[{ required: true, message: "Postcode is required" }]}>
+                <Input className="w-full" placeholder="Enter Postcode" />
+              </Form.Item>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <PhoneNumberInput
-                dialCodeName="dial_code"
+                dialCodeName="phone_code"
                 label="Business Phone Number"
                 name="phone_number"
                 setFieldsValue={setFieldsValue}
                 setPhoneValue={setPhoneValue}
-                disabled={disabled}
+                phoneNumberRules={[
+                  { required: true, message: "Phone Number is required" },
+                ]}
               />
+              <Form.Item name="etag" label="Etag">
+                <Input className="w-full" placeholder="Enter Etag" />
+              </Form.Item>
             </div>
             <Button
               type="primary"
               htmlType="submit"
               size="large"
+              loading={verifyMutation.isPending}
               className="w-48 text-base"
-              shape="round"
-              disabled={disabled && !foundSearch}>
+              shape="round">
               Save & Continue
             </Button>
           </Form>

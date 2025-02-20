@@ -1,10 +1,40 @@
-import { Outlet } from "react-router";
+import { useAppSelector } from "@/hooks";
+import { Spin } from "antd";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router";
 
 const GetStartedLayout = () => {
+  const { user } = useAppSelector(state => state.session);
+  const { pathname } = useLocation();
+  const [isChecking, setIsChecking] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        if (user && (pathname === "/get-started" || pathname === "/login")) {
+          navigate("/dashboard", { replace: true });
+        }
+      } finally {
+        setIsChecking(false);
+      }
+    };
+
+    checkAuth();
+  }, [user, navigate, pathname]);
+
+  if (isChecking) {
+    return (
+      <div className="grid h-screen w-screen place-items-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
     <div className="relative flex min-h-screen w-full overflow-hidden">
       <div className="absolute inset-0 bg-primary">
-        <div className="absolute bottom-0 left-0 right-0 h-[50%] origin-[100%] -skew-y-6 transform bg-primary-50" />
+        <div className="absolute bottom-0 left-0 right-0 h-[45%] origin-[100%] -skew-y-6 transform bg-primary-50" />
       </div>
       <section className="w-full max-w-6xl mx-auto overflow-y-auto lg:px-8  px-4 min-h-screen z-10 pt-8">
         <a href="https://hellomemoney.com/" className="flex items-center gap-2">
@@ -38,12 +68,18 @@ const GetStartedLayout = () => {
                 </div>
                 <div className="space-y-2">
                   <h5 className="text-base font-semibold">
-                    Lörem ipsum beling
+                    Free UK Company Registration
                   </h5>
                   <p>
-                    Lörem ipsum beling äning är spessade. Kolig kvasinuras. En
-                    påtelogi. Utsimningsbassäng täsk heterofil jag desk då
-                    stenode. Evåse
+                    Register your UK company hassle-free, with a virtual office,
+                    accountant, secretary, and dedicated phone line.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h5 className="text-base font-semibold">Platform APIs</h5>
+                  <p>
+                    Automate global payroll and bulk payments with powerful
+                    APIs.
                   </p>
                 </div>
               </div>
