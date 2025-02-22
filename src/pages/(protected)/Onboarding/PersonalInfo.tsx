@@ -160,7 +160,6 @@ const PersonalInfo = ({
           form={form}
           onFinish={onFinish}
           className="space-y-4"
-          initialValues={{ dial_code: "+44", phone_number: "+44" }}
           labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item

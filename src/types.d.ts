@@ -13,6 +13,10 @@ declare global {
       | "limited_liability_partnership"
       | "public_limited_company";
 
+    type ModalRefObject = {
+      openModal: () => void;
+    };
+
     type TableState<RecordType = any> = {
       pagination: TablePaginationConfig;
       filters: Record<string, FilterValue | null>;

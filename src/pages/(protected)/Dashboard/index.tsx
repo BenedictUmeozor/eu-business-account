@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import BritishPounds from "./BritishPounds";
 import Transactions from "./Transactions";
 import AssetLineChart from "./LineChart";
+import { Link } from "react-router";
 
 const Dashboard = () => {
   const items: TabsProps["items"] = useMemo(
@@ -43,14 +44,16 @@ const Dashboard = () => {
       <div className="flex items-center justify-between">
         <BalanceInfo />
         <Space>
-          <Button
-            type="primary"
-            className="bg-primary-50 text-primary"
-            shape="round"
-            iconPosition="end"
-            icon={<ChevronRightIcon className="h-4 w-4" />}>
-            Send Money
-          </Button>
+          <Link to="/dashboard/send-money">
+            <Button
+              type="primary"
+              className="bg-primary-50 text-primary"
+              shape="round"
+              iconPosition="end"
+              icon={<ChevronRightIcon className="h-4 w-4" />}>
+              Send Money
+            </Button>
+          </Link>
           <Button
             type="primary"
             shape="round"
@@ -61,10 +64,10 @@ const Dashboard = () => {
         </Space>
       </div>
       <Tabs items={items} defaultActiveKey="1" />
+      <Transactions />
       <Card>
         <AssetLineChart />
       </Card>
-      <Transactions />
     </section>
   );
 };

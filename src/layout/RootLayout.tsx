@@ -4,14 +4,17 @@ import ENDPOINTS from "@/constants/endpoints";
 import { useAppSelector } from "@/hooks";
 import useMutationAction from "@/hooks/use-mutation-action";
 import { Affix, message, Spin } from "antd";
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate, useNavigation } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Outlet, useNavigate, useNavigation, useParams } from "react-router";
 
 const RootLayout = () => {
   const { state } = useNavigation();
   const navigate = useNavigate();
   const [isChecking, setIsChecking] = useState(true);
   const session = useAppSelector(state => state.session);
+  const ref = useRef<HTMLDivElement>(null);
+  const navigation = useNavigation();
+  const params = useParams();
 
   const progressMutation = useMutationAction<
     HM.QueryResponseWithData<HM.OnboardingProgress>
@@ -62,7 +65,7 @@ const RootLayout = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [session?.business?.business_token]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -77,6 +80,10 @@ const RootLayout = () => {
 
     checkAuth();
   }, [session, navigate]);
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [navigation.state, navigation.location?.pathname, params]);
 
   if (isChecking || progressMutation.isPending) {
     return (
@@ -99,6 +106,7 @@ const RootLayout = () => {
         <div className="flex-grow overflow-hidden">
           <AppHeader />
           <main className="relative h-[calc(100vh-70px)] overflow-auto no-scrollbar scroll-smooth px-6 py-4">
+            <div ref={ref} />
             <Outlet />
           </main>
         </div>

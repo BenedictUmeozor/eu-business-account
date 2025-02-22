@@ -43,7 +43,7 @@ const BritishPounds = () => {
           <ClipboardCopy />
           <div className="flex items-center gap-4">
             <Link
-              to="#"
+              to="/dashboard/send-money"
               className="flex flex-col items-center justify-center gap-1 text-primary group">
               <div
                 className="bg-primary-50 h-12 w-12 group-hover:bg-primary-100 transition-all duration-200 ease-linear rounded-full p-0 flex items-center justify-center cursor-pointer"

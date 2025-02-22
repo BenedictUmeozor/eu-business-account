@@ -36,7 +36,7 @@ const GetStartedLayout = () => {
       <div className="absolute inset-0 bg-primary">
         <div className="absolute bottom-0 left-0 right-0 h-[45%] origin-[100%] -skew-y-6 transform bg-primary-50" />
       </div>
-      <section className="w-full max-w-6xl mx-auto overflow-y-auto lg:px-8  px-4 min-h-screen z-10 pt-8">
+      <section className="w-full max-w-7xl mx-auto overflow-y-auto lg:px-8  px-4 min-h-screen z-10 pt-8">
         <a href="https://hellomemoney.com/" className="flex items-center gap-2">
           <img
             src="/images/hellome.png"

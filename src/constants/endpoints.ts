@@ -1,5 +1,6 @@
 const ENDPOINTS = {
-  FLAG_URL: (code: string) => `https://flagsapi.com/${code}/flat/64.png`,
+  // FLAG_URL: (code: string) => `https://flagsapi.com/${code}/flat/64.png`,
+  FLAG_URL: (code: string) => `https://flagcdn.com/w160/${code}.png`,
   APP_BASE_URL: "https://hellomemoney-api.hellomepay.online/api/business",
   APP_SHARED_BASE_URL: "https://hellomemoney-api.hellomepay.online/api",
 
