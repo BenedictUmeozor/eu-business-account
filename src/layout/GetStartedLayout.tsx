@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/hooks";
 import { Spin } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 
 const GetStartedLayout = () => {
@@ -8,6 +8,8 @@ const GetStartedLayout = () => {
   const { pathname } = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
+
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -23,6 +25,10 @@ const GetStartedLayout = () => {
     checkAuth();
   }, [user, navigate, pathname]);
 
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [pathname]);
+
   if (isChecking) {
     return (
       <div className="grid h-screen w-screen place-items-center">
@@ -36,7 +42,8 @@ const GetStartedLayout = () => {
       <div className="absolute inset-0 bg-primary">
         <div className="absolute bottom-0 left-0 right-0 h-[45%] origin-[100%] -skew-y-6 transform bg-primary-50" />
       </div>
-      <section className="w-full max-w-7xl mx-auto overflow-y-auto lg:px-8  px-4 min-h-screen z-10 pt-8">
+      <div ref={ref} />
+      <section className="w-full max-w-7xl mx-auto overflow-y-auto lg:px-8  px-4 min-h-screen z-10 pt-8"> 
         <a href="https://hellomemoney.com/" className="flex items-center gap-2">
           <img
             src="/images/hellome.png"

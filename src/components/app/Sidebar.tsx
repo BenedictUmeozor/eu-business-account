@@ -13,6 +13,8 @@ import {
   XIcon,
 } from "lucide-react";
 import { Button } from "antd";
+import useLogout from "@/hooks/use-logout";
+import Loader from "./Loader";
 
 interface MenuItem {
   key: string;
@@ -24,6 +26,8 @@ interface MenuItem {
 
 const Sidebar = () => {
   const { pathname } = useLocation();
+
+  const { loading, logout } = useLogout();
 
   const disabled = useMemo(() => {
     return pathname.includes("onboarding");
@@ -79,6 +83,7 @@ const Sidebar = () => {
 
   return (
     <aside className="bg-secondary-500 max-lg:hidden relative h-screen w-[200px] overflow-y-auto grid grid-rows-[auto_1fr] pb-6 gap-6 no-scrollbar">
+      {loading && <Loader />}
       <a
         href="https://hellomemoney.com/"
         className="flex items-center justify-center gap-2 sticky top-0 z-10 pt-6 bg-secondary-500 pb-2">
@@ -104,7 +109,7 @@ const Sidebar = () => {
                 {disabled && !item.active ? (
                   <p
                     className={clsx(
-                      "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
+                      "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal cursor-not-allowed",
                       !item.active && "text-primary-300",
                       item.active && "text-white"
                     )}>
@@ -135,20 +140,34 @@ const Sidebar = () => {
                   "bg-secondary-400 border-r-secondary-200":
                     pathname.startsWith("/profile"),
                 },
-                { "border-r-transparent": !pathname.startsWith("/profile") }
+                { "border-r-transparent": !pathname.startsWith("/profile") },
+                { "opacity-50": disabled && !pathname.startsWith("/profile") }
               )}>
-              <Link
-                to="/profile"
-                className={clsx(
-                  "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
-                  !pathname.startsWith("/profile") && "text-primary-300",
-                  pathname.startsWith("/profile") && "text-white"
-                )}>
-                <UserIcon className="h-4 w-4" />
-                <span>Profile</span>
-              </Link>
+              {disabled ? (
+                <p
+                  className={clsx(
+                    "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
+                    !pathname.startsWith("/profile") &&
+                      "text-primary-300 cursor-not-allowed",
+                    pathname.startsWith("/profile") && "text-white"
+                  )}>
+                  <UserIcon className="h-4 w-4" />
+                  <span>Profile</span>
+                </p>
+              ) : (
+                <Link
+                  to="/profile"
+                  className={clsx(
+                    "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
+                    !pathname.startsWith("/profile") && "text-primary-300",
+                    pathname.startsWith("/profile") && "text-white"
+                  )}>
+                  <UserIcon className="h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
+              )}
             </li>
-            <li className="border-0 border-solid border-r-4 hover:bg-secondary-400 hover:border-r-secondary-200 transition-all duration-200 ease-linear">
+            <li className="border-0 border-solid border-r-4 hover:bg-secondary-400 hover:border-r-secondary-200 transition-all duration-200 ease-linear cursor-pointer" onClick={logout}>
               <p className="flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal text-primary-300">
                 <LogOutIcon className="h-4 w-4" />
                 <span>Log out</span>

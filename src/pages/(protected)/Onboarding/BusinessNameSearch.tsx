@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { Add } from "iconsax-react";
 import { useCallback, useState } from "react";
 import moment, { Moment } from "moment";
-import { formatPhoneNumber } from "@/utiils";
+import { formatPhoneNumber } from "@/utils";
 
 interface FormValues {
   business_name: string;

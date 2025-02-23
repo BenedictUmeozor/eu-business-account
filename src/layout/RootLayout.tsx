@@ -16,6 +16,21 @@ const RootLayout = () => {
   const navigation = useNavigation();
   const params = useParams();
 
+  const sendOtpMutation = useMutationAction<
+    HM.QueryResponse,
+    { email: string }
+  >({
+    url: ENDPOINTS.SEND_OTP,
+    mutationKey: ["send-otp"],
+    onSuccess: data => {
+      message.success(data.message);
+      navigate("/verify-email", { state: { email: session.user?.email } });
+    },
+    onError: error => {
+      message.error(error?.message);
+    },
+  });
+
   const progressMutation = useMutationAction<
     HM.QueryResponseWithData<HM.OnboardingProgress>
   >({
@@ -29,7 +44,7 @@ const RootLayout = () => {
       const personalDetails = Number(data.personal_details);
       const shareholder = Number(data.shareholder);
       if (emailVerification === 0) {
-        navigate("/verify-email", { state: { email: session.user?.email } });
+        sendOtpMutation.mutate({ email: session!.user!.email });
         return;
       }
 
@@ -85,7 +100,7 @@ const RootLayout = () => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [navigation.state, navigation.location?.pathname, params]);
 
-  if (isChecking || progressMutation.isPending) {
+  if (isChecking || progressMutation.isPending || sendOtpMutation.isPending) {
     return (
       <div className="grid h-screen w-screen place-items-center">
         <Spin size="large" />
