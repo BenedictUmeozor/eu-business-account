@@ -1,92 +1,44 @@
 import AppHeader from "@/components/app/AppHeader";
 import Sidebar from "@/components/app/Sidebar";
-import ENDPOINTS from "@/constants/endpoints";
 import { useAppSelector } from "@/hooks";
-import useMutationAction from "@/hooks/use-mutation-action";
-import { Affix, message, Spin } from "antd";
+import { Affix, Spin } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useNavigate, useNavigation, useParams } from "react-router";
+import {
+  Outlet,
+  useNavigate,
+  useNavigation,
+  useParams,
+  useLocation,
+} from "react-router";
+import useCheckOnboardingProgress from "@/hooks/use-check-onboarding-progress";
+import Loader from "@/components/app/Loader";
 
 const RootLayout = () => {
   const { state } = useNavigation();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const session = useAppSelector(state => state.session);
   const ref = useRef<HTMLDivElement>(null);
   const navigation = useNavigation();
   const params = useParams();
-
-  const sendOtpMutation = useMutationAction<
-    HM.QueryResponse,
-    { email: string }
-  >({
-    url: ENDPOINTS.SEND_OTP,
-    mutationKey: ["send-otp"],
-    onSuccess: data => {
-      message.success(data.message);
-      navigate("/verify-email", { state: { email: session.user?.email } });
-    },
-    onError: error => {
-      message.error(error?.message);
-    },
-  });
-
-  const progressMutation = useMutationAction<
-    HM.QueryResponseWithData<HM.OnboardingProgress>
-  >({
-    url: ENDPOINTS.ONBOARDING_PROGRESS,
-    mutationKey: ["onboarding-progress", session?.business?.business_token],
-    method: "POST",
-    onSuccess: ({ data }) => {
-      const emailVerification = Number(data.email_verification);
-      const businessVerification = Number(data.business_verification);
-      const businessDetails = Number(data.business_details);
-      const personalDetails = Number(data.personal_details);
-      const shareholder = Number(data.shareholder);
-      if (emailVerification === 0) {
-        sendOtpMutation.mutate({ email: session!.user!.email });
-        return;
-      }
-
-      if (businessVerification === 0) {
-        navigate("/onboarding", { state: { current: 0 } });
-        return;
-      }
-
-      if (businessDetails === 0) {
-        navigate("/onboarding", { state: { current: 1 } });
-        return;
-      }
-
-      if (personalDetails === 0) {
-        navigate("/onboarding", { state: { current: 2 } });
-        return;
-      }
-
-      if (shareholder === 0) {
-        navigate("/onboarding", { state: { current: 4 } });
-        return;
-      }
-    },
-    onError: error => {
-      message.error(error?.message || "An unexpected error has occurred");
-    },
-  });
-
-  useEffect(() => {
-    if (session?.business?.business_token) {
-      progressMutation.mutate({
-        business_token: session.business.business_token,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.business?.business_token]);
+  const { checkProgress, isChecking: isCheckingProgress } =
+    useCheckOnboardingProgress(session?.user?.email);
+  const fromLogin = location.state?.from === "/login";
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         if (!session?.user) {
           navigate("/login", { replace: true });
+          return;
+        }
+
+        // Only check onboarding progress if not coming from login
+        if (!fromLogin) {
+          checkProgress.mutate({
+            business_token: session.business?.business_token,
+          });
         }
       } finally {
         setIsChecking(false);
@@ -94,18 +46,15 @@ const RootLayout = () => {
     };
 
     checkAuth();
-  }, [session, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user, fromLogin]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [navigation.state, navigation.location?.pathname, params]);
 
-  if (isChecking || progressMutation.isPending || sendOtpMutation.isPending) {
-    return (
-      <div className="grid h-screen w-screen place-items-center">
-        <Spin size="large" />
-      </div>
-    );
+  if (isChecking || isCheckingProgress) {
+    return <Loader />;
   }
 
   if (!session?.user) {

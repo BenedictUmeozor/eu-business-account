@@ -21,6 +21,7 @@ import useQueryAction from "@/hooks/use-query-action";
 import ENDPOINTS from "@/constants/endpoints";
 import Loader from "@/components/app/Loader";
 import useMutationAction from "@/hooks/use-mutation-action";
+import { getErrorMessage } from "@/utils";
 import _ from "lodash";
 import moment, {Moment} from "moment";
 
@@ -73,7 +74,7 @@ const PersonalInfo = ({
       next();
     },
     onError: error => {
-      message.error(error?.message);
+      message.error(getErrorMessage(error));
     },
   });
 

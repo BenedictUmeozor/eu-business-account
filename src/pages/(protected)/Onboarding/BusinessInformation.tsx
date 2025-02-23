@@ -23,6 +23,7 @@ import {
 import countries from "@/data/codes.json";
 import useMutationAction from "@/hooks/use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
+import { getErrorMessage } from "@/utils";
 
 interface FormValues {
   business_type: HM.BusinessType;
@@ -78,7 +79,7 @@ const BusinessInformation = ({
       next();
     },
     onError: error => {
-      message.error(error?.message);
+      message.error(getErrorMessage(error));
     },
   });
 

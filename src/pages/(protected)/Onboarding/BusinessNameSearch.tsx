@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { Add } from "iconsax-react";
 import { useCallback, useState } from "react";
 import moment, { Moment } from "moment";
-import { formatPhoneNumber } from "@/utils";
+import { formatPhoneNumber, getErrorMessage } from "@/utils";
 
 interface FormValues {
   business_name: string;
@@ -67,7 +67,8 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
         setFoundSearch(false);
       }
     },
-    onError: () => {
+    onError: error => {
+      message.error(getErrorMessage(error));
       setFoundSearch(false);
     },
   });
@@ -85,7 +86,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
       next();
     },
     onError: error => {
-      message.error(error?.message);
+      message.error(getErrorMessage(error));
     },
   });
 

@@ -1,5 +1,6 @@
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useMemo } from "react";
 import api from "../lib/axios";
 
 interface QueryConfig<TData>
@@ -28,7 +29,9 @@ function useQueryAction<TData>({
       }
     | undefined[];
 }) {
-  const queryKey = Array.isArray(key) ? key : key ? [key] : [url, params];
+  const queryKey = useMemo(() => 
+    Array.isArray(key) ? key : key ? [key] : [url, params]
+  , [key, url, params]);
 
   return useQuery<TData, AxiosError, TData>({
     queryKey,

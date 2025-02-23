@@ -4,6 +4,9 @@ import { Button, Form, FormProps, Input, Segmented, message } from "antd";
 import { Link, useNavigate } from "react-router";
 import { setBusiness, setUser } from "@/lib/redux/slices/session";
 import { useAppDispatch } from "@/hooks";
+import { getErrorMessage } from "@/utils";
+import useCheckOnboardingProgress from "@/hooks/use-check-onboarding-progress";
+import Loader from "@/components/app/Loader";
 
 interface FormValues {
   email: string;
@@ -12,8 +15,11 @@ interface FormValues {
 
 const Login = () => {
   const [form] = Form.useForm<FormValues>();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { checkProgress, isChecking } = useCheckOnboardingProgress(
+    form.getFieldValue("email")
+  );
 
   const mutation = useSharedMutationAction<HM.LoginResponse, FormValues>({
     url: ENDPOINTS.LOGIN_USER,
@@ -22,10 +28,15 @@ const Login = () => {
       dispatch(setBusiness(response.business_data));
       dispatch(setUser(response.data));
       message.success(response.message);
-      navigate("/dashboard");
+      
+      navigate("", { state: { from: '/login' }, replace: true });
+      
+      checkProgress.mutate({
+        business_token: response.business_data.business_token,
+      });
     },
     onError: error => {
-      message.error(error?.message || "Login failed");
+      message.error(getErrorMessage(error));
     },
   });
 
@@ -35,6 +46,7 @@ const Login = () => {
 
   return (
     <section className="ml-auto space-y-6 rounded-xl bg-white p-6 shadow-lg lg:max-w-[466px]">
+      {(isChecking) && <Loader />}
       <Segmented
         options={[
           { label: "Personal", value: "Personal", disabled: true },

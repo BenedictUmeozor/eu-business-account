@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import useMutationAction from "@/hooks/use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
+import { getErrorMessage } from "@/utils";
 
 interface FormValues {
   otp: string;
@@ -50,7 +51,7 @@ const OTPVerification = () => {
       setIsTimerActive(true);
     },
     onError: error => {
-      message.error(error?.message);
+      message.error(getErrorMessage(error));
     },
   });
 
@@ -69,7 +70,7 @@ const OTPVerification = () => {
       });
     },
     onError: error => {
-      message.error(error?.message);
+      message.error(getErrorMessage(error));
     },
   });
 

@@ -4,6 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
+import { useMemo, useCallback } from "react";
 import api from "../lib/axios";
 
 type HttpMethod = "POST" | "PUT" | "PATCH" | "DELETE";
@@ -28,21 +29,22 @@ function useMutationAction<TData = unknown, TVariables = unknown>({
 }: MutationConfig<TData, TVariables>) {
   const queryClient = useQueryClient();
 
-  return useMutation<TData, AxiosError, TVariables>({
-    mutationFn: async variables => {
-      const response: AxiosResponse<TData> = await api.request({
-        url,
-        method,
-        data: variables,
-      });
+  const mutationFn = useCallback(async (variables: TVariables) => {
+    const response: AxiosResponse<TData> = await api.request({
+      url,
+      method,
+      data: variables,
+    });
 
-      if (response.status >= 400) {
-        throw new Error((response.data as HM.QueryResponse).message);
-      }
+    if (response.status >= 400) {
+      throw new Error((response.data as HM.QueryResponse).message);
+    }
 
-      return response.data;
-    },
-    onSuccess: async (data, variables, context) => {
+    return response.data;
+  }, [url, method]);
+
+  const mutationOptions = useMemo(() => ({
+    onSuccess: async (data: TData, variables: TVariables, context: unknown) => {
       if (invalidateQueries.length > 0) {
         await Promise.all(
           invalidateQueries.map(query =>
@@ -53,10 +55,15 @@ function useMutationAction<TData = unknown, TVariables = unknown>({
 
       onSuccess?.(data, variables, context);
     },
-    onError: (error, variables, context) => {
+    onError: (error: AxiosError, variables: TVariables, context: unknown) => {
       onError?.(error, variables, context);
     },
     ...options,
+  }), [queryClient, invalidateQueries, onSuccess, onError, options]);
+
+  return useMutation<TData, AxiosError, TVariables>({
+    mutationFn,
+    ...mutationOptions,
   });
 }
 

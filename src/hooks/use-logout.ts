@@ -15,8 +15,8 @@ function useLogout() {
     setLoading(true);
     await delay(2000);
     // Clear all queries first before removing the session
-    queryClient.clear();
     dispatch(clearSession());
+    queryClient.clear();
     navigate("/login");
     setLoading(false);
   };

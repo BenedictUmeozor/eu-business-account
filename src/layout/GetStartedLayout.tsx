@@ -1,29 +1,32 @@
+import Loader from "@/components/app/Loader";
 import { useAppSelector } from "@/hooks";
-import { Spin } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 
 const GetStartedLayout = () => {
-  const { user } = useAppSelector(state => state.session);
+  const session = useAppSelector(state => state.session);
   const { pathname } = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
+  const hasCheckedRef = useRef(false);
 
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        if (user && (pathname === "/get-started" || pathname === "/login")) {
+        // Only redirect if this is a fresh page load/direct access
+        if (!hasCheckedRef.current && session?.user && (pathname === "/get-started" || pathname === "/login")) {
           navigate("/dashboard", { replace: true });
         }
+        hasCheckedRef.current = true;
       } finally {
         setIsChecking(false);
       }
     };
 
     checkAuth();
-  }, [user, navigate, pathname]);
+  }, [session?.user, navigate, pathname]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,9 +34,7 @@ const GetStartedLayout = () => {
 
   if (isChecking) {
     return (
-      <div className="grid h-screen w-screen place-items-center">
-        <Spin size="large" />
-      </div>
+      <Loader />
     );
   }
 

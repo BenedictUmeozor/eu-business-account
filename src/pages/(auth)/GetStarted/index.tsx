@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Form,
   FormProps,
@@ -14,6 +15,7 @@ import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import { Link, useNavigate } from "react-router";
 import useMutationAction from "@/hooks/use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
+import { formatPhoneNumber, getErrorMessage } from "@/utils";
 
 interface FormValues {
   fname: string;
@@ -31,6 +33,7 @@ const GetStarted = () => {
   const [country, setCountry] = useState("GB");
   const [form] = Form.useForm<FormValues>();
   const navigate = useNavigate();
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const findCountryByPhoneCode = useCallback((phoneCode: string) => {
     const foundCountry = countries.find(c => c.callingCode === phoneCode);
@@ -77,19 +80,30 @@ const GetStarted = () => {
     mutationKey: ["create-account"],
     onSuccess: (data, variables) => {
       const { email } = variables;
+      setApiError(null);
       message.success(data.message);
       navigate("/verify-email", { state: { email } });
     },
     onError(error) {
-      message.error(error?.message);
+      const errorMessage = getErrorMessage(error);
+      message.error(errorMessage);
+      setApiError(errorMessage);
+      // Scroll to top of the page where error is displayed
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
   });
 
-  const formatPhoneNumber = (phoneNumber: string, phoneCode: string) => {
-    return phoneNumber.replace(phoneCode, "");
-  };
-
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
+    if (!formatPhoneNumber(values.phone_number, values.phone_code)) {
+      form.setFields([
+        {
+          name: "phone_number",
+          errors: ["Please enter a valid phone number"],
+        },
+      ]);
+      return;
+    }
+
     const formattedValues = {
       ...values,
       phone_number: formatPhoneNumber(
@@ -117,6 +131,18 @@ const GetStarted = () => {
         </h5>
         <p className="text-grey-600">Fill the form to get started now</p>
       </header>
+      
+      {apiError && (
+        <Alert
+          message={apiError}
+          type="error"
+          showIcon
+          className="mb-4"
+          closable
+          onClose={() => setApiError(null)}
+        />
+      )}
+
       <Form
         form={form}
         onFinish={onFinish}
@@ -147,10 +173,12 @@ const GetStarted = () => {
                   <div className="flex items-center gap-2">
                     <img
                       src={c.flag}
-                      alt={c.countryName}
-                      className="h-4 w-6 object-cover"
+                      alt={c.countryCode}
+                      className="h-6 w-6 rounded-full object-cover"
                     />
-                    <span>{c.countryName}</span>
+                    <span className="text-grey-700">
+                      {c.countryName} ({c.currencyCode})
+                    </span>
                   </div>
                 ),
                 value: c.countryCode,
@@ -280,6 +308,9 @@ const GetStarted = () => {
               name="phone_number"
               setFieldsValue={setFieldsValue}
               setPhoneValue={setPhoneValue}
+              phoneNumberRules={[
+                { required: true, message: "Please enter your phone number" },
+              ]}
               label={
                 (
                   <p className="text-sm font-semibold text-grey-600">

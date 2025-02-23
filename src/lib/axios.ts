@@ -54,12 +54,12 @@ sharedApi.interceptors.request.use(
 api.interceptors.response.use(
   response => response,
   error => {
-    console.log("Interceptor caught an error:", {
-      status: error.response?.status,
-      message: error.message,
-      config: error.config,
-      fullError: error,
-    });
+    // console.log("Interceptor caught an error:", {
+    //   status: error.response?.status,
+    //   message: error.message,
+    //   config: error.config,
+    //   fullError: error,
+    // });
 
     if (error.response?.status === 401) {
       store.dispatch(clearSession());
