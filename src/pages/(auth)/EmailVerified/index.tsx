@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import { useLocation, useNavigate } from "react-router";
 import { useEffect } from "react";
+import { useAppSelector } from "@/hooks";
 
 interface LocationState {
   email: string;
@@ -9,7 +10,16 @@ interface LocationState {
 const EmailVerified = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const session = useAppSelector(state => state.session);
   const email = (location.state as LocationState)?.email;
+
+  const handleNavigate = () => {
+    if (session?.user) {
+      navigate("/onboarding");
+    } else {
+      navigate("/login");
+    }
+  };
 
   useEffect(() => {
     if (!email) {
@@ -43,8 +53,8 @@ const EmailVerified = () => {
           shape="round"
           size="large"
           className="w-full"
-          onClick={() => navigate("/login")}>
-          Proceed to Login
+          onClick={handleNavigate}>
+          {session?.user ? "Continue Onboarding" : "Continue to Login"}
         </Button>
       </div>
     </section>

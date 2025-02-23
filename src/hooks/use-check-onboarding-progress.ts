@@ -40,7 +40,7 @@ const useCheckOnboardingProgress = (email?: string) => {
       }
 
       if (businessVerification === 0) {
-        navigate("/onboarding", { state: { current: 0 } });
+        navigate("/onboarding", { state: { current: -1 } });
         return;
       }
 
