@@ -13,6 +13,7 @@ export interface Shareholder {
   preferred_means_of_identification: "NIN" | "Passport" | "Drivers License";
   front_image: File | null;
   back_image: File | null;
+  type: "Individual" | "Business";
 }
 
 interface OnboardingContextType {

@@ -1,7 +1,7 @@
 import Upload from "@/components/ui/Upload";
 import { Button, Divider, Form, FormProps, Input, Radio, Select } from "antd";
 import { useState } from "react";
-import { Shareholder } from "./AddShareholders";
+import { Shareholder } from "@/contexts/onboarding";
 
 interface FormValues {
   first_name: string;

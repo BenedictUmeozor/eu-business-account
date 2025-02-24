@@ -1,7 +1,7 @@
 import { memo } from "react";
-import { Shareholder } from "./AddShareholders";
 import { Button, Card, Col, Row, Tag } from "antd";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { Shareholder } from "@/contexts/onboarding";
 
 const AddShareholderButton = ({
   shareholders,

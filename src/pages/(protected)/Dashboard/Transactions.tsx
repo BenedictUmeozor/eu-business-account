@@ -134,7 +134,7 @@ const Transactions = () => {
           dataSource={transactions}
           columns={columns}
           rowSelection={rowSelection}
-          onChange={(pagination, filters, sorter) => {
+          onChange={(_pagination, _filters, sorter) => {
             console.log("Table changed:", sorter);
           }}
           components={{

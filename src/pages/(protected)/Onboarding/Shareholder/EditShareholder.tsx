@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { Shareholder } from './AddShareholders';
 import {
   Form,
   Input,
@@ -11,6 +10,7 @@ import {
 } from 'antd';
 import HeaderTitle from '@/components/ui/HeaderTitle';
 import Upload from '@/components/ui/Upload';
+import { Shareholder } from '@/contexts/onboarding';
 
 const EditShareholder = ({
   shareholder,
