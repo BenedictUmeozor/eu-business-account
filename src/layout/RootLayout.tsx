@@ -36,7 +36,7 @@ const RootLayout = () => {
         }
 
         // Only check onboarding progress if not coming from login
-        if (!fromLogin && !userState.user.hasFinishedOnboarding) {
+        if (!fromLogin && !userState?.user?.hasFinishedOnboarding) {
           checkProgress.mutate({
             business_token: session.business?.business_token,
           });
@@ -48,7 +48,7 @@ const RootLayout = () => {
 
     checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user, fromLogin, userState.user.hasFinishedOnboarding]);
+  }, [session?.user, fromLogin, userState?.user?.hasFinishedOnboarding]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });

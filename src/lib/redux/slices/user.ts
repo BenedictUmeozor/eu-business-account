@@ -9,7 +9,9 @@ interface State {
 }
 
 const stateObj = sessionStorage.getItem(HM_NSP.USER);
-const initialState: State = stateObj ? JSON.parse(stateObj) : null;
+const initialState: State = {
+  user: stateObj ? JSON.parse(stateObj) : { hasFinishedOnboarding: false },
+};
 
 const userSlice = createSlice({
   name: "user",
@@ -29,7 +31,7 @@ const userSlice = createSlice({
       state.user.hasFinishedOnboarding = false;
       sessionStorage.removeItem(HM_NSP.USER);
     });
-  }
+  },
 });
 
 export const { setOnboardingStatus, resetUserState } = userSlice.actions;
