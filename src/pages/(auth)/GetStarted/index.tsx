@@ -244,6 +244,10 @@ const GetStarted = () => {
             rules={[
               { required: true, message: "Please create a password" },
               { min: 8, message: "Password must be at least 8 characters" },
+              {
+                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/,
+                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+              }
             ]}>
             <Input.Password className="w-full" placeholder="Create Password" />
           </Form.Item>
@@ -282,7 +286,17 @@ const GetStarted = () => {
                 Please confirm, this is a registered business
               </p>
             }
-            rules={[{ required: true, message: "Please select an option" }]}>
+            rules={[
+              { required: true, message: "Please select an option" },
+              {
+                validator: (_, value) => {
+                  if (value === "NO") {
+                    return Promise.reject("You must have a registered business to create an account");
+                  }
+                  return Promise.resolve();
+                }
+              }
+            ]}>
             <Radio.Group className="w-full">
               <div className="grid grid-cols-2 gap-2">
                 <Radio

@@ -3,9 +3,12 @@ import { message } from "antd";
 import useMutationAction from "./use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
+import { useAppDispatch } from ".";
+import { setOnboardingStatus } from "@/lib/redux/slices/user";
 
 const useCheckOnboardingProgress = (email?: string) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const sendOtpMutation = useMutationAction<
     HM.QueryResponse,
@@ -59,7 +62,7 @@ const useCheckOnboardingProgress = (email?: string) => {
         return;
       }
 
-      navigate("/dashboard");
+      dispatch(setOnboardingStatus(true));
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -68,7 +71,7 @@ const useCheckOnboardingProgress = (email?: string) => {
 
   return {
     checkProgress,
-    isChecking: checkProgress.isPending || sendOtpMutation.isPending
+    isChecking: checkProgress.isPending || sendOtpMutation.isPending,
   };
 };
 
