@@ -1,13 +1,20 @@
 import { ArrowDownIcon } from "lucide-react";
 import { NumericFormat } from "react-number-format";
 import countries from "@/data/codes.json";
-import { Input, Select } from "antd";
+import { Button, Input, Segmented, Select } from "antd";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router";
 
 const InternationalSinglePayments = () => {
+  const [segment, setSegment] = useState(0);
   const [formAmount, setFormAmount] = useState("");
   const [formCurrency, setFormCurrency] = useState("GBP");
   const [toCurrency, setToCurrency] = useState("NGN");
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/dashboard/send-money/international-payments/single/select-beneficiary");
+  };
 
   return (
     <div
@@ -70,7 +77,9 @@ const InternationalSinglePayments = () => {
               <div className="space-y-4 text-white w-full">
                 <span className="text-sm">Recipient gets</span>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-medium font-nunito">₦227,073</span>
+                  <span className="text-lg font-medium font-nunito">
+                    ₦227,073
+                  </span>
                   <div className="w-28">
                     <Select
                       className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
@@ -104,7 +113,79 @@ const InternationalSinglePayments = () => {
               <ArrowDownIcon className="w-5 h-5 text-white" />
             </div>
           </div>
+
+          <div className="space-y-4">
+            <div>
+              <Segmented
+                options={[
+                  {
+                    label: "Commission fees",
+                    value: 0,
+                  },
+                  {
+                    label: "No fees",
+                    value: 1,
+                  },
+                ]}
+                onChange={value => setSegment(value)}
+                value={segment}
+                className="w-full rounded-lg border border-solid border-grey-200 bg-white p-1 [&_.ant-segmented-item-selected]:bg-primary-50 [&_.ant-segmented-item-selected]:text-primary [&_.ant-segmented-item:hover]:bg-primary-50 [&_.ant-segmented-item:hover]:text-primary [&_.ant-segmented-item]:grid [&_.ant-segmented-item]:h-10 [&_.ant-segmented-item]:place-items-center [&_.ant-segmented-item]:text-primary"
+                block
+              />
+            </div>
+            <section className="px-4">
+              <table className="w-full">
+                <tbody>
+                  <tr className="[&:not(:last-child)]:mb-3">
+                    <th className="font-normal text-grey-500 text-base text-left w-1/2">
+                      Commission fee
+                    </th>
+                    <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
+                      £4.00
+                    </td>
+                  </tr>
+                  <tr className="[&:not(:last-child)]:mb-3">
+                    <th className="font-normal text-grey-500 text-base text-left w-1/2">
+                      Rate
+                    </th>
+                    <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
+                      £1 = ₦2,270.73
+                    </td>
+                  </tr>
+                  <tr className="[&:not(:last-child)]:mb-3">
+                    <th className="font-normal text-grey-500 text-base text-left w-1/2">
+                      Payable Amount
+                    </th>
+                    <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
+                      £1,000
+                    </td>
+                  </tr>
+                  <tr className="[&:not(:last-child)]:mb-3">
+                    <th className="font-normal text-grey-500 text-base text-left w-2/3">
+                      Got a valid promo code?{" "}
+                      <Link to="#" className="text-primary underline">
+                        Enter here
+                      </Link>
+                    </th>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </div>
         </section>
+        <div className="flex items-center justify-center">
+          {" "}
+          <Button
+            type="primary"
+            className="w-48 mx-auto"
+            size="large"
+            shape="round"
+            disabled={!formAmount}
+            onClick={handleClick}
+            block>
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

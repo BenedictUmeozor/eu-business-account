@@ -40,6 +40,14 @@ const InternationalSinglePayments = () =>
   import(
     "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/SinglePayments"
   );
+const SelectInternationalBeneficiary = () =>
+  import(
+    "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/SelectBeneficiary"
+  );
+const SendToInternationalBeneficiary = () =>
+  import(
+    "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/[Beneficiary]"
+  );
 
 const queryClient = new QueryClient();
 
@@ -71,6 +79,14 @@ const App = () => {
               <Route index lazy={InternationalPayments} />
               <Route path="single">
                 <Route index lazy={InternationalSinglePayments} />
+                <Route
+                  path="select-beneficiary"
+                  lazy={SelectInternationalBeneficiary}
+                />
+                <Route
+                  path="beneficiary/:beneficiary"
+                  lazy={SendToInternationalBeneficiary}
+                />
               </Route>
             </Route>
           </Route>
