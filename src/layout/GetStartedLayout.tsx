@@ -45,7 +45,7 @@ const GetStartedLayout = () => {
       </div>
       <div ref={ref} />
       <section className="w-full max-w-7xl mx-auto overflow-y-auto lg:px-8  px-4 min-h-screen z-10 pt-8"> 
-        <a href="https://hellomemoney.com/" className="flex items-center gap-2">
+        <a href="https://hellomemoney.com/" className="flex items-center gap-2 max-lg:justify-center">
           <img
             src="/images/hellome.png"
             alt="Hellomemoney"
