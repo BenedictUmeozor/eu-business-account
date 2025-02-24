@@ -167,7 +167,9 @@ const Sidebar = () => {
                 </Link>
               )}
             </li>
-            <li className="border-0 border-solid border-r-4 hover:bg-secondary-400 hover:border-r-secondary-200 transition-all duration-200 ease-linear cursor-pointer" onClick={logout}>
+            <li
+              className="border-0 border-solid border-r-4 hover:bg-secondary-400 hover:border-r-secondary-200 transition-all duration-200 ease-linear cursor-pointer"
+              onClick={logout}>
               <p className="flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal text-primary-300">
                 <LogOutIcon className="h-4 w-4" />
                 <span>Log out</span>

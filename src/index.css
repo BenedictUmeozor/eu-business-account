@@ -38,3 +38,17 @@
 a {
   text-decoration: none !important;
 }
+
+.antd-select-custom .ant-select-selector {
+  background-color: #0b3e81 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.antd-select-custom .ant-select-selection-item {
+  color: white !important;
+}
+
+.antd-select-custom .ant-select-arrow {
+  color: white !important;
+}

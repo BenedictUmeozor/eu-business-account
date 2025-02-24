@@ -6,6 +6,82 @@ interface Beneficiary {
   country: string; // ng, gb etc
 }
 
+interface SendMoneyOption {
+  title: string;
+  description: string;
+  image: string;
+  to: string;
+}
+
+interface PaymentType extends SendMoneyOption {
+  comingSoon?: boolean;
+}
+
+export const PAYMENT_TYPES: PaymentType[] = [
+  {
+    title: "Single Payments",
+    description:
+      "Send money to a beneficiary globally with the click of a button. Zero hassles",
+    image: "/images/local-payment.png",
+    to: "/dashboard/send-money/local-payments/single",
+  },
+  {
+    title: "Bulk Payments",
+    description:
+      "Your smart way to pay. Set up bulk transfers to family, teams or vendors globally. ",
+    image: "/images/international-payment.png",
+    to: "/dashboard/send-money/local-payments/bulk",
+    comingSoon: true,
+  },
+];
+
+export const PAYMENT_TYPES_INTERNATIONAL: PaymentType[] = [
+  {
+    title: "Single Payments",
+    description:
+      "Send money to a beneficiary globally with the click of a button. Zero hassles",
+    image: "/images/local-payment.png",
+    to: "/dashboard/send-money/international-payments/single",
+  },
+  {
+    title: "Bulk Payments",
+    description:
+      "Your smart way to pay. Set up bulk transfers to family, teams or vendors globally. ",
+    image: "/images/international-payment.png",
+    to: "/dashboard/send-money/international-payments/bulk",
+    comingSoon: true,
+  },
+];
+
+export const SEND_MONEY_OPTIONS: SendMoneyOption[] = [
+  {
+    title: "Local Payments",
+    description:
+      "Need to make a local payment UK/EU/USA? Select this option for fast, secure transfers within your country!",
+    image: "/images/local-payment.png",
+    to: "/dashboard/send-money/local-payments",
+  },
+  {
+    title: "International Transfers",
+    description:
+      "Send money to your friends or family overseas effortlessly! Choose this option for quick and reliable international transfers.",
+    image: "/images/international-payment.png",
+    to: "/dashboard/send-money/international-payments",
+  },
+  {
+    title: "Payment Link",
+    description: "Create a payment link, for fast and secure transaction",
+    image: "/images/payment-link.png",
+    to: "/dashboard/send-money/payment-link",
+  },
+  {
+    title: "HelloMe Money Friends",
+    description: "Send money to your friends on HelloMe Money using tags",
+    image: "/images/hellome-money-friends.png",
+    to: "/dashboard/send-money/hellome-money-friends",
+  },
+];
+
 export const BENEFICIARIES: Beneficiary[] = [
   {
     first_name: "John",

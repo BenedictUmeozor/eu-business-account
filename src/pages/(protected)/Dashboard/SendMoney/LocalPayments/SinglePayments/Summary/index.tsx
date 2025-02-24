@@ -1,5 +1,5 @@
 import { Alert, Button, Divider, Space, Switch } from "antd";
-import { BENEFICIARIES } from "../constants";
+import { BENEFICIARIES } from "../../../constants";
 import ENDPOINTS from "@/constants/endpoints";
 import { DotIcon } from "lucide-react";
 import PinModal, { PinRefObject } from "@/components/global/PinModal";

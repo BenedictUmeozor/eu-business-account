@@ -3,7 +3,7 @@ import { Button, Input, Result } from "antd";
 import { NumericFormat } from "react-number-format";
 import { useParams, useNavigate } from "react-router";
 import { useMemo, useState } from "react";
-import { BENEFICIARIES } from "../constants";
+import { BENEFICIARIES } from "../../../constants";
 import { DotIcon } from "lucide-react";
 
 const SendToBeneficiary = () => {
@@ -25,7 +25,7 @@ const SendToBeneficiary = () => {
   );
 
   const onSubmit = () => {
-    navigate("/dashboard/send-money/summary");
+    navigate("/dashboard/send-money/local-payments/single/summary");
   };
 
   if (!beneficiary) {
@@ -55,7 +55,7 @@ const SendToBeneficiary = () => {
         <h3 className="text-xl text-grey-700 font-semibold">Send Money</h3>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between bg-primary rounded-lg py-3 px-4">
+          <div className="flex items-center justify-between bg-secondary-400 rounded-lg py-3 px-4">
             <span className="font-nunito text-white text-sm font-medium">
               GBP Bal: £6,000,000
             </span>
