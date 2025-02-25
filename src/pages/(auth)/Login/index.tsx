@@ -30,7 +30,7 @@ const Login = () => {
       message.success(response.message);
       
       navigate("", { state: { from: '/login' }, replace: true });
-      
+      form.resetFields();
       checkProgress.mutate({
         business_token: response.business_data.business_token,
       });
@@ -100,7 +100,7 @@ const Login = () => {
           htmlType="submit"
           size="large"
           loading={mutation.isPending}>
-          Get Started
+          Login
         </Button>
         <p className="text-center font-medium text-grey-600">
           New user?{" "}

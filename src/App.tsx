@@ -9,6 +9,9 @@ import RootLayout from "./layout/RootLayout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import GetStartedLayout from "./layout/GetStartedLayout";
 import SendMoneyLayout from "./layout/SendMoneyLayout";
+import ErrorBoundary from "./pages/error";
+
+const NotFound = () => import("./pages/not-found");
 
 const GetStarted = () => import("./pages/(auth)/GetStarted");
 const OTPVerification = () => import("./pages/(auth)/OTPVerification");
@@ -54,7 +57,7 @@ const queryClient = new QueryClient();
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/">
+      <Route path="/" errorElement={<ErrorBoundary />}>
         <Route Component={GetStartedLayout}>
           <Route path="get-started" lazy={GetStarted} />
           <Route path="verify-email" lazy={OTPVerification} />
@@ -91,6 +94,7 @@ const App = () => {
             </Route>
           </Route>
         </Route>
+        <Route path="*" lazy={NotFound} />
       </Route>
     )
   );

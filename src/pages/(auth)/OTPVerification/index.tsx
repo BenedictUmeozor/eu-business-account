@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import useMutationAction from "@/hooks/use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
+import { useAppSelector } from "@/hooks";
 
 interface FormValues {
   otp: string;
@@ -19,15 +20,19 @@ const OTPVerification = () => {
   const location = useLocation();
   const [timeLeft, setTimeLeft] = useState(60);
   const [isTimerActive, setIsTimerActive] = useState(true);
+  const session = useAppSelector(state => state.session);
 
   const email = (location.state as LocationState)?.email;
 
   useEffect(() => {
     if (!email) {
-      navigate("/get-started");
-      return;
+      if (session?.user) {
+        navigate("/dashboard");
+      } else {
+        navigate("/login");
+      }
     }
-  }, [email, navigate]);
+  }, [email, navigate, session]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -151,14 +156,16 @@ const OTPVerification = () => {
         </Button>
         <span className="text-sm text-grey-500">{formatTime(timeLeft)}</span>
       </div>
-      <p className="text-center font-medium text-grey-600">
-        Already got an account?{" "}
-        <Link
-          to="#"
-          className="text-primary-600 underline hover:text-primary-700">
-          Sign in
-        </Link>
-      </p>
+      {!session?.user && (
+        <p className="text-center font-medium text-grey-600">
+          Already got an account?{" "}
+          <Link
+            to="/login"
+            className="text-primary-600 underline hover:text-primary-700">
+            Sign in
+          </Link>
+        </p>
+      )}
     </section>
   );
 };

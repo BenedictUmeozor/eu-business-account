@@ -23,9 +23,13 @@ const EmailVerified = () => {
 
   useEffect(() => {
     if (!email) {
-      navigate("/get-started");
+      if (session?.user) {
+        navigate("/dashboard")
+      } else {
+        navigate("/login");
+      }
     }
-  }, [email, navigate]);
+  }, [email, navigate, session]);
 
   if (!email) return null;
 

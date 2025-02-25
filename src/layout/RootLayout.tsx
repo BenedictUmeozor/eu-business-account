@@ -2,7 +2,7 @@ import AppHeader from "@/components/app/AppHeader";
 import Sidebar from "@/components/app/Sidebar";
 import { useAppSelector } from "@/hooks";
 import { Affix, Spin } from "antd";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Outlet,
   useNavigate,
@@ -25,7 +25,7 @@ const RootLayout = () => {
   const params = useParams();
   const { checkProgress, isChecking: isCheckingProgress } =
     useCheckOnboardingProgress(session?.user?.email);
-  const fromLogin = location.state?.from === "/login";
+  const fromLogin = useMemo(() => location.state?.fromLogin === "/login", [location.state]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -36,7 +36,7 @@ const RootLayout = () => {
         }
 
         // Only check onboarding progress if not coming from login
-        if (!fromLogin && !userState?.user?.hasFinishedOnboarding) {
+        if (!fromLogin) {
           checkProgress.mutate({
             business_token: session.business?.business_token,
           });

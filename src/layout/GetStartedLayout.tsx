@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 
 const GetStartedLayout = () => {
   const session = useAppSelector(state => state.session);
+  const userState = useAppSelector(state => state.user);
   const { pathname } = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
@@ -16,9 +17,21 @@ const GetStartedLayout = () => {
     const checkAuth = async () => {
       try {
         // Only redirect if this is a fresh page load/direct access
-        if (!hasCheckedRef.current && session?.user && (pathname === "/get-started" || pathname === "/login")) {
+        if (
+          !hasCheckedRef.current &&
+          session?.user &&
+          (pathname === "/get-started" || pathname === "/login")
+        ) {
           navigate("/dashboard", { replace: true });
         }
+
+        if (
+          (hasCheckedRef.current && pathname === "/get-started") ||
+          (userState?.user?.hasFinishedOnboarding && pathname === "/login")
+        ) {
+          navigate("/dashboard", { replace: true });
+        }
+
         hasCheckedRef.current = true;
       } finally {
         setIsChecking(false);
@@ -26,16 +39,19 @@ const GetStartedLayout = () => {
     };
 
     checkAuth();
-  }, [session?.user, navigate, pathname]);
+  }, [
+    session?.user,
+    navigate,
+    pathname,
+    userState?.user?.hasFinishedOnboarding,
+  ]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [pathname]);
 
   if (isChecking) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (
@@ -44,8 +60,10 @@ const GetStartedLayout = () => {
         <div className="absolute bottom-0 left-0 right-0 h-[45%] origin-[100%] -skew-y-6 transform bg-primary-50" />
       </div>
       <div ref={ref} />
-      <section className="w-full max-w-7xl mx-auto overflow-y-auto lg:px-8  px-4 min-h-screen z-10 pt-8"> 
-        <a href="https://hellomemoney.com/" className="flex items-center gap-2 max-lg:justify-center">
+      <section className="w-full max-w-7xl mx-auto overflow-y-auto lg:px-8  px-4 min-h-screen z-10 pt-8">
+        <a
+          href="https://hellomemoney.com/"
+          className="flex items-center gap-2 max-lg:justify-center">
           <img
             src="/images/hellome.png"
             alt="Hellomemoney"

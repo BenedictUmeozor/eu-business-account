@@ -1,13 +1,20 @@
-import { Avatar, Badge, Button, Input, Space } from 'antd';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { Notification } from 'iconsax-react';
-import Colors from '@/constants/colors';
+import { Avatar, Badge, Button, Input, Space } from "antd";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { Notification } from "iconsax-react";
+import Colors from "@/constants/colors";
+import { useAppSelector } from "@/hooks";
 
 const AppHeader = () => {
+  const session = useAppSelector(state => state.session);
+  
+  const userInitials = `${session.user?.fname?.[0] || ''}${session.user?.lname?.[0] || ''}`.toUpperCase();
+
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white border-0 border-b border-solid border-grey-200">
       <div className="flex items-center gap-12">
-        <h2 className="text-lg font-normal">Good Morning, Michelle</h2>
+        <h2 className="text-lg font-normal">
+          Good Morning, {session.user?.fname}
+        </h2>
         <div>
           <Input
             suffix={<MagnifyingGlassIcon width={20} />}
@@ -29,13 +36,14 @@ const AppHeader = () => {
         />
         <Space align="center">
           <Avatar
-            src="/images/avatar.png"
-            size={'large'}
-            className="cursor-pointer"
-          />
+            size="large"
+            className="cursor-pointer bg-primary"
+          >
+            {userInitials}
+          </Avatar>
           <div className="flex flex-col items-start gap-0.5">
-            <h5 className="text-sm font-medium">Michelle Mezie</h5>
-            <p className="text-sm text-grey-500">michelle.dsgn@gmail.com</p>
+            <h5 className="text-sm font-medium">{`${session.user?.fname} ${session.user?.lname}`}</h5>
+            <p className="text-sm text-grey-500">{session.user?.email}</p>
           </div>
         </Space>
       </div>
