@@ -8,11 +8,13 @@ import {
   RotateCwSquareIcon,
   EllipsisVerticalIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Link } from "react-router";
 import Colors from "@/constants/colors";
+import CurrencyConversion from "./CurrencyConversion";
+import MoreActions from "./MoreActions";
 
 const data = [
   { name: "Total Money In", value: 1200, color: Colors.positive },
@@ -20,6 +22,9 @@ const data = [
 ];
 
 const BritishPounds = () => {
+  const conversionRef = useRef<HM.ModalRefObject>(null);
+  const optionsRef = useRef<HM.ModalRefObject>(null);
+
   return (
     <section className="grid grid-cols-[1.9fr_1.1fr] gap-4">
       <div className="p-6 shadow rounded-md space-y-4 bg-white">
@@ -62,8 +67,9 @@ const BritishPounds = () => {
               </div>
               <span className="text-base ">Fund</span>
             </Link>
-            <Link
-              to="#"
+            <div
+              role="button"
+              onClick={() => conversionRef.current?.openModal()}
               className="flex flex-col items-center justify-center gap-1 text-primary group">
               <div
                 className="bg-primary-50 h-12 w-12 group-hover:bg-primary-100 transition-all duration-200 ease-linear rounded-full p-0 flex items-center justify-center cursor-pointer"
@@ -71,9 +77,10 @@ const BritishPounds = () => {
                 <RotateCwSquareIcon className="w-4 h-4 text-primary" />
               </div>
               <span className="text-base ">Convert</span>
-            </Link>
-            <Link
-              to="#"
+            </div>
+            <div
+              role="button"
+              onClick={() => optionsRef.current?.openModal()}
               className="flex flex-col items-center justify-center gap-1 text-primary group">
               <div
                 className="bg-primary-50 h-12 w-12 group-hover:bg-primary-100 transition-all duration-200 ease-linear rounded-full p-0 flex items-center justify-center cursor-pointer"
@@ -81,13 +88,15 @@ const BritishPounds = () => {
                 <EllipsisVerticalIcon className="w-4 h-4 text-primary" />
               </div>
               <span className="text-base ">More</span>
-            </Link>
+            </div>
           </div>
         </div>
       </div>
       <div className="p-6 shadow rounded-md bg-white">
         <DoughnutChart />
       </div>
+      <CurrencyConversion ref={conversionRef} />
+      <MoreActions ref={optionsRef} />
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { Input, Modal, Select } from "antd";
+import { Button, Input, Modal, Select } from "antd";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import countries from "@/data/codes.json";
 import { NumericFormat } from "react-number-format";
@@ -25,7 +25,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
           Currency Conversion
         </span>
       }>
-      <section>
+      <section className="space-y-4">
         <div className="h-64 relative p-3 bg-primary-50 rounded-xl flex flex-col gap-2">
           <div className="h-32 bg-secondary-400 rounded-lg py-3 px-4 flex items-center justify-center">
             <div className="space-y-4 w-full">
@@ -115,6 +115,10 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
             role="button">
             <ArrowDownIcon className="w-5 h-5 text-white" />
           </div>
+        </div>
+        <div className="h-14 rounded-[60px] bg-primary-100 flex items-center justify-between gap-4 px-4">
+          <span className="text-grey-600">Conversion fees: 0.00</span>
+          <Button size="large" type="primary" shape="round" className="w-48">Convert</Button>
         </div>
       </section>
     </Modal>
