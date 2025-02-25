@@ -1,7 +1,8 @@
 import { Button } from "antd";
 import { useLocation, useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "@/hooks";
+import Loader from "@/components/app/Loader";
 
 interface LocationState {
   email: string;
@@ -12,6 +13,7 @@ const EmailVerified = () => {
   const navigate = useNavigate();
   const session = useAppSelector(state => state.session);
   const email = (location.state as LocationState)?.email;
+  const [isChecking, setIsChecking] = useState(true);
 
   const handleNavigate = () => {
     if (session?.user) {
@@ -22,14 +24,26 @@ const EmailVerified = () => {
   };
 
   useEffect(() => {
-    if (!email) {
-      if (session?.user) {
-        navigate("/dashboard")
-      } else {
-        navigate("/login");
+    const checkAuth = async () => {
+      try {
+        if (!email) {
+          if (session?.user) {
+            navigate("/dashboard")
+          } else {
+            navigate("/login");
+          }
+        }
+      } finally {
+        setIsChecking(false);
       }
-    }
+    };
+
+    checkAuth();
   }, [email, navigate, session]);
+
+  if (isChecking) {
+    return <Loader />;
+  }
 
   if (!email) return null;
 

@@ -9,10 +9,12 @@ const Upload = ({
   setFile,
   image,
   className = "w-48",
+  formName,
 }: {
   label: string;
   image: string;
   file: File | null;
+  formName?: string;
   setFile: React.Dispatch<React.SetStateAction<File | null>>;
   className?: string;
 }) => {
@@ -24,7 +26,7 @@ const Upload = ({
   };
 
   return (
-    <Form.Item label={label}>
+    <Form.Item label={label} name={formName}>
       <div>
         <input
           type="file"
@@ -36,8 +38,7 @@ const Upload = ({
         <div
           role="button"
           className="mb-4 flex w-full cursor-pointer items-center justify-between rounded-md border border-dashed border-primary-500 p-4 transition-all duration-75 hover:bg-grey-50"
-          onClick={() => ref.current?.click()}
-        >
+          onClick={() => ref.current?.click()}>
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-50">
               <ArrowUpTrayIcon className="h-5 w-5 text-primary" />
@@ -53,16 +54,14 @@ const Upload = ({
           </div>
           <Button
             type="primary"
-            className="bg-primary-50 text-primary hover:bg-primary-100"
-          >
+            className="bg-primary-50 text-primary hover:bg-primary-100">
             Upload
           </Button>
         </div>
         <div className="flex h-44 items-center justify-center rounded-lg bg-primary-50">
           <div className="flex flex-col items-center justify-center gap-4">
             <div
-              className={`flex aspect-[1.8] items-center justify-center overflow-hidden ${className}`}
-            >
+              className={`flex aspect-[1.8] items-center justify-center overflow-hidden ${className}`}>
               {file ? (
                 <DocumentPreview file={file} />
               ) : (

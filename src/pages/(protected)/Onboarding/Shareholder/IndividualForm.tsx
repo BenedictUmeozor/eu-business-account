@@ -4,15 +4,26 @@ import { useState } from "react";
 import { Shareholder } from "@/contexts/onboarding";
 
 interface FormValues {
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  role: string;
+  fname: string;
+  lname: string;
+  email: string;
+  type: string;
   residential_address: string;
-  state: string;
-  add_as_shareholder: 1 | 0;
-  appoint_as_authorized_signatory: 1 | 0;
-  preferred_means_of_identification: string;
+  business_address: string;
+  region: string;
+  postcode: string;
+  business_name: string;
+  business_number: string;
+  business_stake: string;
+  business_role: string;
+  authorized_signatory: string;
+}
+
+interface FormDataUpload {
+  file: File;
+  shareholder_token: string;
+  document_type: string;
+  document_side: "Front" | "Back";
 }
 
 const IndividualForm = ({
@@ -44,13 +55,13 @@ const IndividualForm = ({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="First Name"
-          name="first_name"
+          name="fname"
           rules={[{ required: true, message: "This field is required" }]}>
           <Input className="w-full" placeholder="Enter First Name" />
         </Form.Item>
         <Form.Item
           label="Last Name"
-          name="last_name"
+          name="lname"
           rules={[{ required: true, message: "This field is required" }]}>
           <Input className="w-full" placeholder="Enter Last Name" />
         </Form.Item>
@@ -58,7 +69,7 @@ const IndividualForm = ({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Email Address"
-          name="email_address"
+          name="email"
           rules={[{ required: true, message: "This field is required" }]}>
           <Input
             type="email"
@@ -66,26 +77,33 @@ const IndividualForm = ({
             placeholder="Enter Email Address"
           />
         </Form.Item>
-        <Form.Item label="Role" name="role">
-          <Input className="w-full" placeholder="Enter Role" />
+        <Form.Item label="Role" name="business_role">
+          <Select
+            className="w-full"
+            placeholder="Select Role"
+            options={["Shareholder", "Director"].map(v => ({
+              label: v,
+              value: v,
+            }))}
+          />
         </Form.Item>
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item label="Residential Address" name="residential_address">
           <Input
-            type="email"
+            type="text"
             className="w-full"
             placeholder="Enter Residential Address"
           />
         </Form.Item>
-        <Form.Item label="Region/State" name="state">
+        <Form.Item label="Region/State" name="region">
           <Select className="w-full" placeholder="Select State" />
         </Form.Item>
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Add as a shareholder (owns over 25% of the business)?"
-          name="add_as_shareholder">
+          name="business_stake">
           <Radio.Group className="w-full">
             <div className="grid grid-cols-2 gap-2">
               <Radio
@@ -151,6 +169,7 @@ const IndividualForm = ({
         image="/images/preview.png"
         label="Upload your Passport/Drivers license (Front)"
         setFile={setFrontImage}
+        formName="front_image"
         key={1}
       />
       <Upload
@@ -158,6 +177,7 @@ const IndividualForm = ({
         image="/images/back.png"
         label="Upload your Passport/Drivers license (Back)"
         setFile={setBackImage}
+        formName="back_image"
         key={2}
       />
 

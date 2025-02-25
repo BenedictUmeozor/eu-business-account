@@ -51,6 +51,22 @@ const SendToInternationalBeneficiary = () =>
   import(
     "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/[Beneficiary]"
   );
+const OnlinePaymentInternational = () =>
+  import(
+    "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/OnlinePayment"
+  );
+const HellomeMoneyPayment = () =>
+  import(
+    "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/HellomeMoneyPayment"
+  );
+const CompletePayment = () =>
+  import(
+    "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/CompletePayment"
+  );
+const TransactionProgress = () =>
+  import(
+    "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/TransactionProgress"
+  );
 
 const queryClient = new QueryClient();
 
@@ -68,6 +84,7 @@ const App = () => {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="onboarding" lazy={Onboarding} />
           <Route path="dashboard" lazy={Dashboard} />
+
           <Route path="dashboard/send-money" Component={SendMoneyLayout}>
             <Route index lazy={SendMoney} />
             <Route path="local-payments">
@@ -90,6 +107,19 @@ const App = () => {
                   path="beneficiary/:beneficiary"
                   lazy={SendToInternationalBeneficiary}
                 />
+                <Route
+                  path="online-payment"
+                  lazy={OnlinePaymentInternational}
+                />
+                <Route
+                  path="hellome-money-payment"
+                  lazy={HellomeMoneyPayment}
+                />
+                <Route
+                  path="hellome-money-payment/complete"
+                  lazy={CompletePayment}
+                />
+                <Route path="transaction-progress" lazy={TransactionProgress} />
               </Route>
             </Route>
           </Route>

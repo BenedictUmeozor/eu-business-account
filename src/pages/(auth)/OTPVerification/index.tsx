@@ -5,6 +5,7 @@ import useMutationAction from "@/hooks/use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
 import { useAppSelector } from "@/hooks";
+import Loader from "@/components/app/Loader";
 
 interface FormValues {
   otp: string;
@@ -21,17 +22,26 @@ const OTPVerification = () => {
   const [timeLeft, setTimeLeft] = useState(60);
   const [isTimerActive, setIsTimerActive] = useState(true);
   const session = useAppSelector(state => state.session);
+  const [isChecking, setIsChecking] = useState(true);
 
   const email = (location.state as LocationState)?.email;
 
   useEffect(() => {
-    if (!email) {
-      if (session?.user) {
-        navigate("/dashboard");
-      } else {
-        navigate("/login");
+    const checkAuth = async () => {
+      try {
+        if (!email) {
+          if (session?.user) {
+            navigate("/dashboard");
+          } else {
+            navigate("/login");
+          }
+        }
+      } finally {
+        setIsChecking(false);
       }
-    }
+    };
+
+    checkAuth();
   }, [email, navigate, session]);
 
   useEffect(() => {
@@ -96,6 +106,10 @@ const OTPVerification = () => {
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
+
+  if (isChecking) {
+    return <Loader />;
+  }
 
   if (!email) return null;
 

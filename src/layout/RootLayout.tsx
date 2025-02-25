@@ -37,9 +37,9 @@ const RootLayout = () => {
 
         // Only check onboarding progress if not coming from login
         if (!fromLogin) {
-          checkProgress.mutate({
-            business_token: session.business?.business_token,
-          });
+          // checkProgress.mutate({
+          //   business_token: session.business?.business_token,
+          // });
         }
       } finally {
         setIsChecking(false);

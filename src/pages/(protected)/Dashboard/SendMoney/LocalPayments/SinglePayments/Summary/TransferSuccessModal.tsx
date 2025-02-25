@@ -18,9 +18,9 @@ const TransferSuccessModal = forwardRef<TransferSuccessRefObject>(
     return (
       <Modal
         open={open}
-        onCancel={() => setOpen(false)}
         footer={null}
         width={500}
+        closable={false}
         centered>
         <section className="space-y-8">
           <div className="h-20 w-20 rounded-full mx-auto">

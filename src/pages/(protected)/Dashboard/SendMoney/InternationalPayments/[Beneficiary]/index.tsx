@@ -3,6 +3,7 @@ import { BENEFICIARIES } from "../../constants";
 import { Button, Form, FormProps, Result, Select } from "antd";
 import { DotIcon } from "lucide-react";
 import ENDPOINTS from "@/constants/endpoints";
+import { sentenceCase } from "change-case";
 
 interface FormValues {
   payment_method: string;
@@ -10,14 +11,23 @@ interface FormValues {
   transfer_purpose: string;
 }
 
+const PAYMENT_METHODS = ["online_payment", "hellome_money_payment"];
+
 const SendToInternationalBeneficiary = () => {
   const params = useParams() as { beneficiary: string };
   const navigate = useNavigate();
   const [form] = Form.useForm<FormValues>();
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    console.log(values);
-    navigate("/dashboard/send-money/international-payments/single/summary");
+    if (values.payment_method === "online_payment") {
+      navigate(
+        "/dashboard/send-money/international-payments/single/online-payment"
+      );
+    } else {
+      navigate(
+        "/dashboard/send-money/international-payments/single/hellome-money-payment"
+      );
+    }
   };
 
   const beneficiary = BENEFICIARIES.find(
@@ -134,12 +144,18 @@ const SendToInternationalBeneficiary = () => {
             name="payment_method"
             label={
               <p className="text-sm text-grey-600 font-medium">
-                Online Payment
+                Payment Method
               </p>
-            }>
+            }
+            rules={[
+              { required: true, message: "Please select payment method" },
+            ]}>
             <Select
               placeholder="Select payment method"
-              options={["Online Payment"].map(v => ({ label: v, value: v }))}
+              options={PAYMENT_METHODS.map(v => ({
+                label: sentenceCase(v),
+                value: v,
+              }))}
             />
           </Form.Item>
           <Form.Item
@@ -171,7 +187,14 @@ const SendToInternationalBeneficiary = () => {
             />
           </Form.Item>
           <Form.Item className="flex items-center justify-center">
-            <Button type="primary" htmlType="submit" shape="round" size="large" className="w-48">Continue</Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              shape="round"
+              size="large"
+              className="w-48">
+              Continue
+            </Button>
           </Form.Item>
         </Form>
       </div>
