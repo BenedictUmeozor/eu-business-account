@@ -17,6 +17,11 @@ const ENDPOINTS = {
   BUSINESS_DETAILS: "/business_details",
   PERSONAL_DETAILS: "/personal_details",
   FETCH_PERSONAL_INFORMATION: "/fetch_personal_details",
+  GET_DOCUMENT_TYPES: "/document_type",
+  GET_SHAREHOLDERS: "/shareholders",
+  ADD_SHAREHOLDER: "/add_shareholder",
+  UPLOAD_SHAREHOLDER_ID: "/upload_shareholder_id",
+  UPLOAD_PROOF_OF_IDENTIFICATION: "/proof_of_identification",
 };
 
 export default ENDPOINTS;

@@ -58,6 +58,12 @@ declare global {
       };
     }
 
+    interface DocumentType {
+      name: string;
+      code: string;
+      category: string;
+    }
+
     interface CompanyDetails {
       status: string;
       company_details: {
@@ -84,6 +90,37 @@ declare global {
       business_details: string;
       personal_details: string;
       shareholder: string;
+    }
+
+    interface Shareholder {
+      shareholder_token: string;
+      type: string;
+      fname: string;
+      lname: string;
+      business_name: string | undefined | null;
+      business_number: string | undefined | null;
+      email: string;
+      role: string;
+      residential_address: string;
+      postcode: string;
+      region: string;
+      shareholding_percentage: string;
+      authorized_signatory: string;
+      documents: {
+        data: {
+          document_type: string;
+          document_name: string;
+          side: string;
+          filepath: string;
+        }[];
+      };
+    }
+
+    interface ShareholderResponse {
+      status: string;
+      shareholder: {
+        data: Shareholder[];
+      };
     }
   }
 

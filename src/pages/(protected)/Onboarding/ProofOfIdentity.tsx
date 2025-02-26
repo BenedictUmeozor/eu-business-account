@@ -1,58 +1,83 @@
-import { Button, Form, FormProps, Input } from "antd";
-import { memo, useCallback, useState } from "react";
-import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
+import { Alert, Button, Form, FormProps, Input, message } from "antd";
+import { memo, useEffect, useRef, useState } from "react";
 import Upload from "@/components/ui/Upload";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
+import useMutationAction from "@/hooks/use-mutation-action";
+import ENDPOINTS from "@/constants/endpoints";
+import { getErrorMessage } from "@/utils";
 
 interface FormValues {
-  nin: string;
-  dial_code: string;
-  phone_number: string;
-  front_image: File | null;
-  back_image: File | null;
+  identification_number: string;
 }
-
-type VerificationType = "id" | "poi" | undefined;
 
 const ProofOfIdentity = ({
   next,
   back,
   isReview,
 }: {
-  next: (type: VerificationType) => void;
+  next: () => void;
   back: () => void;
   isReview?: boolean;
 }) => {
   const [form] = Form.useForm<FormValues>();
   const [frontImage, setFrontImage] = useState<File | null>(null);
   const [backImage, setBackImage] = useState<File | null>(null);
+  const [showImageError, setShowImageError] = useState<boolean>(false);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const mutation = useMutationAction<HM.QueryResponse>({
+    url: ENDPOINTS.UPLOAD_PROOF_OF_IDENTIFICATION,
+    onSuccess: data => {
+      message.success(data.message);
+      next();
+    },
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    console.log(values);
-    next("poi");
+    if (!frontImage || !backImage) {
+      setShowImageError(true);
+      if (formRef.current) {
+        formRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file[]", frontImage);
+    formData.append("file[]", backImage);
+    formData.append("identification_number", values.identification_number);
+    formData.append("document_type", "PP");
+    mutation.mutate(formData);
   };
 
-  const setFieldsValue = useCallback(
-    ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
-      form.setFieldsValue({ dial_code: dialCode, phone_number: phoneNumber });
-    },
-    [form]
-  );
-
-  const setPhoneValue = useCallback(
-    (phoneNumber: string) => {
-      form.setFieldsValue({ phone_number: phoneNumber });
-    },
-    [form]
-  );
+  useEffect(() => {
+    if (frontImage && backImage && showImageError) {
+      setShowImageError(false);
+    }
+  }, [frontImage, backImage, showImageError]);
 
   return (
-    <div className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
+    <div
+      className={clsx("h-full w-full space-y-8", !isReview && "p-8")}
+      ref={formRef}>
       <HeaderTitle
         headerTitle="Proof of Identity"
         headerDescription="Upload your Passport/Drivers license to verify your details"
       />
+      {showImageError && (
+        <Alert
+          message="Please upload both front and back images of your identification document."
+          type="error"
+          showIcon
+          className="mb-4"
+          closable
+          onClose={() => setShowImageError(false)}
+        />
+      )}
       <Form
         layout="vertical"
         autoComplete="off"
@@ -61,16 +86,9 @@ const ProofOfIdentity = ({
         initialValues={{ dial_code: "+44", phone_number: "+44" }}
         labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
         <div className="grid grid-cols-2 items-start gap-6 gap-y-4 max-lg:grid-cols-1">
-          <Form.Item name="nin" label="ID Number">
+          <Form.Item name="identification_number" label="ID Number">
             <Input className="w-full" placeholder="Enter ID Number" />
           </Form.Item>
-          <PhoneNumberInput
-            dialCodeName="dial_code"
-            name="phone_number"
-            setFieldsValue={setFieldsValue}
-            setPhoneValue={setPhoneValue}
-            label="Attached Phone Number"
-          />
         </div>
 
         <Upload
@@ -95,6 +113,7 @@ const ProofOfIdentity = ({
               type="primary"
               htmlType="button"
               shape="round"
+              disabled={mutation.isPending}
               onClick={back}
               className="w-48 bg-primary-50 text-base text-primary hover:bg-primary-100"
               size="large">
@@ -104,6 +123,7 @@ const ProofOfIdentity = ({
           <Button
             type="primary"
             htmlType="submit"
+            loading={mutation.isPending}
             shape="round"
             className="w-48 text-base"
             size="large">

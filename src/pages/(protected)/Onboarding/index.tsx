@@ -7,7 +7,7 @@ import BusinessNameSearch from "./BusinessNameSearch";
 import BusinessInformation from "./BusinessInformation";
 import PersonalInfo from "./PersonalInfo";
 import IdentityVerification from "./IdentityVerification";
-import AddShareholders from "./Shareholder/AddShareholders";
+import AddShareholders from "./Shareholder";
 import Review from "./Review";
 import OnboardingSuccess from "./OnboardingSuccess";
 import AddDocuments from "./Documents";
@@ -96,7 +96,7 @@ const Onboarding = () => {
         {current === 1 && <BusinessInformation next={next} />}
         {current === 2 && <PersonalInfo next={next} />}
         {current === 3 && <IdentityVerification next={next} />}
-        {current === 4 && <AddShareholders next={next} />}
+        {current === 4 && <AddShareholders next={() => setCurrent(6)} />}
         {current === 5 && <AddDocuments next={next} />}
         {current === 6 && <Review nextAction={next} />}
         {current === 7 && <OnboardingSuccess />}

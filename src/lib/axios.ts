@@ -6,16 +6,11 @@ import { clearSession } from "./redux/slices/session";
 
 const api = axios.create({
   baseURL: ENDPOINTS.APP_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // Removed default Content-Type header to allow FormData to work correctly
 });
 
 export const sharedApi = axios.create({
   baseURL: ENDPOINTS.APP_SHARED_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
   validateStatus: status => status < 500,
 });
 

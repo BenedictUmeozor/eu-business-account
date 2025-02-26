@@ -6,7 +6,7 @@ import BusinessInformation from "./BusinessInformation";
 import PersonalInfo from "./PersonalInfo";
 import ProofOfIdentity from "./ProofOfIdentity";
 import { Link } from "react-router";
-import AddShareholders from "./Shareholder/AddShareholders";
+import AddShareholders from "./Shareholder";
 
 const PAGES = [
   {

@@ -9,14 +9,14 @@ const Upload = ({
   setFile,
   image,
   className = "w-48",
-  formName,
+  existingDocumentUrl,
 }: {
   label: string;
   image: string;
   file: File | null;
-  formName?: string;
   setFile: React.Dispatch<React.SetStateAction<File | null>>;
   className?: string;
+  existingDocumentUrl?: string;
 }) => {
   const ref = useRef<HTMLInputElement>(null);
 
@@ -26,7 +26,7 @@ const Upload = ({
   };
 
   return (
-    <Form.Item label={label} name={formName}>
+    <Form.Item label={label}>
       <div>
         <input
           type="file"
@@ -64,6 +64,12 @@ const Upload = ({
               className={`flex aspect-[1.8] items-center justify-center overflow-hidden ${className}`}>
               {file ? (
                 <DocumentPreview file={file} />
+              ) : existingDocumentUrl ? (
+                <img
+                  src={existingDocumentUrl}
+                  alt="existing document"
+                  className="h-full w-full object-contain"
+                />
               ) : (
                 <img
                   src={image}
@@ -79,4 +85,5 @@ const Upload = ({
     </Form.Item>
   );
 };
+
 export default memo(Upload);

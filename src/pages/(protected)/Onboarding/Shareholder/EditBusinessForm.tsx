@@ -1,8 +1,6 @@
 import Upload from "@/components/ui/Upload";
-import ENDPOINTS from "@/constants/endpoints";
 import useDocumentTypes from "@/hooks/use-document-types";
-import useMutationAction from "@/hooks/use-mutation-action";
-import { getErrorMessage } from "@/utils";
+import useEditShareholder from "@/hooks/use-edit-shareholder";
 import {
   Alert,
   Button,
@@ -10,7 +8,6 @@ import {
   Form,
   FormProps,
   Input,
-  message,
   Radio,
   Skeleton,
 } from "antd";
@@ -18,8 +15,6 @@ import { useState, useEffect, useRef } from "react";
 import { omit } from "lodash";
 
 interface FormValues {
-  fname: string;
-  lname: string;
   email: string;
   type: string;
   residential_address: string;
@@ -32,113 +27,58 @@ interface FormValues {
   business_role: string;
   authorized_signatory: string;
   document_type: string;
+  shareholder_token: string;
 }
 
-const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
+const EditBusinessForm = ({
+  shareholder,
+  onClose,
+}: {
+  shareholder: HM.Shareholder;
+  onClose: () => void;
+}) => {
   const [form] = Form.useForm<FormValues>();
   const [frontImage, setFrontImage] = useState<File | null>(null);
   const [backImage, setBackImage] = useState<File | null>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState<string>("");
-  const [documentName, setDocumentName] = useState<string>(
-    "Identification document"
-  );
+  const [documentName, setDocumentName] = useState<string>("Identification document");
   const [showImageError, setShowImageError] = useState<boolean>(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const { documentTypes, loading } = useDocumentTypes();
-
-  const imageMutation = useMutationAction<unknown>({
-    url: ENDPOINTS.UPLOAD_SHAREHOLDER_ID,
-    method: "POST",
-    mutationKey: ["upload-shareholder-id"],
-    onSuccess: data => {
-      console.log("image: ", data);
-    },
-    onError: error => {
-      message.error(getErrorMessage(error));
-    },
+  const { editShareholder, isLoading } = useEditShareholder({
+    onSuccess: onClose,
   });
 
-  const formMutation = useMutationAction<{ shareholder_token: string }>({
-    url: ENDPOINTS.ADD_SHAREHOLDER,
-    method: "POST",
-    mutationKey: ["add-shareholder"],
-    invalidateQueries: ["get-shareholders"],
-    onSuccess: async data => {
-      console.log("shareholder: ", data);
-
-      // Front image upload
-      console.log("Uploading front image:", frontImage);
-      const frontFormData = new FormData();
-      frontFormData.append("file", frontImage as File);
-      frontFormData.append("shareholder_token", data?.shareholder_token);
-      frontFormData.append("document_type", selectedDocumentType);
-      frontFormData.append("document_side", "Front");
-
-      // Log FormData entries for debugging
-      for (const pair of frontFormData.entries()) {
-        console.log("Front FormData:", pair[0], pair[1]);
-      }
-
-      await imageMutation.mutateAsync(frontFormData);
-
-      // Back image upload
-      console.log("Uploading back image:", backImage);
-      const backFormData = new FormData();
-      backFormData.append("file", backImage as File);
-      backFormData.append("shareholder_token", data?.shareholder_token);
-      backFormData.append("document_type", selectedDocumentType);
-      backFormData.append("document_side", "Back");
-
-      // Log FormData entries for debugging
-      for (const pair of backFormData.entries()) {
-        console.log("Back FormData:", pair[0], pair[1]);
-      }
-
-      await imageMutation.mutateAsync(backFormData);
-
-      // Successfully completed all uploads
-      message.success("Shareholder and documents added successfully");
-      removeForm();
-    },
-    onError: error => {
-      message.error(getErrorMessage(error));
-    },
-  });
-
-  const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    // Check if both images are uploaded
-    if (!frontImage || !backImage) {
+  const onFinish: FormProps<FormValues>["onFinish"] = async (values) => {
+    // Only require new images if no existing documents
+    if (!shareholder.documents && (!frontImage || !backImage)) {
       setShowImageError(true);
-      // Scroll to the top of the form
       if (formRef.current) {
         formRef.current.scrollIntoView({ behavior: "smooth" });
       }
       return;
     }
 
-    // Log images for debugging
-    console.log("Front image to be uploaded:", frontImage);
-    console.log("Back image to be uploaded:", backImage);
-
-    // Reset any previous error state
     setShowImageError(false);
 
-    // Use lodash omit to remove document_type from values
     const formData = omit(
-      { ...values, type: "Individual", business_role: "Shareholder" },
+      { 
+        ...values, 
+        type: "Business", 
+        business_role: "Shareholder",
+        shareholder_token: shareholder.shareholder_token 
+      },
       "document_type"
     );
 
-    // Pass the modified data to the mutation
-    formMutation.mutate(formData);
+    await editShareholder(formData, frontImage, backImage, selectedDocumentType);
   };
 
-  // Update document name when selection changes
   useEffect(() => {
     if (selectedDocumentType && documentTypes.length) {
       const selected = documentTypes.find(
-        doc => doc.code === selectedDocumentType
+        (doc) => doc.code === selectedDocumentType
       );
       if (selected) {
         setDocumentName(selected.name);
@@ -148,16 +88,44 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
 
   const handleDocTypeChange = (e: any) => {
     setSelectedDocumentType(e.target.value);
-    // Also update form value
     form.setFieldValue("document_type", e.target.value);
   };
 
-  // Reset error state when either image is uploaded
   useEffect(() => {
-    if (frontImage && backImage && showImageError) {
+    if ((frontImage && backImage) || shareholder.documents) {
       setShowImageError(false);
     }
-  }, [frontImage, backImage, showImageError]);
+  }, [frontImage, backImage, shareholder.documents]);
+
+  // Set initial form values and document information
+  useEffect(() => {
+    form.setFieldsValue({
+      business_name: shareholder.business_name || "",
+      business_number: shareholder.business_number || "",
+      email: shareholder.email,
+      business_address: shareholder.residential_address,
+      region: shareholder.region,
+      postcode: shareholder.postcode,
+      business_stake: shareholder.shareholding_percentage === "YES" ? "YES" : "NO",
+      authorized_signatory: shareholder.authorized_signatory,
+    });
+
+    // Initialize document type and name only if documents exist
+    if (shareholder.documents?.data?.length > 0) {
+      const firstDoc = shareholder.documents.data[0];
+      setSelectedDocumentType(firstDoc.document_type);
+      setDocumentName(firstDoc.document_name);
+      form.setFieldValue("document_type", firstDoc.document_type);
+    }
+  }, [form, shareholder]);
+
+  // Get front and back document URLs with type safety
+  const frontDocumentUrl = shareholder.documents?.data?.find(
+    (doc) => doc.side === "Front"
+  )?.filepath;
+  const backDocumentUrl = shareholder.documents?.data?.find(
+    (doc) => doc.side === "Back"
+  )?.filepath;
 
   return (
     <div ref={formRef}>
@@ -176,20 +144,20 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
         autoComplete="off"
         form={form}
         onFinish={onFinish}
-        className="space-y-2"
-        labelCol={{ className: "text-sm text-grey-500 font-medium " }}>
+        className="space-y-4"
+        labelCol={{ className: "text-sm text-grey-500 font-medium" }}>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Form.Item
-            label="First Name"
-            name="fname"
+            label="Business Name"
+            name="business_name"
             rules={[{ required: true, message: "This field is required" }]}>
-            <Input className="w-full" placeholder="Enter First Name" />
+            <Input className="w-full" placeholder="Enter Business Name" />
           </Form.Item>
           <Form.Item
-            label="Last Name"
-            name="lname"
+            label="Business Number"
+            name="business_number"
             rules={[{ required: true, message: "This field is required" }]}>
-            <Input className="w-full" placeholder="Enter Last Name" />
+            <Input className="w-full" placeholder="Enter Business Number" />
           </Form.Item>
         </div>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -198,9 +166,9 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
             name="email"
             rules={[{ required: true, message: "This field is required" }]}>
             <Input
-              type="email"
               className="w-full"
-              placeholder="Enter Email Address"
+              type="email"
+              placeholder="Enter Business Email"
             />
           </Form.Item>
           <Form.Item
@@ -212,20 +180,16 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
         </div>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Form.Item
-            label="Residential Address"
-            name="residential_address"
+            label="Business Address"
+            name="business_address"
             rules={[{ required: true, message: "This field is required" }]}>
-            <Input
-              type="text"
-              className="w-full"
-              placeholder="Enter Residential Address"
-            />
+            <Input className="w-full" placeholder="Enter Business Address" />
           </Form.Item>
           <Form.Item
             label="Region/State"
             name="region"
             rules={[{ required: true, message: "This field is required" }]}>
-            <Input className="w-full" placeholder="Enter State" />
+            <Input className="w-full" placeholder="Enter Region/State" />
           </Form.Item>
         </div>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -236,12 +200,12 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
             <Radio.Group className="w-full">
               <div className="grid grid-cols-2 gap-2">
                 <Radio
-                  value={"YES"}
+                  value="YES"
                   className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                   Yes
                 </Radio>
                 <Radio
-                  value={"NO"}
+                  value="NO"
                   className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                   No
                 </Radio>
@@ -255,12 +219,12 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
             <Radio.Group className="w-full">
               <div className="grid grid-cols-2 gap-2">
                 <Radio
-                  value={"YES"}
+                  value="YES"
                   className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                   Yes
                 </Radio>
                 <Radio
-                  value={"NO"}
+                  value="NO"
                   className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
                   No
                 </Radio>
@@ -283,7 +247,7 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
               onChange={handleDocTypeChange}
               value={selectedDocumentType}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {documentTypes.map(docType => (
+                {documentTypes.map((docType) => (
                   <Radio
                     key={docType.code}
                     value={docType.code}
@@ -300,6 +264,7 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
           image="/images/preview.png"
           label={`Upload your ${documentName} (Front)`}
           setFile={setFrontImage}
+          existingDocumentUrl={frontDocumentUrl}
           key={1}
         />
         <Upload
@@ -307,6 +272,7 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
           image="/images/back.png"
           label={`Upload your ${documentName} (Back)`}
           setFile={setBackImage}
+          existingDocumentUrl={backDocumentUrl}
           key={2}
         />
 
@@ -315,12 +281,13 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
           htmlType="submit"
           size="large"
           shape="round"
-          loading={loading || formMutation.isPending || imageMutation.isPending}
+          loading={loading || isLoading}
           className="w-48">
-          Save & Continue
+          Save Changes
         </Button>
       </Form>
     </div>
   );
 };
-export default IndividualForm;
+
+export default EditBusinessForm;

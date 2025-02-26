@@ -8,7 +8,7 @@ interface State {
   };
 }
 
-const stateObj = sessionStorage.getItem(HM_NSP.USER);
+const stateObj = sessionStorage.getItem(HM_NSP.ONBOARDING);
 const initialState: State = {
   user: stateObj ? JSON.parse(stateObj) : { hasFinishedOnboarding: false },
 };
@@ -19,17 +19,17 @@ const userSlice = createSlice({
   reducers: {
     setOnboardingStatus: (state, action: PayloadAction<boolean>) => {
       state.user.hasFinishedOnboarding = action.payload;
-      sessionStorage.setItem(HM_NSP.USER, JSON.stringify(state));
+      sessionStorage.setItem(HM_NSP.ONBOARDING, JSON.stringify(state));
     },
     resetUserState: state => {
       state.user.hasFinishedOnboarding = false;
-      sessionStorage.removeItem(HM_NSP.USER);
+      sessionStorage.removeItem(HM_NSP.ONBOARDING);
     },
   },
   extraReducers: builder => {
     builder.addCase(clearSession, state => {
       state.user.hasFinishedOnboarding = false;
-      sessionStorage.removeItem(HM_NSP.USER);
+      sessionStorage.removeItem(HM_NSP.ONBOARDING);
     });
   },
 });
