@@ -1,7 +1,10 @@
+import { useAppSelector } from "@/hooks";
 import { Button } from "antd";
 import { memo } from "react";
 
 const Welcome = ({ next }: { next: () => void }) => {
+  const session = useAppSelector(state => state.session);
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-8">
       <div className="flex aspect-square w-64 items-center justify-center">
@@ -13,7 +16,9 @@ const Welcome = ({ next }: { next: () => void }) => {
       </div>
       <div className="space-y-8 text-center">
         <div className="space-y-4">
-          <h6 className="text-xl font-medium">Welcome Michelle!</h6>
+          <h6 className="text-xl font-medium">
+            Welcome {session?.user?.fname}!
+          </h6>
           <p className="mx-auto max-w-xs text-grey-700">
             Set up your business account in a few steps
           </p>
