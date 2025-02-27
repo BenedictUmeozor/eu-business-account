@@ -5,7 +5,6 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 
 const GetStartedLayout = () => {
   const session = useAppSelector(state => state.session);
-  const userState = useAppSelector(state => state.user);
   const { pathname } = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
@@ -25,10 +24,7 @@ const GetStartedLayout = () => {
           navigate("/dashboard", { replace: true });
         }
 
-        if (
-          (hasCheckedRef.current && pathname === "/get-started") ||
-          (userState?.user?.hasFinishedOnboarding && pathname === "/login")
-        ) {
+        if (session?.user && pathname === "/get-started") {
           navigate("/dashboard", { replace: true });
         }
 
@@ -39,12 +35,7 @@ const GetStartedLayout = () => {
     };
 
     checkAuth();
-  }, [
-    session?.user,
-    navigate,
-    pathname,
-    userState?.user?.hasFinishedOnboarding,
-  ]);
+  }, [session?.user, navigate, pathname]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
