@@ -1,13 +1,16 @@
-import { Button, Card, Col, Row, Tag } from "antd";
+import { Button, Card, Col, message, Row, Tag } from "antd";
+import clsx from "clsx";
 import { PlusCircleIcon } from "lucide-react";
 import { useMemo } from "react";
 
 const AddButton = ({
   shareholder,
+  canAddShareholder,
   showForm,
   onEdit,
 }: {
   shareholder: HM.Shareholder | null;
+  canAddShareholder: boolean;
   showForm: () => void;
   onEdit?: (shareholder: HM.Shareholder) => void;
 }) => {
@@ -15,6 +18,14 @@ const AddButton = ({
     () => shareholder?.type === "Business",
     [shareholder]
   );
+
+  const handleAddClick = () => {
+    if (canAddShareholder) {
+      showForm();
+    } else {
+      message.info("You have 100% stake in the business");
+    }
+  };
 
   const handleEditClick = () => {
     if (shareholder && onEdit) {
@@ -26,8 +37,11 @@ const AddButton = ({
     return (
       <Card
         role="button"
-        onClick={showForm}
-        className="flex cursor-pointer items-center justify-center bg-grey-50 transition-all duration-100 ease-linear hover:bg-grey-100">
+        onClick={handleAddClick}
+        className={clsx(
+          "flex cursor-pointer items-center justify-center bg-grey-50 transition-all duration-100 ease-linear hover:bg-grey-100",
+          !canAddShareholder && !shareholder && "opacity-50"
+        )}>
         <div className="flex flex-col items-center justify-center gap-2">
           <PlusCircleIcon className="h-8 w-8 text-grey-500" />
           <p className="text-grey-600">Add Shareholder</p>
@@ -64,9 +78,9 @@ const AddButton = ({
         <Tag className="rounded-md text-pending-700 text-xs bg-pending-50">
           Shareholder
         </Tag>
-        <Button 
-          type="text" 
-          className="text-sm text-primary" 
+        <Button
+          type="text"
+          className="text-sm text-primary"
           size="small"
           onClick={handleEditClick}>
           Edit

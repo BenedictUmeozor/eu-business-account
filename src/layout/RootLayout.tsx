@@ -19,13 +19,18 @@ const RootLayout = () => {
   const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const session = useAppSelector(state => state.session);
-  const userState = useAppSelector(state => state.user);
+  const onboardingStatus = useAppSelector(
+    state => state.session.onboardingStatus
+  );
   const ref = useRef<HTMLDivElement>(null);
   const navigation = useNavigation();
   const params = useParams();
   const { checkProgress, isChecking: isCheckingProgress } =
     useCheckOnboardingProgress(session?.user?.email);
-  const fromLogin = useMemo(() => location.state?.fromLogin === "/login", [location.state]);
+  const fromLogin = useMemo(
+    () => location.state?.fromLogin === "/login",
+    [location.state]
+  );
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -36,7 +41,7 @@ const RootLayout = () => {
         }
 
         // Only check onboarding progress if not coming from login
-        if (!fromLogin) {
+        if (!fromLogin && !onboardingStatus?.completed) {
           checkProgress.mutate({
             business_token: session.business?.business_token,
           });
@@ -48,7 +53,7 @@ const RootLayout = () => {
 
     checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user, fromLogin, userState?.user?.hasFinishedOnboarding]);
+  }, [session?.user, fromLogin, onboardingStatus?.completed]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });

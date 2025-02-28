@@ -61,7 +61,6 @@ declare global {
     interface DocumentType {
       name: string;
       code: string;
-      category: string;
     }
 
     interface CompanyDetails {
@@ -84,12 +83,68 @@ declare global {
       };
     }
 
-    interface OnboardingProgress {
-      email_verification: string;
-      business_verification: string;
-      business_details: string;
-      personal_details: string;
-      shareholder: string;
+    interface CompanyType {
+      id: string;
+      code: string;
+      company_type: string;
+    }
+
+    interface BusinessDetails {
+      status: string;
+      message: string;
+      business_token: string;
+      business_name: string;
+      incorporation_number: string;
+      business_type: string;
+      business_industry: string;
+      business_structure: string;
+      phone_code: string;
+      phone_number: string;
+      account_purpose: string;
+      sic: string;
+      website: string;
+      monthly_turnover: string;
+      expected_currency: string;
+      source_countries: string;
+      target_countries: string;
+      partners: string;
+      business_license: string;
+      is_registered: string;
+      incorporation_date: string;
+      etag?: any;
+      business_address: string;
+      town: string;
+      region: string;
+      postcode: string;
+      partners_outgoing: string;
+      economic_activity: string;
+    }
+
+    interface PersonalDetails {
+      status: string;
+      message: string;
+      fname: string;
+      lname: string;
+      oname: string;
+      dob: string;
+      occupation: string;
+      gender: string;
+      address: string;
+      street: string;
+      city: string;
+      postcode: string;
+      business_role: string;
+      business_stake: string;
+      percentage_stake: string;
+      authorized_signatory: string;
+      document: {
+        data: {
+          document_name: string;
+          document_type: string;
+          id_number: string;
+          filepath: string;
+        }[];
+      };
     }
 
     interface Shareholder {
@@ -116,6 +171,18 @@ declare global {
       };
     }
 
+    interface UploadedDocuments {
+      status: string;
+      message: string;
+      documents: {
+        data: {
+          document_id: number;
+          document_type: string;
+          document_name: string;
+          filepath: string;
+        }[];
+      };
+    }
     interface ShareholderResponse {
       status: string;
       shareholder: {

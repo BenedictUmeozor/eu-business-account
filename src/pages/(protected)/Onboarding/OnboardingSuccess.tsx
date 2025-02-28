@@ -1,7 +1,10 @@
-import { Button } from 'antd';
-import { memo } from 'react';
+import { Button } from "antd";
+import { memo } from "react";
+import { useNavigate } from "react-router";
 
 const OnboardSuccess = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-8">
       <div className="flex aspect-square w-40 h-40 items-center justify-center">
@@ -25,7 +28,7 @@ const OnboardSuccess = () => {
             className="w-48 text-base"
             shape="round"
             size="large"
-          >
+            onClick={() => navigate("/dashboard")}>
             Go to Dashboard
           </Button>
         </div>

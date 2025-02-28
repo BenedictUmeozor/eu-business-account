@@ -64,7 +64,7 @@ const PublicListedCompanyUpload = ({ next }: { next: () => void }) => {
       <HeaderTitle
         headerTitle="Documents Upload"
         headerDescription="Upload the required business documents"
-      />
+      /> 
       <div className="space-y-6">
         {DOCUMENTS.map(doc => (
           <Card

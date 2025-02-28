@@ -6,6 +6,8 @@ import clsx from "clsx";
 import useMutationAction from "@/hooks/use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
+import usePersonalDetails from "@/hooks/use-personal-details";
+import Loader from "@/components/app/Loader";
 
 interface FormValues {
   identification_number: string;
@@ -25,6 +27,7 @@ const ProofOfIdentity = ({
   const [backImage, setBackImage] = useState<File | null>(null);
   const [showImageError, setShowImageError] = useState<boolean>(false);
   const formRef = useRef<HTMLDivElement>(null);
+  const { personalDetails, isLoading } = usePersonalDetails();
 
   const mutation = useMutationAction<HM.QueryResponse>({
     url: ENDPOINTS.UPLOAD_PROOF_OF_IDENTIFICATION,
@@ -38,6 +41,11 @@ const ProofOfIdentity = ({
   });
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
+    if (isReview) {
+      next();
+      return;
+    }
+
     if (!frontImage || !backImage) {
       setShowImageError(true);
       if (formRef.current) {
@@ -60,6 +68,16 @@ const ProofOfIdentity = ({
     }
   }, [frontImage, backImage, showImageError]);
 
+  useEffect(() => {
+    if (personalDetails?.document?.data?.[0]?.id_number) {
+      form.setFieldsValue({
+        identification_number: personalDetails?.document?.data?.[0]?.id_number,
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [personalDetails]);
+
   return (
     <div
       className={clsx("h-full w-full space-y-8", !isReview && "p-8")}
@@ -68,6 +86,7 @@ const ProofOfIdentity = ({
         headerTitle="Proof of Identity"
         headerDescription="Upload your Passport/Drivers license to verify your details"
       />
+      {isLoading && <Loader />}
       {showImageError && (
         <Alert
           message="Please upload both front and back images of your identification document."
@@ -78,12 +97,14 @@ const ProofOfIdentity = ({
           onClose={() => setShowImageError(false)}
         />
       )}
+      {isReview && (
+        <Alert message="Review only" type="info" showIcon className="mb-4" />
+      )}
       <Form
         layout="vertical"
         autoComplete="off"
         form={form}
         onFinish={onFinish}
-        initialValues={{ dial_code: "+44", phone_number: "+44" }}
         labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
         <div className="grid grid-cols-2 items-start gap-6 gap-y-4 max-lg:grid-cols-1">
           <Form.Item name="identification_number" label="ID Number">
@@ -97,6 +118,7 @@ const ProofOfIdentity = ({
           label="Upload your Passport/Drivers license (Front)"
           setFile={setFrontImage}
           key={1}
+          existingDocumentUrl={personalDetails?.document?.data?.[0].filepath}
         />
 
         <Upload
@@ -104,6 +126,7 @@ const ProofOfIdentity = ({
           image="/images/back.png"
           label="Upload your Passport/Drivers license (Back)"
           setFile={setBackImage}
+          existingDocumentUrl={personalDetails?.document?.data?.[1].filepath}
           key={2}
         />
 

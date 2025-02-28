@@ -96,7 +96,7 @@ const Onboarding = () => {
         {current === 1 && <BusinessInformation next={next} />}
         {current === 2 && <PersonalInfo next={next} />}
         {current === 3 && <IdentityVerification next={next} />}
-        {current === 4 && <AddShareholders next={() => setCurrent(6)} />}
+        {current === 4 && <AddShareholders next={next} />}
         {current === 5 && <AddDocuments next={next} />}
         {current === 6 && <Review nextAction={next} />}
         {current === 7 && <OnboardingSuccess />}

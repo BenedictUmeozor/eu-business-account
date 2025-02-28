@@ -4,36 +4,36 @@ import useMutationAction from "./use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
 
-export const useDocumentTypes = () => {
-  const [documentTypes, setDocumentTypes] = useState<HM.DocumentType[]>([]);
+export const useCompanyTypes = () => {
+  const [companyTypes, setCompanyTypes] = useState<HM.CompanyType[]>([]);
 
   const mutation = useMutationAction<
-    HM.QueryResponseWithData<{ data: HM.DocumentType[] }>
+    HM.QueryResponseWithData<{ data: HM.CompanyType[] }>
   >({
-    url: ENDPOINTS.GET_DOCUMENT_TYPES,
-    mutationKey: ["get-document-types"],
+    url: ENDPOINTS.GET_COMPANY_TYPES,
+    mutationKey: ["get-company-types"],
     onSuccess: res => {
-      setDocumentTypes(res.data.data);
+      setCompanyTypes(res.data.data);
     },
     onError: error => {
       message.error(getErrorMessage(error));
     },
   });
 
-  const fetchDocumentTypes = () => {
+  const fetchCompanyTypes = () => {
     mutation.mutate({});
   };
 
   useEffect(() => {
-    fetchDocumentTypes();
+    fetchCompanyTypes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
-    documentTypes,
+    companyTypes,
     loading: mutation.isPending,
-    refetch: fetchDocumentTypes,
+    refetch: fetchCompanyTypes,
   };
 };
 
-export default useDocumentTypes;
+export default useCompanyTypes;

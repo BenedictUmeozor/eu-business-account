@@ -1,14 +1,15 @@
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AddButton from "./AddButton";
-import useMutationAction from "@/hooks/use-mutation-action";
-import ENDPOINTS from "@/constants/endpoints";
-import { Button, message } from "antd";
-import { getErrorMessage } from "@/utils";
+import { Button } from "antd";
 import AddShareholderForm from "./AddShareholderForm";
 import EditShareholderForm from "./EditShareholderForm";
 import Loader from "@/components/app/Loader";
+import usePersonalDetails from "@/hooks/use-personal-details";
+import useShareholders from "@/hooks/use-shareholders";
+import useShareholderProgress from "@/hooks/use-shareholder-progress";
+import { useAppSelector } from "@/hooks";
 
 const AddShareholders = ({
   next,
@@ -21,24 +22,39 @@ const AddShareholders = ({
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingShareholder, setEditingShareholder] =
     useState<HM.Shareholder | null>(null);
-  const [shareholders, setShareholders] = useState<HM.Shareholder[]>([]);
+  const [shareholderDocumentComplete, setShareholderDocumentComplete] =
+    useState(false);
+  const [progressChecked, setProgressChecked] = useState(false);
+  const session = useAppSelector(state => state.session);
 
-  const mutation = useMutationAction<HM.ShareholderResponse>({
-    url: ENDPOINTS.GET_SHAREHOLDERS,
-    method: "POST",
-    mutationKey: ["get-shareholders"],
-    onSuccess: data => {
-      setShareholders(data.shareholder?.data || []);
-      console.log(data?.shareholder?.data.length, "lentgth");
-    },
-    onError: error => {
-      message.error(getErrorMessage(error));
-    },
-  });
+  // Use the shareholders hook
+  const {
+    shareholders,
+    isLoading: isLoadingShareholders,
+    getShareholders,
+  } = useShareholders();
+
+  // Use the shareholder progress hook
+  const { getShareholderProgress, isChecking } = useShareholderProgress(
+    session?.user?.email
+  );
+
+  // Use the auto add shareholder hook
+  // const { autoAddedShareholder, isLoading: isAutoAddingShareHolder } =
+  //   useAutoAddShareholder({
+  //     email: session?.user?.email,
+  //     isReview,
+  //   });
+
+  // Fetch personal details to check percentage stake
+  const { personalDetails, isLoading: isLoadingPersonalDetails } =
+    usePersonalDetails(session?.user?.email);
 
   const removeForm = useCallback(() => {
     setShowAddForm(false);
     setEditingShareholder(null);
+    checkShareholderProgress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const showForm = useCallback(() => {
@@ -49,20 +65,42 @@ const AddShareholders = ({
     setEditingShareholder(shareholder);
   }, []);
 
-  const getShareholders = useCallback(async () => {
-    await mutation.mutateAsync({});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const canAddShareholders = useCallback(
+    () => Number(personalDetails?.percentage_stake) < 100,
+    [personalDetails]
+  );
+
+  const checkShareholderProgress = async () => {
+    const progress = await getShareholderProgress();
+    setShareholderDocumentComplete(progress.shareholderDocumentComplete);
+    setProgressChecked(true);
+  };
 
   useEffect(() => {
     getShareholders();
-  }, [getShareholders, showAddForm, editingShareholder]);
+    checkShareholderProgress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!isReview) {
       ref.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [isReview]);
+
+  // After editing or adding a shareholder, recheck document progress
+  useEffect(() => {
+    if (!showAddForm && !editingShareholder) {
+      checkShareholderProgress();
+    }
+    getShareholders()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showAddForm, editingShareholder]);
+
+  const isLoading = useMemo(
+    () => isLoadingShareholders || isLoadingPersonalDetails || isChecking,
+    [isLoadingShareholders, isLoadingPersonalDetails, isChecking]
+  );
 
   if (showAddForm) return <AddShareholderForm removeForm={removeForm} />;
   if (editingShareholder)
@@ -77,26 +115,34 @@ const AddShareholders = ({
     <div
       className={clsx("h-full w-full space-y-8", !isReview && "p-8")}
       ref={ref}>
-      {mutation.isPending && <Loader />}
+      {isLoading && <Loader />}
       <HeaderTitle
-        headerDescription="Add up to Four (4) key shareholders in your business"
+        headerDescription={
+          personalDetails?.percentage_stake == "100"
+            ? "You are the only shareholder with 100% stake"
+            : "Add up to Four (4) key shareholders in your business"
+        }
         headerTitle="Add Key Shareholders"
       />
       <section className="grid grid-cols-1 grid-rows-[120px] gap-6 lg:grid-cols-2">
         <AddButton
           shareholder={shareholders[0] || null}
           key={1}
+          canAddShareholder={canAddShareholders()}
           showForm={showForm}
           onEdit={handleEdit}
         />
+
         <AddButton
           shareholder={shareholders[1] || null}
+          canAddShareholder={canAddShareholders()}
           key={2}
           showForm={showForm}
           onEdit={handleEdit}
         />
         <AddButton
           shareholder={shareholders[2] || null}
+          canAddShareholder={canAddShareholders()}
           key={3}
           showForm={showForm}
           onEdit={handleEdit}
@@ -104,20 +150,35 @@ const AddShareholders = ({
         <AddButton
           shareholder={shareholders[3] || null}
           key={4}
+          canAddShareholder={canAddShareholders()}
           showForm={showForm}
           onEdit={handleEdit}
         />
       </section>
-      {shareholders.length > 0 && (
-        <Button
-          className="w-48"
-          size="large"
-          type="primary"
-          shape="round"
-          onClick={next}>
-          Next
-        </Button>
-      )}
+
+      {/* Only show next button if shareholders exist and their documents are complete */}
+      {shareholders.length > 0 &&
+        progressChecked &&
+        shareholderDocumentComplete && (
+          <Button
+            className="w-48"
+            size="large"
+            type="primary"
+            shape="round"
+            onClick={next}>
+            Next
+          </Button>
+        )}
+
+      {/* Show message if shareholders exist but documents are not complete */}
+      {shareholders.length > 0 &&
+        progressChecked &&
+        !shareholderDocumentComplete && (
+          <div className="text-yellow-600 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            Please ensure all shareholder documents are uploaded before
+            proceeding to the next step.
+          </div>
+        )}
     </div>
   );
 };

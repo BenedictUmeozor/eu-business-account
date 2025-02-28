@@ -3,15 +3,22 @@ import HM_NSP from "@/constants/namespace";
 
 const userState = sessionStorage.getItem(HM_NSP.USER);
 const businessState = sessionStorage.getItem(HM_NSP.BUSINESS);
+const onboardingStatus = sessionStorage.getItem(HM_NSP.ONBOARDING);
+
+interface OnboardingStatus {
+  completed: boolean;
+}
 
 interface SessionState {
   user: HM.LoginResponse["data"] | null;
   business: HM.LoginResponse["business_data"] | null;
+  onboardingStatus: OnboardingStatus | null;
 }
 
 const initialState: SessionState = {
   user: userState ? JSON.parse(userState) : null,
   business: businessState ? JSON.parse(businessState) : null,
+  onboardingStatus: onboardingStatus ? JSON.parse(onboardingStatus) : null,
 };
 
 const sessionSlice = createSlice({
@@ -29,14 +36,23 @@ const sessionSlice = createSlice({
       state.business = action.payload;
       sessionStorage.setItem(HM_NSP.BUSINESS, JSON.stringify(action.payload));
     },
+    setOnboardingStatus: state => {
+      state.onboardingStatus = { completed: true };
+      sessionStorage.setItem(
+        HM_NSP.ONBOARDING,
+        JSON.stringify(state.onboardingStatus)
+      );
+    },
     clearSession: state => {
       state.user = null;
       state.business = null;
+      state.onboardingStatus = null;
+      sessionStorage.removeItem(HM_NSP.ONBOARDING);
       sessionStorage.removeItem(HM_NSP.USER);
       sessionStorage.removeItem(HM_NSP.BUSINESS);
     },
   },
 });
 
-export const { setUser, setBusiness, clearSession } = sessionSlice.actions;
+export const { setUser, setBusiness, clearSession, setOnboardingStatus } = sessionSlice.actions;
 export default sessionSlice.reducer;

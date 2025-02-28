@@ -15,6 +15,7 @@ import {
 import { Button } from "antd";
 import useLogout from "@/hooks/use-logout";
 import Loader from "./Loader";
+import { useAppSelector } from "@/hooks";
 
 interface MenuItem {
   key: string;
@@ -26,60 +27,69 @@ interface MenuItem {
 
 const Sidebar = () => {
   const { pathname } = useLocation();
+  const onboardingStatus = useAppSelector(
+    state => state.session.onboardingStatus
+  );
 
   const { loading, logout } = useLogout();
+
+  const MENU = [
+    {
+      key: "1",
+      label: "Onboarding",
+      icon: <FolderIcon className="h-4 w-4" />,
+      to: "/onboarding",
+      active: pathname.startsWith("/onboarding"),
+    },
+    {
+      key: "2",
+      label: "Dashboard",
+      icon: <LayoutDashboardIcon className="h-4 w-4" />,
+      to: "/dashboard",
+      active: pathname.startsWith("/dashboard"),
+    },
+    {
+      key: "3",
+      label: "Accounts",
+      icon: <PieChartIcon className="h-4 w-4" />,
+      to: "/accounts",
+      active: pathname.startsWith("/accounts"),
+    },
+    {
+      key: "4",
+      label: "Transfers",
+      icon: <SendIcon className="h-4 w-4" />,
+      to: "/transfers",
+      active: pathname.startsWith("/transfers"),
+    },
+    {
+      key: "5",
+      label: "Transactions",
+      icon: <WorkflowIcon className="h-4 w-4" />,
+      to: "/transactions",
+      active: pathname.startsWith("/transactions"),
+    },
+    {
+      key: "6",
+      label: "Beneficiaries",
+      icon: <UsersIcon className="h-4 w-4" />,
+      to: "/beneficiaries",
+      active: pathname.startsWith("/beneficiaries"),
+    },
+  ];
 
   const disabled = useMemo(() => {
     return pathname.includes("onboarding");
   }, [pathname]);
 
-  const menuItems: MenuItem[] = useMemo(
-    () => [
-      {
-        key: "1",
-        label: "Onboarding",
-        icon: <FolderIcon className="h-4 w-4" />,
-        to: "/onboarding",
-        active: pathname.startsWith("/onboarding"),
-      },
-      {
-        key: "2",
-        label: "Dashboard",
-        icon: <LayoutDashboardIcon className="h-4 w-4" />,
-        to: "/dashboard",
-        active: pathname.startsWith("/dashboard"),
-      },
-      {
-        key: "3",
-        label: "Accounts",
-        icon: <PieChartIcon className="h-4 w-4" />,
-        to: "/accounts",
-        active: pathname.startsWith("/accounts"),
-      },
-      {
-        key: "4",
-        label: "Transfers",
-        icon: <SendIcon className="h-4 w-4" />,
-        to: "/transfers",
-        active: pathname.startsWith("/transfers"),
-      },
-      {
-        key: "5",
-        label: "Transactions",
-        icon: <WorkflowIcon className="h-4 w-4" />,
-        to: "/transactions",
-        active: pathname.startsWith("/transactions"),
-      },
-      {
-        key: "6",
-        label: "Beneficiaries",
-        icon: <UsersIcon className="h-4 w-4" />,
-        to: "/beneficiaries",
-        active: pathname.startsWith("/beneficiaries"),
-      },
-    ],
-    [pathname]
-  );
+  const menuItems: MenuItem[] = useMemo(() => {
+    if (!onboardingStatus?.completed || pathname.includes("onboarding")) {
+      return MENU;
+    }
+    return MENU.filter(item => item.key !== "1");
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, onboardingStatus]);
 
   return (
     <aside className="bg-secondary-500 max-lg:hidden relative h-screen w-[200px] overflow-y-auto grid grid-rows-[auto_1fr] pb-6 gap-6 no-scrollbar">

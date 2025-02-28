@@ -41,16 +41,19 @@ const EditBusinessForm = ({
   const [frontImage, setFrontImage] = useState<File | null>(null);
   const [backImage, setBackImage] = useState<File | null>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState<string>("");
-  const [documentName, setDocumentName] = useState<string>("Identification document");
+  const [documentName, setDocumentName] = useState<string>(
+    "Identification document"
+  );
   const [showImageError, setShowImageError] = useState<boolean>(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const { documentTypes, loading } = useDocumentTypes();
   const { editShareholder, isLoading } = useEditShareholder({
     onSuccess: onClose,
+    shareholder_token: shareholder.shareholder_token,
   });
 
-  const onFinish: FormProps<FormValues>["onFinish"] = async (values) => {
+  const onFinish: FormProps<FormValues>["onFinish"] = async values => {
     // Only require new images if no existing documents
     if (!shareholder.documents && (!frontImage || !backImage)) {
       setShowImageError(true);
@@ -63,22 +66,27 @@ const EditBusinessForm = ({
     setShowImageError(false);
 
     const formData = omit(
-      { 
-        ...values, 
-        type: "Business", 
+      {
+        ...values,
+        type: "Business",
         business_role: "Shareholder",
-        shareholder_token: shareholder.shareholder_token 
+        shareholder_token: shareholder.shareholder_token,
       },
       "document_type"
     );
 
-    await editShareholder(formData, frontImage, backImage, selectedDocumentType);
+    await editShareholder(
+      formData,
+      frontImage,
+      backImage,
+      selectedDocumentType
+    );
   };
 
   useEffect(() => {
     if (selectedDocumentType && documentTypes.length) {
       const selected = documentTypes.find(
-        (doc) => doc.code === selectedDocumentType
+        doc => doc.code === selectedDocumentType
       );
       if (selected) {
         setDocumentName(selected.name);
@@ -106,7 +114,8 @@ const EditBusinessForm = ({
       business_address: shareholder.residential_address,
       region: shareholder.region,
       postcode: shareholder.postcode,
-      business_stake: shareholder.shareholding_percentage === "YES" ? "YES" : "NO",
+      business_stake:
+        shareholder.shareholding_percentage === "YES" ? "YES" : "NO",
       authorized_signatory: shareholder.authorized_signatory,
     });
 
@@ -121,10 +130,10 @@ const EditBusinessForm = ({
 
   // Get front and back document URLs with type safety
   const frontDocumentUrl = shareholder.documents?.data?.find(
-    (doc) => doc.side === "Front"
+    doc => doc.side === "Front"
   )?.filepath;
   const backDocumentUrl = shareholder.documents?.data?.find(
-    (doc) => doc.side === "Back"
+    doc => doc.side === "Back"
   )?.filepath;
 
   return (
@@ -247,7 +256,7 @@ const EditBusinessForm = ({
               onChange={handleDocTypeChange}
               value={selectedDocumentType}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {documentTypes.map((docType) => (
+                {documentTypes.map(docType => (
                   <Radio
                     key={docType.code}
                     value={docType.code}

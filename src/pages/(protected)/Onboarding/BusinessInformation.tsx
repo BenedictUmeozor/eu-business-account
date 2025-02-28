@@ -15,7 +15,6 @@ import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
 import {
   BUSINESS_INDUSTRIES,
-  BUSINESS_TYPES,
   CURRENCIES,
   PURPOSES_OF_ACCOUNT,
   TRANSACTIONS_VOLUMES,
@@ -24,9 +23,12 @@ import countries from "@/data/codes.json";
 import useMutationAction from "@/hooks/use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
+import { useAppSelector } from "@/hooks";
+import useBusinessDetails from "@/hooks/use-business-details";
+import useCompanyTypes from "@/hooks/use-company-types";
 
 interface FormValues {
-  business_type: HM.BusinessType;
+  business_type: string;
   business_industry: string;
   account_purpose: string;
   website: string;
@@ -48,6 +50,7 @@ const BusinessInformation = ({
   isReview?: boolean;
 }) => {
   const [form] = Form.useForm<FormValues>();
+  const session = useAppSelector(state => state.session);
   const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([]);
   const [selectedSendCountries, setSelectedSendCountries] = useState<string[]>(
     []
@@ -71,12 +74,18 @@ const BusinessInformation = ({
     setSelectedCurrencies(filtered);
   };
 
+  const { businessDetails, isLoading, refetch } = useBusinessDetails(
+    session?.user?.email
+  );
+  const { companyTypes, loading } = useCompanyTypes();
+
   const mutation = useMutationAction<HM.QueryResponse>({
     url: ENDPOINTS.BUSINESS_DETAILS,
     method: "POST",
     onSuccess: data => {
       message.success(data?.message);
       next();
+      refetch();
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -98,10 +107,49 @@ const BusinessInformation = ({
   };
 
   useEffect(() => {
-    form.setFieldValue('expected_currency', selectedCurrencies);
-    form.setFieldValue('source_countries', selectedSendCountries);
-    form.setFieldValue('target_countries', selectedReceiveCountries);
-  }, [selectedCurrencies, selectedSendCountries, selectedReceiveCountries, form]);
+    form.setFieldValue("expected_currency", selectedCurrencies);
+    form.setFieldValue("source_countries", selectedSendCountries);
+    form.setFieldValue("target_countries", selectedReceiveCountries);
+  }, [
+    selectedCurrencies,
+    selectedSendCountries,
+    selectedReceiveCountries,
+    form,
+  ]);
+
+  useEffect(() => {
+    if (businessDetails && !isLoading) {
+      const expectedCurrencies = businessDetails.expected_currency
+        ? businessDetails.expected_currency.split(",")
+        : [];
+      const sourceCountries = businessDetails.source_countries
+        ? businessDetails.source_countries.split(",")
+        : [];
+      const targetCountries = businessDetails.target_countries
+        ? businessDetails.target_countries.split(",")
+        : [];
+
+      // Update state for the currency and country tags
+      setSelectedCurrencies(expectedCurrencies);
+      setSelectedSendCountries(sourceCountries);
+      setSelectedReceiveCountries(targetCountries);
+
+      form.setFieldsValue({
+        business_type: businessDetails.business_type,
+        business_industry: businessDetails.business_industry,
+        account_purpose: businessDetails.account_purpose,
+        website: businessDetails.website,
+        monthly_turnover: businessDetails.monthly_turnover,
+        expected_currency: expectedCurrencies,
+        source_countries: sourceCountries,
+        target_countries: targetCountries,
+        partners: businessDetails.partners,
+        partners_outgoing: businessDetails.partners_outgoing,
+        economic_activity: businessDetails.economic_activity,
+        business_license: businessDetails.business_license === "YES" ? 1 : 0,
+      });
+    }
+  }, [businessDetails, isLoading, form]);
 
   return (
     <div className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
@@ -146,14 +194,19 @@ const BusinessInformation = ({
                 placeholder="Select Type of Business"
                 showSearch
                 allowClear
-                options={BUSINESS_TYPES}
+                loading={loading}
+                disabled={isReview}
+                options={companyTypes?.map(v => ({
+                  label: v.company_type,
+                  value: v.code,
+                }))}
               />
             </Form.Item>
-            <Form.Item 
-              label="Business Industry" 
+            <Form.Item
+              label="Business Industry"
               name="business_industry"
               rules={[
-                { required: true, message: "Please select business industry" }
+                { required: true, message: "Please select business industry" },
               ]}>
               <Select
                 className="w-full"
@@ -165,11 +218,11 @@ const BusinessInformation = ({
             </Form.Item>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Form.Item 
-              label="Purpose of Account" 
+            <Form.Item
+              label="Purpose of Account"
               name="account_purpose"
               rules={[
-                { required: true, message: "Please select purpose of account" }
+                { required: true, message: "Please select purpose of account" },
               ]}>
               <Select
                 className="w-full"
@@ -183,7 +236,7 @@ const BusinessInformation = ({
               label="Economic Activity of the Company"
               name="economic_activity"
               rules={[
-                { required: true, message: "Please enter economic activity" }
+                { required: true, message: "Please enter economic activity" },
               ]}>
               <Input
                 className="w-full"
@@ -197,7 +250,7 @@ const BusinessInformation = ({
               name="website"
               rules={[
                 { required: true, message: "Please enter business website" },
-                { type: 'url', message: 'Please enter a valid URL' }
+                { type: "url", message: "Please enter a valid URL" },
               ]}>
               <Input className="w-full" placeholder="www.xyz.com" />
             </Form.Item>
@@ -205,7 +258,10 @@ const BusinessInformation = ({
               label="Expected Transaction Volume (Monthly)"
               name="monthly_turnover"
               rules={[
-                { required: true, message: "Please select expected transaction volume" }
+                {
+                  required: true,
+                  message: "Please select expected transaction volume",
+                },
               ]}>
               <Select
                 className="w-full"
@@ -222,7 +278,10 @@ const BusinessInformation = ({
               label="Expected currencies usage"
               name="expected_currency"
               rules={[
-                { required: true, message: "Please select at least one currency" }
+                {
+                  required: true,
+                  message: "Please select at least one currency",
+                },
               ]}>
               <Select
                 className="w-full"
@@ -233,7 +292,7 @@ const BusinessInformation = ({
                 value={selectedCurrencies}
                 onChange={value => {
                   setSelectedCurrencies(value);
-                  form.setFieldValue('expected_currency', value);
+                  form.setFieldValue("expected_currency", value);
                 }}
                 options={CURRENCIES.map(v => ({
                   label: `${v.code} - ${v.name}`,
@@ -257,7 +316,10 @@ const BusinessInformation = ({
               label="Top 5 countries you send money to"
               name="source_countries"
               rules={[
-                { required: true, message: "Please select at least one country" }
+                {
+                  required: true,
+                  message: "Please select at least one country",
+                },
               ]}>
               <Select
                 className="w-full"
@@ -268,7 +330,7 @@ const BusinessInformation = ({
                 value={selectedSendCountries}
                 onChange={value => {
                   setSelectedSendCountries(value);
-                  form.setFieldValue('source_countries', value);
+                  form.setFieldValue("source_countries", value);
                 }}
                 options={countries.map(v => ({
                   label: (
@@ -314,7 +376,10 @@ const BusinessInformation = ({
               label="Top 5 countries you receive money from"
               name="target_countries"
               rules={[
-                { required: true, message: "Please select at least one country" }
+                {
+                  required: true,
+                  message: "Please select at least one country",
+                },
               ]}>
               <Select
                 className="w-full"
@@ -325,7 +390,7 @@ const BusinessInformation = ({
                 value={selectedReceiveCountries}
                 onChange={value => {
                   setSelectedReceiveCountries(value);
-                  form.setFieldValue('target_countries', value);
+                  form.setFieldValue("target_countries", value);
                 }}
                 options={countries.map(v => ({
                   label: (
@@ -368,7 +433,10 @@ const BusinessInformation = ({
               name="partners"
               label="Top 5 transacting partners - Incoming"
               rules={[
-                { required: true, message: "Please enter your incoming partners" }
+                {
+                  required: true,
+                  message: "Please enter your incoming partners",
+                },
               ]}>
               <Input
                 className="w-full"
@@ -382,7 +450,10 @@ const BusinessInformation = ({
               name="partners_outgoing"
               label="Top 5 transacting partners - Outgoing"
               rules={[
-                { required: true, message: "Please enter your outgoing partners" }
+                {
+                  required: true,
+                  message: "Please enter your outgoing partners",
+                },
               ]}>
               <Input
                 className="w-full"
@@ -393,7 +464,10 @@ const BusinessInformation = ({
               label="Does your company require a license to operate?"
               name="business_license"
               rules={[
-                { required: true, message: "Please select if license is required" }
+                {
+                  required: true,
+                  message: "Please select if license is required",
+                },
               ]}>
               <Radio.Group className="w-full">
                 <div className="grid grid-cols-2 gap-2">

@@ -17,13 +17,14 @@ import { PencilIcon } from "@heroicons/react/24/outline";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
 import { useAppSelector } from "@/hooks";
-import useQueryAction from "@/hooks/use-query-action";
 import ENDPOINTS from "@/constants/endpoints";
 import Loader from "@/components/app/Loader";
 import useMutationAction from "@/hooks/use-mutation-action";
 import { getErrorMessage } from "@/utils";
 import _ from "lodash";
-import moment, {Moment} from "moment";
+import moment, { Moment } from "moment";
+import usePersonalDetails from "@/hooks/use-personal-details";
+import useShareholders from "@/hooks/use-shareholders";
 
 interface FormValues {
   fname: string;
@@ -60,9 +61,19 @@ const PersonalInfo = ({
   const hasBusinessStake = Form.useWatch("business_stake", form);
   const businessRole = Form.useWatch("business_role", form);
 
-  const { data, isPending } = useQueryAction<PD.PersonalDetails>({
-    url: ENDPOINTS.FETCH_PERSONAL_INFORMATION,
-    key: ["personal_details", session?.user?.email],
+  const { personalDetails, isLoading, refetch } = usePersonalDetails(
+    session?.user?.email
+  );
+  const { shareholders, getShareholders } = useShareholders();
+
+  const addMutation = useMutationAction<unknown>({
+    url: ENDPOINTS.ADD_SHAREHOLDER,
+    method: "POST",
+    mutationKey: ["add-shareholder"],
+    invalidateQueries: ["get-shareholders"],
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
   });
 
   const mutation = useMutationAction<HM.QueryResponse>({
@@ -71,14 +82,14 @@ const PersonalInfo = ({
     invalidateQueries: ["personal_details"],
     onSuccess: data => {
       message.success(data?.message);
-      next();
+      refetch();
     },
     onError: error => {
       message.error(getErrorMessage(error));
     },
   });
 
-  const onFinish: FormProps<FormValues>["onFinish"] = values => {
+  const onFinish: FormProps<FormValues>["onFinish"] = async values => {
     const formattedValues = {
       ...values,
       business_role: Array.isArray(values.business_role)
@@ -91,29 +102,49 @@ const PersonalInfo = ({
     };
 
     const payload = _.omit(formattedValues, ["fname", "lname"]);
-    mutation.mutate(payload);
+    if (
+      !isReview &&
+      shareholders.length === 0 &&
+      payload.business_stake === "YES"
+    ) {
+      await addMutation.mutateAsync({
+        fname: session?.user?.fname,
+        lname: session?.user?.lname,
+        email: session?.user?.email || "",
+        type: "Individual",
+        residential_address: payload.residential_address || "",
+        region: payload.town || "",
+        postcode: payload.postcode || "",
+        business_stake: "YES",
+        business_role: "Shareholder",
+        authorized_signatory: payload.authorized_signatory || "YES",
+      });
+    }
+    await mutation.mutateAsync(payload);
+    next();
   };
 
   useEffect(() => {
-    if (data && !isPending) {
+    getShareholders();
+    if (personalDetails && !isLoading) {
       form.setFieldsValue({
-        fname: data.fname,
-        oname: data.oname,
-        lname: data.lname,
-        residential_address: data.address,
-        town: data.city,
-        postcode: data.postcode,
-        occupation: data.occupation,
-        business_stake: data.business_stake,
-        business_role: data.business_role?.split(","),
-        percentage_stake: data.percentage_stake,
-        authorized_signatory: data.authorized_signatory,
-        gender: data.gender,
-        dob: data.dob ? moment(data.dob) : undefined,
+        fname: personalDetails.fname,
+        oname: personalDetails.oname,
+        lname: personalDetails.lname,
+        residential_address: personalDetails.address,
+        town: personalDetails.city,
+        postcode: personalDetails.postcode,
+        occupation: personalDetails.occupation,
+        business_stake: personalDetails.business_stake,
+        business_role: personalDetails.business_role?.split(","),
+        percentage_stake: personalDetails.percentage_stake,
+        authorized_signatory: personalDetails.authorized_signatory,
+        gender: personalDetails.gender,
+        dob: personalDetails.dob ? moment(personalDetails.dob) : undefined,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isPending]);
+  }, [personalDetails, isLoading]);
 
   useEffect(() => {
     if (
@@ -127,7 +158,7 @@ const PersonalInfo = ({
 
   return (
     <div className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
-      {isPending && <Loader />}
+      {isLoading && <Loader />}
       <header className="flex items-center justify-between">
         <HeaderTitle
           headerDescription="Let’s know your personal details"
@@ -351,7 +382,7 @@ const PersonalInfo = ({
               htmlType="submit"
               type="primary"
               size="large"
-              loading={mutation.isPending}
+              loading={mutation.isPending || addMutation.isPending}
               className="text-base w-48"
               shape="round">
               {isReview ? "Confirm" : "Save & Continue"}

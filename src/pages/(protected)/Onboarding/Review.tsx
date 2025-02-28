@@ -1,12 +1,14 @@
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { Button, Checkbox, Select, Space } from "antd";
+import { Button, Checkbox, Select, Space, Form } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import BusinessInformation from "./BusinessInformation";
 import PersonalInfo from "./PersonalInfo";
 import ProofOfIdentity from "./ProofOfIdentity";
 import { Link } from "react-router";
 import AddShareholders from "./Shareholder";
+import { useAppDispatch } from "@/hooks";
+import { setOnboardingStatus } from "@/lib/redux/slices/session";
 
 const PAGES = [
   {
@@ -29,15 +31,18 @@ const PAGES = [
 
 const Review = ({ nextAction }: { nextAction: () => void }) => {
   const [selectedPage, setSelectedPage] = useState<number | null>(null);
+  const [showLastPage, setShowLastPage] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [form] = Form.useForm();
+  const dispatch = useAppDispatch();
 
-  const next = useCallback(
-    () =>
-      setSelectedPage(prev =>
-        prev !== null ? (prev === 3 ? 6 : prev + 1) : 0
-      ),
-    []
-  );
+  const next = useCallback(() => {
+    if (selectedPage === 3) {
+      setShowLastPage(true);
+    } else {
+      setSelectedPage(prev => (prev !== null ? prev + 1 : 0));
+    }
+  }, [selectedPage]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({
@@ -46,6 +51,11 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
     });
   }, [selectedPage]);
 
+  const onFinish = () => {
+    dispatch(setOnboardingStatus());
+    nextAction();
+  };
+
   return (
     <div className="h-full w-full space-y-12 p-8" ref={ref}>
       <section className="space-y-8">
@@ -53,59 +63,80 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
           headerTitle="Review Information"
           headerDescription="Kindly vet all your details and document before final submission"
         />
-        {selectedPage === 6 && (
+        {showLastPage && (
           <section className="space-y-8">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Checkbox>
-                  <p className="text-grey-500 font-medium text-base">
-                    I have read through my submitted details and confirmed they
-                    are correct
-                  </p>
-                </Checkbox>
+            <Form form={form} layout="vertical" onFinish={onFinish}>
+              <div className="space-y-4">
+                <Form.Item
+                  name="confirmDetails"
+                  valuePropName="checked"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please confirm your details are correct",
+                    },
+                  ]}>
+                  <Checkbox>
+                    <p className="text-grey-500 font-medium text-base">
+                      I have read through my submitted details and confirmed
+                      they are correct
+                    </p>
+                  </Checkbox>
+                </Form.Item>
+                <Form.Item
+                  name="acceptTerms"
+                  valuePropName="checked"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please accept the terms and conditions",
+                    },
+                  ]}>
+                  <Checkbox>
+                    <p className="text-grey-500 font-medium text-base">
+                      By clicking "submit profile", I accept the{" "}
+                      <Link to="#" className="font-medium text-primary">
+                        terms
+                      </Link>{" "}
+                      and{" "}
+                      <Link to="#" className="font-medium text-primary">
+                        conditions
+                      </Link>
+                    </p>
+                  </Checkbox>
+                </Form.Item>
               </div>
-              <div className="flex items-center gap-2">
-                <Checkbox>
-                  <p className="text-grey-500 font-medium text-base">
-                    By clicking “submit profile”, I accept the{" "}
-                    <Link to="#" className="font-medium text-primary">
-                      terms
-                    </Link>{" "}
-                    and{" "}
-                    <Link to="#" className="font-medium text-primary">
-                      conditions
-                    </Link>
-                  </p>
-                </Checkbox>
+              <div className="flex items-center gap-4 mt-8">
+                <Button
+                  type="primary"
+                  htmlType="button"
+                  shape="round"
+                  onClick={() => {
+                    setShowLastPage(false);
+                    setSelectedPage(0);
+                  }}
+                  className="w-48 bg-primary-50 text-base text-primary hover:bg-primary-100"
+                  size="large">
+                  Back
+                </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  shape="round"
+                  className="w-48 text-base"
+                  size="large">
+                  Submit Profile
+                </Button>
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button
-                type="primary"
-                htmlType="button"
-                shape="round"
-                onClick={() => setSelectedPage(0)}
-                className="w-48 bg-primary-50 text-base text-primary hover:bg-primary-100"
-                size="large">
-                Back
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                shape="round"
-                onClick={nextAction}
-                className="w-48 text-base"
-                size="large">
-                Submit Profile
-              </Button>
-            </div>
+            </Form>
           </section>
         )}
-        {selectedPage !== 6 && (
+        {!showLastPage && (
           <div className="grid grid-cols-2 gap-6">
             <Select
               className="w-full"
               placeholder="Select page to review"
+              value={selectedPage}
               options={PAGES.map(page => ({
                 label: page.title,
                 value: page.index,
@@ -134,12 +165,18 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
           </div>
         )}
       </section>
-      {selectedPage === 0 && <BusinessInformation next={next} isReview />}
-      {selectedPage === 1 && <PersonalInfo next={next} isReview />}
-      {selectedPage === 2 && (
+      {selectedPage === 0 && !showLastPage && (
+        <BusinessInformation next={next} isReview />
+      )}
+      {selectedPage === 1 && !showLastPage && (
+        <PersonalInfo next={next} isReview />
+      )}
+      {selectedPage === 2 && !showLastPage && (
         <ProofOfIdentity next={next} back={next} isReview />
       )}
-      {selectedPage === 3 && <AddShareholders next={next} isReview />}
+      {selectedPage === 3 && !showLastPage && (
+        <AddShareholders next={() => setShowLastPage(true)} isReview />
+      )}
     </div>
   );
 };

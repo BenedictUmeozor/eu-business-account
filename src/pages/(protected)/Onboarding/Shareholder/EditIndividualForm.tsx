@@ -41,13 +41,16 @@ const EditIndividualForm = ({
   const [frontImage, setFrontImage] = useState<File | null>(null);
   const [backImage, setBackImage] = useState<File | null>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState<string>("");
-  const [documentName, setDocumentName] = useState<string>("Identification document");
+  const [documentName, setDocumentName] = useState<string>(
+    "Identification document"
+  );
   const [showImageError, setShowImageError] = useState<boolean>(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const { documentTypes, loading } = useDocumentTypes();
   const { editShareholder, isLoading } = useEditShareholder({
     onSuccess: onClose,
+    shareholder_token: shareholder.shareholder_token,
   });
 
   const onFinish: FormProps<FormValues>["onFinish"] = async values => {
@@ -67,6 +70,7 @@ const EditIndividualForm = ({
         ...values,
         type: "Individual",
         business_role: "Shareholder",
+        shareholder_token: shareholder.shareholder_token,
       },
       "document_type"
     );
@@ -123,14 +127,15 @@ const EditIndividualForm = ({
       setDocumentName(firstDoc.document_name);
       form.setFieldValue("document_type", firstDoc.document_type);
     }
+    //eslint-disable-next-line
   }, [shareholder]);
 
   // Get front and back document URLs with type safety
   const frontDocumentUrl = shareholder.documents?.data?.find(
-    (doc) => doc.side === "Front"
+    doc => doc.side === "Front"
   )?.filepath;
   const backDocumentUrl = shareholder.documents?.data?.find(
-    (doc) => doc.side === "Back"
+    doc => doc.side === "Back"
   )?.filepath;
 
   return (

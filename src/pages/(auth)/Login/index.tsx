@@ -18,7 +18,8 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { checkProgress, isChecking } = useCheckOnboardingProgress(
-    form.getFieldValue("email")
+    form.getFieldValue("email"),
+    "/dashboard"
   );
 
   const mutation = useSharedMutationAction<HM.LoginResponse, FormValues>({
@@ -28,8 +29,8 @@ const Login = () => {
       dispatch(setBusiness(response.business_data));
       dispatch(setUser(response.data));
       message.success(response.message);
-      
-      navigate("", { state: { from: '/login' }, replace: true });
+
+      navigate("", { state: { from: "/login" }, replace: true });
       form.resetFields();
       checkProgress.mutate({
         business_token: response.business_data.business_token,
@@ -46,7 +47,7 @@ const Login = () => {
 
   return (
     <section className="ml-auto space-y-6 rounded-xl bg-white p-6 shadow-lg lg:max-w-[466px]">
-      {(isChecking) && <Loader />}
+      {isChecking && <Loader />}
       <Segmented
         options={[
           { label: "Personal", value: "Personal", disabled: true },
