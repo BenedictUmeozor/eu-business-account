@@ -68,6 +68,9 @@ const TransactionProgress = () =>
     "./pages/(protected)/Dashboard/SendMoney/InternationalPayments/TransactionProgress"
   );
 
+// Transactions
+const Transactions = () => import("./pages/(protected)/Transactions");
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -123,6 +126,9 @@ const App = () => {
               </Route>
             </Route>
           </Route>
+
+          {/* Transactions */}
+          <Route path="transactions" lazy={Transactions} />
         </Route>
         <Route path="*" lazy={NotFound} />
       </Route>

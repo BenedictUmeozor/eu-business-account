@@ -1,0 +1,272 @@
+[
+  {
+    "currency_pair": "GBP to USD",
+    "amount_debited": "£250.00",
+    "amount_credited": "$318.75",
+    "balance_before": "$1,400.00",
+    "balance_after": "$1,718.75",
+    "date_time": "Thu, 14/08/24 2:30pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "EUR to GBP",
+    "amount_debited": "€180.00",
+    "amount_credited": "£153.00",
+    "balance_before": "£1,250.00",
+    "balance_after": "£1,403.00",
+    "date_time": "Thu, 14/08/24 1:45pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "USD to EUR",
+    "amount_debited": "$300.00",
+    "amount_credited": "€273.00",
+    "balance_before": "€850.00",
+    "balance_after": "€1,123.00",
+    "date_time": "Thu, 14/08/24 12:30pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "GBP to EUR",
+    "amount_debited": "£125.00",
+    "amount_credited": "€146.25",
+    "balance_before": "€500.00",
+    "balance_after": "€646.25",
+    "date_time": "Thu, 14/08/24 11:15am",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "USD to GBP",
+    "amount_debited": "$500.00",
+    "amount_credited": "£392.00",
+    "balance_before": "£750.00",
+    "balance_after": "£1,142.00",
+    "date_time": "Thu, 14/08/24 10:20am",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "EUR to USD",
+    "amount_debited": "€220.00",
+    "amount_credited": "$242.00",
+    "balance_before": "$1,200.00",
+    "balance_after": "$1,442.00",
+    "date_time": "Thu, 14/08/24 9:45am",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "GBP to USD",
+    "amount_debited": "£175.00",
+    "amount_credited": "$223.12",
+    "balance_before": "$980.00",
+    "balance_after": "$1,203.12",
+    "date_time": "Wed, 13/08/24 4:30pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "USD to GBP",
+    "amount_debited": "$350.00",
+    "amount_credited": "£274.40",
+    "balance_before": "£600.00",
+    "balance_after": "£874.40",
+    "date_time": "Wed, 13/08/24 3:15pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "EUR to GBP",
+    "amount_debited": "€280.00",
+    "amount_credited": "£238.00",
+    "balance_before": "£520.00",
+    "balance_after": "£758.00",
+    "date_time": "Wed, 13/08/24 2:10pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "GBP to EUR",
+    "amount_debited": "£200.00",
+    "amount_credited": "€234.00",
+    "balance_before": "€700.00",
+    "balance_after": "€934.00",
+    "date_time": "Wed, 13/08/24 1:05pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "USD to EUR",
+    "amount_debited": "$275.00",
+    "amount_credited": "€250.25",
+    "balance_before": "€450.00",
+    "balance_after": "€700.25",
+    "date_time": "Wed, 13/08/24 11:45am",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "EUR to USD",
+    "amount_debited": "€190.00",
+    "amount_credited": "$209.00",
+    "balance_before": "$890.00",
+    "balance_after": "$1,099.00",
+    "date_time": "Wed, 13/08/24 10:30am",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "GBP to USD",
+    "amount_debited": "£150.00",
+    "amount_credited": "$191.25",
+    "balance_before": "$780.00",
+    "balance_after": "$971.25",
+    "date_time": "Tue, 12/08/24 4:45pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "USD to GBP",
+    "amount_debited": "$320.00",
+    "amount_credited": "£250.88",
+    "balance_before": "£480.00",
+    "balance_after": "£730.88",
+    "date_time": "Tue, 12/08/24 3:30pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "EUR to GBP",
+    "amount_debited": "€240.00",
+    "amount_credited": "£204.00",
+    "balance_before": "£350.00",
+    "balance_after": "£554.00",
+    "date_time": "Tue, 12/08/24 2:15pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "GBP to EUR",
+    "amount_debited": "£180.00",
+    "amount_credited": "€210.60",
+    "balance_before": "€380.00",
+    "balance_after": "€590.60",
+    "date_time": "Tue, 12/08/24 1:20pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "USD to EUR",
+    "amount_debited": "$230.00",
+    "amount_credited": "€209.30",
+    "balance_before": "€290.00",
+    "balance_after": "€499.30",
+    "date_time": "Tue, 12/08/24 11:50am",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "EUR to USD",
+    "amount_debited": "€165.00",
+    "amount_credited": "$181.50",
+    "balance_before": "$670.00",
+    "balance_after": "$851.50",
+    "date_time": "Tue, 12/08/24 10:40am",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "GBP to USD",
+    "amount_debited": "£135.00",
+    "amount_credited": "$172.12",
+    "balance_before": "$560.00",
+    "balance_after": "$732.12",
+    "date_time": "Mon, 11/08/24 4:55pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "USD to GBP",
+    "amount_debited": "$290.00",
+    "amount_credited": "£227.36",
+    "balance_before": "£320.00",
+    "balance_after": "£547.36",
+    "date_time": "Mon, 11/08/24 3:40pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "EUR to GBP",
+    "amount_debited": "€210.00",
+    "amount_credited": "£178.50",
+    "balance_before": "£280.00",
+    "balance_after": "£458.50",
+    "date_time": "Mon, 11/08/24 2:25pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "GBP to EUR",
+    "amount_debited": "£160.00",
+    "amount_credited": "€187.20",
+    "balance_before": "€250.00",
+    "balance_after": "€437.20",
+    "date_time": "Mon, 11/08/24 1:10pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "USD to EUR",
+    "amount_debited": "$195.00",
+    "amount_credited": "€177.45",
+    "balance_before": "€210.00",
+    "balance_after": "€387.45",
+    "date_time": "Mon, 11/08/24 11:30am",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "EUR to USD",
+    "amount_debited": "€145.00",
+    "amount_credited": "$159.50",
+    "balance_before": "$490.00",
+    "balance_after": "$649.50",
+    "date_time": "Mon, 11/08/24 10:15am",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "GBP to USD",
+    "amount_debited": "£120.00",
+    "amount_credited": "$153.00",
+    "balance_before": "$430.00",
+    "balance_after": "$583.00",
+    "date_time": "Fri, 08/08/24 4:50pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "USD to GBP",
+    "amount_debited": "$260.00",
+    "amount_credited": "£203.84",
+    "balance_before": "£240.00",
+    "balance_after": "£443.84",
+    "date_time": "Fri, 08/08/24 3:35pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "EUR to GBP",
+    "amount_debited": "€185.00",
+    "amount_credited": "£157.25",
+    "balance_before": "£200.00",
+    "balance_after": "£357.25",
+    "date_time": "Fri, 08/08/24 2:20pm",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "GBP to EUR",
+    "amount_debited": "£140.00",
+    "amount_credited": "€163.80",
+    "balance_before": "€180.00",
+    "balance_after": "€343.80",
+    "date_time": "Fri, 08/08/24 1:25pm",
+    "status": "Failed"
+  },
+  {
+    "currency_pair": "USD to EUR",
+    "amount_debited": "$170.00",
+    "amount_credited": "€154.70",
+    "balance_before": "€140.00",
+    "balance_after": "€294.70",
+    "date_time": "Fri, 08/08/24 11:55am",
+    "status": "Success"
+  },
+  {
+    "currency_pair": "EUR to USD",
+    "amount_debited": "€125.00",
+    "amount_credited": "$137.50",
+    "balance_before": "$370.00",
+    "balance_after": "$507.50",
+    "date_time": "Fri, 08/08/24 10:45am",
+    "status": "Failed"
+  }
+]
