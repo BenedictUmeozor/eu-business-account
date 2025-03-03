@@ -17,9 +17,55 @@ import CurrencyConversion from "./CurrencyConversion";
 import MoreActions from "./MoreActions";
 
 const data = [
-  { name: "Total Money In", value: 1200, color: Colors.positive },
-  { name: "Total Money Out", value: 700.95, color: Colors.pending },
+  { name: "Total money in", value: 1200.00, color: Colors.positive },
+  { name: "Total money out", value: 700.95, color: Colors.pending },
 ];
+
+const DoughnutChart = () => {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-grey-600 font-medium">Your Money Analytics</h3>
+        <Button type="primary" className="bg-grey-50 text-grey-500" shape="round">Last 30 days</Button>
+      </div>
+      <div className="flex items-center gap-4">
+        <ResponsiveContainer width={200} height={200}>
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={80}
+              dataKey="value"
+              startAngle={90}
+              endAngle={450}>
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+
+        <div className="space-y-3">
+          {data.map((entry, index) => (
+            <div key={index} className="flex items-start gap-2">
+              <div
+                className="w-3 h-3 rounded-full mt-1"
+                style={{ backgroundColor: entry.color }}
+              />
+              <div className="space-y-0.5">
+                <p className="text-sm text-grey-500">{entry.name}</p>
+                <p className="font-medium">£{entry.value.toFixed(2)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const BritishPounds = () => {
   const conversionRef = useRef<HM.ModalRefObject>(null);
@@ -98,46 +144,6 @@ const BritishPounds = () => {
       <CurrencyConversion ref={conversionRef} />
       <MoreActions ref={optionsRef} />
     </section>
-  );
-};
-
-const DoughnutChart = () => {
-  return (
-    <div className="flex items-center gap-4">
-      <ResponsiveContainer width={200} height={200}>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={80}
-            dataKey="value"
-            startAngle={90}
-            endAngle={450}>
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
-      </ResponsiveContainer>
-
-      <div className="mt-4 space-y-1">
-        {data.map((entry, index) => (
-          <div key={index} className="flex items-start gap-2">
-            <div
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: entry.color }}
-            />
-
-            <span className="text-sm text-grey-500">
-              {entry.name} <strong>${entry.value.toFixed(2)}</strong>
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 };
 
