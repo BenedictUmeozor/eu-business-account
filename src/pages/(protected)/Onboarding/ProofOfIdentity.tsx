@@ -38,6 +38,7 @@ const ProofOfIdentity = ({
     onError: error => {
       message.error(getErrorMessage(error));
     },
+    invalidateQueries: ["personal_details"]
   });
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
