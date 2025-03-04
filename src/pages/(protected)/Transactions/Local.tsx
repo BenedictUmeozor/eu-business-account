@@ -4,14 +4,14 @@ import { Button, Tag, Table, Select } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
-import {
-  ListFilter,
-  XIcon,
-} from "lucide-react";
-import { useState } from "react";
+import { ListFilter, XIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import LocalReceiptModal from "./LocalTransactionModal";
 
 const LocalTransactions = () => {
   const [show, setShow] = useState(false);
+
+  const modalRef = useRef<HM.ModalRefObject>(null);
 
   const columns: ColumnsType<(typeof transactions)[0]> = [
     {
@@ -134,6 +134,11 @@ const LocalTransactions = () => {
           onChange={(_pagination, _filters, sorter) => {
             console.log("Table changed:", sorter);
           }}
+          onRow={() => ({
+            onClick: () => {
+              modalRef.current?.openModal();
+            },
+          })}
           components={{
             header: {
               cell: (props: any) => (
@@ -143,6 +148,7 @@ const LocalTransactions = () => {
           }}
         />
       </div>
+      <LocalReceiptModal ref={modalRef} />
     </section>
   );
 };

@@ -4,7 +4,7 @@ import { Button, Tag, Table, Select, Space } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
-import { ListFilter, RefreshCwIcon, XIcon } from "lucide-react";
+import { ArrowDownIcon, ListFilter, RefreshCwIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 
 const Conversions = () => {
@@ -12,31 +12,35 @@ const Conversions = () => {
 
   const columns: ColumnsType<(typeof transactions)[0]> = [
     {
-      title: "Currency Pair",
-      dataIndex: "currency_pair",
-      key: "currency_pair",
-      sorter: (a, b) => a.currency_pair.localeCompare(b.currency_pair),
-      sortDirections: ["ascend", "descend"],
+      title: "Date & Time",
+      dataIndex: "date_time",
+      key: "date_time",
       className: "text-grey-500 text-sm",
+      sorter: (a, b) => a.date_time.localeCompare(b.date_time),
+      sortDirections: ["ascend", "descend"],
       render: (_, record) => (
         <Space>
-          <div className="h-7 w-7  rounded-full grid place-items-center bg-primary-50">
+          <div className="h-7 w-7 rounded-full grid place-items-center bg-primary-50 relative">
             <RefreshCwIcon className="h-4 w-4 text-primary" />
+            <div className="absolute -bottom-1 right-0 flex rounded-full w-4 h-4 bg-positive-50 items-center justify-center">
+              <ArrowDownIcon className="h-3 w-3 text-positive" />
+            </div>
           </div>
-          <span className="text-grey-700 text-sm">{record.currency_pair}</span>
+          <span className="text-grey-700 text-sm">{record.date_time}</span>
         </Space>
       ),
     },
     {
-      title: "Amount Debited",
-      dataIndex: "amount_debited",
-      key: "amount_debited",
+      title: "Transaction ID",
+      dataIndex: "transaction_id",
+      key: "transaction_id",
       className: "text-grey-500 text-sm",
+      render: () => "HLM33140001",
     },
     {
-      title: "Amount Credited",
-      dataIndex: "amount_credited",
-      key: "amount_credited",
+      title: "Currency pair",
+      dataIndex: "currency_pair",
+      key: "currency_pair",
       className: "text-grey-500 text-sm",
     },
     {
@@ -46,15 +50,20 @@ const Conversions = () => {
       className: "text-grey-500 text-sm",
     },
     {
-      title: "Balance After",
-      dataIndex: "balance_after",
-      key: "balance_after",
+      title: "Amount",
+      dataIndex: "amount_credited",
+      key: "amount_credited",
       className: "text-grey-500 text-sm",
+      render: (_, record) => {
+        // Extract just the numeric value and currency symbol
+        const amount = record.amount_credited.replace(/[^0-9.£$€]/g, "");
+        return amount;
+      },
     },
     {
-      title: "Date & Time",
-      dataIndex: "date_time",
-      key: "date_time",
+      title: "Balance after",
+      dataIndex: "balance_after",
+      key: "balance_after",
       className: "text-grey-500 text-sm",
     },
     {
