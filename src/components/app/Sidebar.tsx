@@ -4,13 +4,12 @@ import { Link, useLocation } from "react-router";
 import {
   LayoutDashboardIcon,
   FolderIcon,
-  PieChartIcon,
-  SendIcon,
   WorkflowIcon,
-  UsersIcon,
   UserIcon,
   LogOutIcon,
   XIcon,
+  FileTextIcon,
+  RotateCcwSquareIcon,
 } from "lucide-react";
 import { Button } from "antd";
 import useLogout from "@/hooks/use-logout";
@@ -49,20 +48,6 @@ const Sidebar = () => {
       active: pathname.startsWith("/dashboard"),
     },
     {
-      key: "3",
-      label: "Accounts",
-      icon: <PieChartIcon className="h-4 w-4" />,
-      to: "/accounts",
-      active: pathname.startsWith("/accounts"),
-    },
-    {
-      key: "4",
-      label: "Transfers",
-      icon: <SendIcon className="h-4 w-4" />,
-      to: "/transfers",
-      active: pathname.startsWith("/transfers"),
-    },
-    {
       key: "5",
       label: "Transactions",
       icon: <WorkflowIcon className="h-4 w-4" />,
@@ -70,11 +55,18 @@ const Sidebar = () => {
       active: pathname.startsWith("/transactions"),
     },
     {
-      key: "6",
-      label: "Beneficiaries",
-      icon: <UsersIcon className="h-4 w-4" />,
-      to: "/beneficiaries",
-      active: pathname.startsWith("/beneficiaries"),
+      key: "3",
+      label: "Invoice",
+      icon: <FileTextIcon className="h-4 w-4" />,
+      to: "/invoice",
+      active: pathname.startsWith("/invoice"),
+    },
+    {
+      key: "4",
+      label: "Conversion",
+      icon: <RotateCcwSquareIcon className="h-4 w-4" />,
+      to: "/conversion",
+      active: pathname.startsWith("/conversion"),
     },
   ];
 
@@ -143,6 +135,40 @@ const Sidebar = () => {
           </ul>
           <div className="h-[1px] bg-primary-700 w-[85%] mx-auto" />
           <ul className="space-y-2">
+            <li
+              className={clsx(
+                "border-0 border-solid border-r-4 hover:bg-secondary-400 hover:border-r-secondary-200 transition-all duration-200 ease-linear",
+                {
+                  "bg-secondary-400 border-r-secondary-200":
+                    pathname.startsWith("/virtual-office"),
+                },
+                { "border-r-transparent": !pathname.startsWith("/virtual-office") },
+                { "opacity-50": disabled && !pathname.startsWith("/virtual-office") }
+              )}>
+              {disabled ? (
+                <p
+                  className={clsx(
+                    "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
+                    !pathname.startsWith("/virtual-office") &&
+                      "text-primary-300 cursor-not-allowed",
+                    pathname.startsWith("/virtual-office") && "text-white"
+                  )}>
+                  <UserIcon className="h-4 w-4" />
+                  <span>Virtual Office</span>
+                </p>
+              ) : (
+                <Link
+                  to="/virtual-office"
+                  className={clsx(
+                    "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
+                    !pathname.startsWith("/virtual-office") && "text-primary-300",
+                    pathname.startsWith("/virtual-office") && "text-white"
+                  )}>
+                  <UserIcon className="h-4 w-4" />
+                  <span>Virtual Office</span>
+                </Link>
+              )}
+            </li>
             <li
               className={clsx(
                 "border-0 border-solid border-r-4 hover:bg-secondary-400 hover:border-r-secondary-200 transition-all duration-200 ease-linear",

@@ -1,64 +1,57 @@
 import { TRANSACTIONS_TABLE_FILTER } from "@/constants/filter";
-import transactions from "@/data/remittance.json";
-import { Button, Tag, Table, Space, Select } from "antd";
+import transactions from "@/data/international.json";
+import { Button, Tag, Table, Select } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  ArrowUpRightIcon,
-  CloudDownloadIcon,
   ListFilter,
   XIcon,
 } from "lucide-react";
 import { useState } from "react";
 
-const Remittance = () => {
+const International = () => {
   const [show, setShow] = useState(false);
 
   const columns: ColumnsType<(typeof transactions)[0]> = [
     {
-      title: "Customer",
-      dataIndex: "customer",
-      key: "customer",
-      sorter: (a, b) => a.customer.localeCompare(b.customer),
-      sortDirections: ["ascend", "descend"],
-      width: "20%",
-      render: (_, record) => (
-        <Space>
-          <div
-            className={clsx(
-              "h-7 w-7  rounded-full grid place-items-center",
-              { " bg-negative-50": record.type === "transfer" },
-              { "bg-positive-50": record.type !== "transfer" }
-            )}>
-            {record.type === "transfer" ? (
-              <ArrowUpIcon className="h-4 w-4 text-negative" />
-            ) : (
-              <ArrowDownIcon className="h-4 w-4 text-positive" />
-            )}
-          </div>
-          <span className="text-grey-700 text-sm">{record.customer}</span>
-        </Space>
-      ),
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      className: "text-grey-500 text-sm",
-    },
-    {
-      title: "Transaction ID",
-      dataIndex: "transaction_id",
-      key: "transaction_id",
-      className: "text-grey-500 text-sm",
-    },
-    {
       title: "Date & Time",
       dataIndex: "date_time",
       key: "date_time",
+      className: "text-grey-500 text-sm",
+      sorter: (a, b) => a.date_time.localeCompare(b.date_time),
+      sortDirections: ["ascend", "descend"],
+    },
+    {
+      title: "Transaction ID",
+      dataIndex: "tranx_id",
+      key: "tranx_id",
+      className: "text-grey-500 text-sm",
+    },
+    {
+      title: "Beneficiary",
+      dataIndex: "beneficiary",
+      key: "beneficiary",
+      className: "text-grey-700 text-sm",
+      sorter: (a, b) => a.beneficiary.localeCompare(b.beneficiary),
+      sortDirections: ["ascend", "descend"],
+    },
+    {
+      title: "Balance Before",
+      dataIndex: "balance_before",
+      key: "balance_before",
+      className: "text-grey-500 text-sm",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      className: "text-grey-500 text-sm",
+    },
+    {
+      title: "Balance After",
+      dataIndex: "balance_after",
+      key: "balance_after",
       className: "text-grey-500 text-sm",
     },
     {
@@ -69,39 +62,12 @@ const Remittance = () => {
         <Tag
           className={clsx(
             "text-sm rounded-md",
-            status === "successful"
+            status === "Success"
               ? "text-positive bg-positive-50"
               : "text-negative bg-negative-50"
           )}>
           {status}
         </Tag>
-      ),
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-      className: "text-grey-500 text-sm",
-    },
-    {
-      title: "Actions",
-      key: "download",
-      render: () => (
-        <Button
-          type="text"
-          icon={<CloudDownloadIcon className="w-4 h-4 text-grey-500" />}
-        />
-      ),
-    },
-    {
-      key: "view",
-      render: () => (
-        <Button
-          type="text"
-          className="text-grey-500"
-          icon={<ArrowUpRightIcon className="h-4 w-4 text-grey-500" />}>
-          View
-        </Button>
       ),
     },
   ];
@@ -181,4 +147,4 @@ const Remittance = () => {
   );
 };
 
-export default Remittance;
+export default International;

@@ -1,19 +1,19 @@
 import { Tabs, TabsProps } from "antd";
-import Banking from "./Banking";
+import Local from "./Local";
 import Conversions from "./Conversions";
-import Remittance from "./Remittance";
+import International from "./International";
 
 const TransactionsPage = () => {
   const tabs: TabsProps["items"] = [
     {
       key: "1",
-      label: "Banking",
-      children: <Banking />,
+      label: "Local",
+      children: <Local />,
     },
     {
       key: "2",
-      label: "Remittance",
-      children: <Remittance />,
+      label: "International",
+      children: <International />,
     },
     {
       key: "3",
