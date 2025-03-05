@@ -94,13 +94,13 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
                   ]}>
                   <Checkbox>
                     <p className="text-grey-500 font-medium text-base">
-                      By clicking "submit profile", I accept the{" "}
+                      By clicking "Submit Profile", I accept the{" "}
                       <Link to="#" className="font-medium text-primary">
-                        terms
+                        Terms
                       </Link>{" "}
                       and{" "}
                       <Link to="#" className="font-medium text-primary">
-                        conditions
+                        Conditions
                       </Link>
                     </p>
                   </Checkbox>

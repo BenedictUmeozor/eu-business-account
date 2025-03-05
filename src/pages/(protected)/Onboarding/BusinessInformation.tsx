@@ -235,9 +235,7 @@ const BusinessInformation = ({
             <Form.Item
               label="Economic Activity of the Company"
               name="economic_activity"
-              rules={[
-                { required: true, message: "Please enter economic activity" },
-              ]}>
+             >
               <Input
                 className="w-full"
                 placeholder="Enter Economic Activity of the Company"
@@ -315,12 +313,7 @@ const BusinessInformation = ({
             <Form.Item
               label="Top 5 countries you send money to"
               name="source_countries"
-              rules={[
-                {
-                  required: true,
-                  message: "Please select at least one country",
-                },
-              ]}>
+              >
               <Select
                 className="w-full"
                 placeholder="Select Countries"
@@ -375,12 +368,7 @@ const BusinessInformation = ({
             <Form.Item
               label="Top 5 countries you receive money from"
               name="target_countries"
-              rules={[
-                {
-                  required: true,
-                  message: "Please select at least one country",
-                },
-              ]}>
+              >
               <Select
                 className="w-full"
                 placeholder="Select Countries"
@@ -432,12 +420,7 @@ const BusinessInformation = ({
             <Form.Item
               name="partners"
               label="Top 5 transacting partners - Incoming"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter your incoming partners",
-                },
-              ]}>
+             >
               <Input
                 className="w-full"
                 placeholder="Enter names and separate with commas"
@@ -449,12 +432,7 @@ const BusinessInformation = ({
             <Form.Item
               name="partners_outgoing"
               label="Top 5 transacting partners - Outgoing"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter your outgoing partners",
-                },
-              ]}>
+              >
               <Input
                 className="w-full"
                 placeholder="Enter names and separate with commas"
