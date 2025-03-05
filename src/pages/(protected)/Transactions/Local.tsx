@@ -4,7 +4,7 @@ import { Button, Tag, Table, Select } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
-import { ListFilter, XIcon } from "lucide-react";
+import { EyeIcon, ListFilter, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import LocalReceiptModal from "./LocalTransactionModal";
 
@@ -68,6 +68,19 @@ const LocalTransactions = () => {
           )}>
           {status}
         </Tag>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: () => (
+        <Button
+          type="text"
+          icon={<EyeIcon className="w-4 h-4 text-grey-500" />}
+          className="text-grey-500"
+          onClick={() => modalRef.current?.openModal()}>
+          View
+        </Button>
       ),
     },
   ];
@@ -134,11 +147,6 @@ const LocalTransactions = () => {
           onChange={(_pagination, _filters, sorter) => {
             console.log("Table changed:", sorter);
           }}
-          onRow={() => ({
-            onClick: () => {
-              modalRef.current?.openModal();
-            },
-          })}
           components={{
             header: {
               cell: (props: any) => (
