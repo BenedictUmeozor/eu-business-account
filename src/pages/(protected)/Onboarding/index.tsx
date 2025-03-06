@@ -22,7 +22,7 @@ const steps: StepProps[] = [
     title: "Business Information",
   },
   {
-    title: "Personal Information",
+    title: "Personal Contact Information",
   },
   {
     title: "Identity Verification",

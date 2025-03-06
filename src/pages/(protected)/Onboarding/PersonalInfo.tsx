@@ -161,7 +161,7 @@ const PersonalInfo = ({
       <header className="flex items-center justify-between">
         <HeaderTitle
           headerDescription="Let’s know your personal details"
-          headerTitle="Personal Information"
+          headerTitle="Personal Contact Information"
         />
         {/* <div className="relative flex h-16 w-16 items-center justify-center rounded-full">
           <img
