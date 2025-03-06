@@ -1,11 +1,11 @@
-import { memo, useState } from "react";
+import { memo, ReactNode, useState } from "react";
 import { Input, Select, Form } from "antd";
 import type { Rule } from 'rc-field-form/lib/interface';
 import codes from "@/data/codes.json";
 
 interface PhoneNumberInputProps {
   name: string;
-  label: string;
+  label: string | ReactNode;
   dialCodeName: string;
   setPhoneValue: (value: string) => void;
   setFieldsValue: ({

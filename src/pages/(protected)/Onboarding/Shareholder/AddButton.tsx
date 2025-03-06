@@ -19,6 +19,11 @@ const AddButton = ({
     [shareholder]
   );
 
+  const hasUploaded = useMemo(
+    () => !!shareholder?.documents?.data?.length,
+    [shareholder]
+  );
+
   const handleAddClick = () => {
     if (canAddShareholder) {
       showForm();
@@ -83,7 +88,7 @@ const AddButton = ({
           className="text-sm text-primary"
           size="small"
           onClick={handleEditClick}>
-          Edit
+          {hasUploaded ? "Edit" : "Upload"}
         </Button>
       </Col>
     </Row>

@@ -13,7 +13,6 @@ import {
   message,
 } from "antd";
 import { memo, useEffect } from "react";
-import { PencilIcon } from "@heroicons/react/24/outline";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
 import { useAppSelector } from "@/hooks";
@@ -164,7 +163,7 @@ const PersonalInfo = ({
           headerDescription="Let’s know your personal details"
           headerTitle="Personal Information"
         />
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-full">
+        {/* <div className="relative flex h-16 w-16 items-center justify-center rounded-full">
           <img
             src="/images/user.png"
             alt=""
@@ -177,7 +176,7 @@ const PersonalInfo = ({
             size="small"
             icon={<PencilIcon className="h-3 w-3 text-primary" />}
           />
-        </div>
+        </div> */}
       </header>
       <Alert
         type="info"

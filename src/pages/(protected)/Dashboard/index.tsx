@@ -6,6 +6,7 @@ import BritishPounds from "./BritishPounds";
 import Transactions from "./Transactions";
 import AssetLineChart from "./LineChart";
 import { Link } from "react-router";
+import USDollars from "./USDollars";
 
 const Dashboard = () => {
   const items: TabsProps["items"] = useMemo(
@@ -18,7 +19,7 @@ const Dashboard = () => {
       {
         key: "2",
         label: "USD",
-        children: <BritishPounds />,
+        children: <USDollars />,
       },
       {
         key: "3",

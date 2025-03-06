@@ -33,8 +33,8 @@ const useShareholders = () => {
   }, []);
 
   return {
-    shareholders,
-    isLoading: mutation.isPending || isProcessing,
+    shareholders: shareholders?.reverse(),
+    isLoading: isProcessing || mutation.isPending,
     getShareholders,
   };
 };

@@ -39,8 +39,7 @@ createRoot(document.getElementById("root")!).render(
               fontSize: 13,
             },
           },
-        }}
-      >
+        }}>
         <App />
       </ConfigProvider>
     </Provider>

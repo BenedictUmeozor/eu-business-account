@@ -46,6 +46,14 @@ const RootLayout = () => {
             business_token: session.business?.business_token,
           });
         }
+
+        if (
+          !fromLogin &&
+          !onboardingStatus?.completed &&
+          location.pathname.includes("/onboarding")
+        ) {
+          navigate("/dashboard", { replace: true });
+        }
       } finally {
         setIsChecking(false);
       }
@@ -53,7 +61,7 @@ const RootLayout = () => {
 
     checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user, fromLogin, onboardingStatus?.completed]);
+  }, [session?.user, fromLogin, onboardingStatus?.completed, location]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });

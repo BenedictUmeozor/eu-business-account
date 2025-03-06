@@ -34,6 +34,12 @@ const AddShareholders = ({
     getShareholders,
   } = useShareholders();
 
+  const shareholderDocComplete = useMemo(() => {
+    return shareholders.every(
+      shareholder => shareholder.documents?.data?.length > 0
+    );
+  }, [shareholders]);
+
   // Use the shareholder progress hook
   const { getShareholderProgress, isChecking } = useShareholderProgress(
     session?.user?.email
@@ -51,9 +57,12 @@ const AddShareholders = ({
     usePersonalDetails(session?.user?.email);
 
   const removeForm = useCallback(() => {
+    (async () => {
+      await getShareholders();
+      await checkShareholderProgress();
+    })();
     setShowAddForm(false);
     setEditingShareholder(null);
-    checkShareholderProgress();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -77,8 +86,10 @@ const AddShareholders = ({
   };
 
   useEffect(() => {
-    getShareholders();
-    checkShareholderProgress();
+    (async () => {
+      await getShareholders();
+      await checkShareholderProgress();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -91,9 +102,12 @@ const AddShareholders = ({
   // After editing or adding a shareholder, recheck document progress
   useEffect(() => {
     if (!showAddForm && !editingShareholder) {
-      checkShareholderProgress();
+      (async () => {
+        await getShareholders();
+        await checkShareholderProgress();
+      })();
     }
-    getShareholders()
+    getShareholders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showAddForm, editingShareholder]);
 
@@ -159,7 +173,8 @@ const AddShareholders = ({
       {/* Only show next button if shareholders exist and their documents are complete */}
       {shareholders.length > 0 &&
         progressChecked &&
-        shareholderDocumentComplete && (
+        shareholderDocumentComplete &&
+        shareholderDocComplete && (
           <Button
             className="w-48"
             size="large"
@@ -173,7 +188,7 @@ const AddShareholders = ({
       {/* Show message if shareholders exist but documents are not complete */}
       {shareholders.length > 0 &&
         progressChecked &&
-        !shareholderDocumentComplete && (
+        (!shareholderDocumentComplete || !shareholderDocComplete) && (
           <div className="text-yellow-600 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
             Please ensure all shareholder documents are uploaded before
             proceeding to the next step.

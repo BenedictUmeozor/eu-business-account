@@ -1,4 +1,4 @@
-import { PencilIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   Button,
   Form,
@@ -158,7 +158,7 @@ const BusinessInformation = ({
           headerDescription="Tell us more about your business"
           headerTitle="Business Information"
         />
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-full">
+        {/* <div className="relative flex h-16 w-16 items-center justify-center rounded-full">
           <img
             src="/images/logo.png"
             alt=""
@@ -171,7 +171,7 @@ const BusinessInformation = ({
             size="small"
             icon={<PencilIcon className="h-3 w-3 text-primary" />}
           />
-        </div>
+        </div> */}
       </header>
       <section>
         <Form
@@ -234,8 +234,7 @@ const BusinessInformation = ({
             </Form.Item>
             <Form.Item
               label="Economic Activity of the Company"
-              name="economic_activity"
-             >
+              name="economic_activity">
               <Input
                 className="w-full"
                 placeholder="Enter Economic Activity of the Company"
@@ -246,10 +245,7 @@ const BusinessInformation = ({
             <Form.Item
               label="Business website/Social media link"
               name="website"
-              rules={[
-                { required: true, message: "Please enter business website" },
-                { type: "url", message: "Please enter a valid URL" },
-              ]}>
+              rules={[{ type: "url", message: "Please enter a valid URL" }]}>
               <Input className="w-full" placeholder="www.xyz.com" />
             </Form.Item>
             <Form.Item
@@ -312,8 +308,7 @@ const BusinessInformation = ({
             </Form.Item>
             <Form.Item
               label="Top 5 countries you send money to"
-              name="source_countries"
-              >
+              name="source_countries">
               <Select
                 className="w-full"
                 placeholder="Select Countries"
@@ -367,8 +362,7 @@ const BusinessInformation = ({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start">
             <Form.Item
               label="Top 5 countries you receive money from"
-              name="target_countries"
-              >
+              name="target_countries">
               <Select
                 className="w-full"
                 placeholder="Select Countries"
@@ -419,8 +413,7 @@ const BusinessInformation = ({
             </Form.Item>
             <Form.Item
               name="partners"
-              label="Top 5 transacting partners - Incoming"
-             >
+              label="Top 5 transacting partners - Incoming">
               <Input
                 className="w-full"
                 placeholder="Enter names and separate with commas"
@@ -431,8 +424,7 @@ const BusinessInformation = ({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Form.Item
               name="partners_outgoing"
-              label="Top 5 transacting partners - Outgoing"
-              >
+              label="Top 5 transacting partners - Outgoing">
               <Input
                 className="w-full"
                 placeholder="Enter names and separate with commas"
