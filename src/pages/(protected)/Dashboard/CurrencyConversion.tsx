@@ -1,18 +1,88 @@
-import { Button, Input, Modal, Select } from "antd";
-import { forwardRef, useImperativeHandle, useState } from "react";
-import countries from "@/data/codes.json";
+import { Button, Input, message, Modal, Select, Spin } from "antd";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { NumericFormat } from "react-number-format";
-import { ArrowDownIcon } from "lucide-react";
+import { ArrowDownIcon, Loader2Icon } from "lucide-react";
+import ENDPOINTS from "@/constants/endpoints";
+import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
+import { getErrorMessage } from "@/utils";
+import { CURRENCIES } from "@/constants/currencies";
 
 const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
   const [open, setOpen] = useState(false);
-  const [formAmount, setFormAmount] = useState("");
+  const [currencySymbol, setCurrencySymbol] = useState("£");
+  const [toCurrencySymbol, setToCurrencySymbol] = useState("$");
+  const [fromAmount, setFromAmount] = useState("");
   const [formCurrency, setFormCurrency] = useState("GBP");
-  const [toCurrency, setToCurrency] = useState("NGN");
+  const [toCurrency, setToCurrency] = useState("USD");
+  const [toAmount, setToAmount] = useState<number>();
+  const [indication, setIndication] = useState("");
 
   useImperativeHandle(ref, () => ({
     openModal: () => setOpen(true),
   }));
+
+  const rateMutation = useSharedMutationAction({
+    url: ENDPOINTS.CONVERSION_INDICATIVE_RATE,
+    method: "POST",
+    invalidateQueries: ["conversions"],
+    onSuccess: (data: HM.IndicativeRate) => {
+      setIndication(data.indication);
+    },
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
+  const changeMutation = useSharedMutationAction({
+    url: ENDPOINTS.CONVERSION_RATE,
+    method: "POST",
+    invalidateQueries: ["conversions"],
+    onSuccess: (data: HM.ConversionRate) => {
+      setToAmount(data.target_amount);
+    },
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
+  const handleConvert = async () => {
+    if (fromAmount && formCurrency && toCurrency) {
+      changeMutation.mutate({
+        amount: fromAmount,
+        source_currency: formCurrency,
+        target_currency: toCurrency,
+      });
+    } else {
+      message.error("Please fill in all fields");
+    }
+  };
+
+  useEffect(() => {
+    if (fromAmount && formCurrency && toCurrency) {
+      rateMutation.mutate({
+        amount: fromAmount,
+        source_currency: formCurrency,
+        target_currency: toCurrency,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromAmount, formCurrency, toCurrency]);
+
+  useEffect(() => {
+    const selectedFromCountry = CURRENCIES.find(
+      c => c.currencyCode === formCurrency
+    );
+    const selectedToCountry = CURRENCIES.find(
+      c => c.currencyCode === toCurrency
+    );
+
+    if (selectedFromCountry) {
+      setCurrencySymbol(selectedFromCountry.currencySymbol);
+    }
+    if (selectedToCountry) {
+      setToCurrencySymbol(selectedToCountry.currencySymbol);
+    }
+  }, [formCurrency, toCurrency]);
 
   return (
     <Modal
@@ -42,11 +112,11 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
                     thousandSeparator={true}
                     decimalScale={2}
                     allowNegative={false}
-                    prefix="£"
+                    prefix={`${currencySymbol} `}
                     placeholder="Enter amount"
                     className="bg-transparent border-0 !text-lg text-white font-nunito placeholder:text-gray-400"
-                    value={formAmount}
-                    onValueChange={values => setFormAmount(values.value)}
+                    value={fromAmount}
+                    onValueChange={values => setFromAmount(values.value)}
                   />
                 </div>
                 <div className="w-28">
@@ -55,7 +125,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
                     style={{ backgroundColor: "#0B3E81", color: "white" }}
                     value={formCurrency}
                     onChange={value => setFormCurrency(value)}
-                    options={countries.map(c => ({
+                    options={CURRENCIES.map(c => ({
                       label: (
                         <div className="flex items-center gap-2 bg-transparent">
                           <img
@@ -81,7 +151,8 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
               <span className="text-sm">Recipient gets</span>
               <div className="flex items-center justify-between">
                 <span className="text-lg font-medium font-nunito">
-                  ₦227,073
+                  {toAmount &&
+                    `${toCurrencySymbol} ${toAmount.toLocaleString()}`}
                 </span>
                 <div className="w-28">
                   <Select
@@ -89,7 +160,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
                     style={{ backgroundColor: "#0B3E81", color: "white" }}
                     value={toCurrency}
                     onChange={value => setToCurrency(value)}
-                    options={countries.map(c => ({
+                    options={CURRENCIES.map(c => ({
                       label: (
                         <div className="flex items-center gap-2 bg-transparent">
                           <img
@@ -112,13 +183,28 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
           </div>
           <div
             className="cursor-pointer flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-400 transform hover:bg-secondary-500"
-            role="button">
-            <ArrowDownIcon className="w-5 h-5 text-white" />
+            role="button"
+            onClick={handleConvert}>
+            {changeMutation.isPending ? (
+              <Loader2Icon className="w-5 h-5 text-white animate-spin" />
+            ) : (
+              <ArrowDownIcon className="w-5 h-5 text-white" />
+            )}
           </div>
         </div>
+
+        {rateMutation.isPending ? (
+          <div className="flex items-center justify-center">
+            <Spin />
+          </div>
+        ) : indication ? (
+          <p className="text-center text-grey-500">{indication}</p>
+        ) : null}
         <div className="h-14 rounded-[60px] bg-primary-100 flex items-center justify-between gap-4 px-4">
           <span className="text-grey-600">Conversion fees: 0.00</span>
-          <Button size="large" type="primary" shape="round" className="w-48">Convert</Button>
+          <Button size="large" type="primary" shape="round" className="w-48">
+            Convert
+          </Button>
         </div>
       </section>
     </Modal>

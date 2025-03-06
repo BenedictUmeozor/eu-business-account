@@ -1,39 +1,76 @@
+import ENDPOINTS from "@/constants/endpoints";
 import { TRANSACTIONS_TABLE_FILTER } from "@/constants/filter";
-import transactions from "@/data/conversion.json";
+import useSharedQueryAction from "@/hooks/use-shared-query-action";
 import { Button, Tag, Table, Select, Space } from "antd";
-import { ColumnsType } from "antd/es/table";
+import type { TableProps } from "antd";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
-import { ArrowDownIcon, ListFilter, RefreshCwIcon, XIcon } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ListFilter,
+  RefreshCwIcon,
+  XIcon,
+} from "lucide-react";
 import { useState } from "react";
 
 const Conversions = () => {
   const [show, setShow] = useState(false);
+  const [tableState, setTableState] =
+    useState<HM.TableState<HM.ConversionTransaction>>();
 
-  const columns: ColumnsType<(typeof transactions)[0]> = [
+  const { data, isPending } = useSharedQueryAction<{
+    transaction: { data: HM.ConversionTransaction[] };
+  }>({
+    url: ENDPOINTS.GET_CONVERSIONS(tableState?.pagination?.current),
+    key: ["conversions", tableState?.pagination?.current],
+  });
+
+  const getStatusStyle = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "pending":
+        return "text-pending-500 bg-pending-50";
+      case "completed":
+        return "text-positive bg-positive-50";
+      case "declined":
+        return "text-negative bg-negative-50";
+      case "completedwitherrors":
+        return "text-pending-700 bg-pending-50";
+      default:
+        return "text-positive bg-positive-50";
+    }
+  };
+
+  const columns: TableProps<HM.ConversionTransaction>["columns"] = [
     {
       title: "Date & Time",
-      dataIndex: "date_time",
-      key: "date_time",
+      dataIndex: "date",
+      key: "date",
       className: "text-grey-500 text-sm",
-      sorter: (a, b) => a.date_time.localeCompare(b.date_time),
+      sorter: (a, b) => a.date.localeCompare(b.date),
       sortDirections: ["ascend", "descend"],
       render: (_, record) => (
         <Space>
           <div className="h-7 w-7 rounded-full grid place-items-center bg-primary-50 relative">
             <RefreshCwIcon className="h-4 w-4 text-primary" />
-            <div className="absolute -bottom-1 right-0 flex rounded-full w-4 h-4 bg-positive-50 items-center justify-center">
-              <ArrowDownIcon className="h-3 w-3 text-positive" />
-            </div>
+            {record.type.toLowerCase() === "credit" ? (
+              <div className="absolute -bottom-1 right-0 flex rounded-full w-4 h-4 bg-positive-50 items-center justify-center">
+                <ArrowDownIcon className="h-3 w-3 text-positive" />
+              </div>
+            ) : (
+              <div className="absolute -bottom-1 right-0 flex rounded-full w-4 h-4 bg-negative-50 items-center justify-center">
+                <ArrowUpIcon className="h-3 w-3 text-negative" />
+              </div>
+            )}
           </div>
-          <span className="text-grey-700 text-sm">{record.date_time}</span>
+          <span className="text-grey-700 text-sm">{record.date}</span>
         </Space>
       ),
     },
     {
       title: "Transaction ID",
-      dataIndex: "transaction_id",
-      key: "transaction_id",
+      dataIndex: "reference",
+      key: "reference",
       className: "text-grey-500 text-sm",
       render: () => "HLM33140001",
     },
@@ -51,14 +88,9 @@ const Conversions = () => {
     },
     {
       title: "Amount",
-      dataIndex: "amount_credited",
-      key: "amount_credited",
+      dataIndex: "amount",
+      key: "amount",
       className: "text-grey-500 text-sm",
-      render: (_, record) => {
-        // Extract just the numeric value and currency symbol
-        const amount = record.amount_credited.replace(/[^0-9.£$€]/g, "");
-        return amount;
-      },
     },
     {
       title: "Balance after",
@@ -68,23 +100,17 @@ const Conversions = () => {
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "transaction_status",
+      key: "transaction_status",
       render: status => (
-        <Tag
-          className={clsx(
-            "!text-sm rounded-md",
-            status === "Success"
-              ? "text-positive bg-positive-50"
-              : "text-negative bg-negative-50"
-          )}>
-          {status}
+        <Tag className={clsx(getStatusStyle(status))}>
+          {status || "Completed"}
         </Tag>
       ),
     },
   ];
 
-  const rowSelection: TableRowSelection<(typeof transactions)[0]> = {
+  const rowSelection: TableRowSelection<HM.ConversionTransaction> = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
@@ -137,15 +163,15 @@ const Conversions = () => {
           Filter
         </Button>
       </div>
-
       <div>
         <Table
-          dataSource={transactions}
+          dataSource={data?.transaction?.data || []}
           columns={columns}
           rowSelection={rowSelection}
-          onChange={(_pagination, _filters, sorter) => {
-            console.log("Table changed:", sorter);
+          onChange={(pagination, filters, sorter, extra) => {
+            setTableState({ pagination, filters, sorter, extra });
           }}
+          loading={isPending}
           components={{
             header: {
               cell: (props: any) => (

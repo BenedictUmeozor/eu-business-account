@@ -89,6 +89,72 @@ declare global {
       company_type: string;
     }
 
+    interface Transaction {
+      source_account: string;
+      currency: string;
+      amount: number;
+      bank_country?: any;
+      beneficiary_account: string;
+      beneficiary_name: string;
+      reference: string;
+      request_id?: any;
+      transaction_status: string;
+      request_status?: any;
+      type: string;
+      category: string;
+      bal_before: number;
+      bal_after: number;
+      date: string;
+    }
+
+    interface ConversionTransaction {
+      source_account: string;
+      currency: string;
+      amount: number;
+      charge: number;
+      bank_country?: any;
+      beneficiary_account: string;
+      beneficiary_name: string;
+      reference: string;
+      request_id?: any;
+      transaction_status: string;
+      request_status?: any;
+      date: string;
+      type: string;
+      currency_pair: string;
+      binding_ref: string;
+      balance_before: number;
+      balance_after: number;
+    }
+
+    interface Currency {
+      currencyCode: string;
+      currencySymbol: string;
+      flag: string;
+      countryName: string;
+      countryCode: string;
+    }
+
+    interface IndicativeRate {
+      status: string;
+      source_currency: string;
+      target_currency: string;
+      source_amount: number;
+      target_amount: number;
+      rate: number;
+      indication: string;
+    }
+
+    interface ConversionRate {
+      status: string;
+      message: string;
+      source_currency: string;
+      target_currency: string;
+      source_amount: number;
+      target_amount: number;
+      reference: string;
+    }
+
     interface BusinessDetails {
       status: string;
       message: string;

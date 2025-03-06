@@ -85,7 +85,7 @@ const AddDocuments = ({ next }: { next: () => void }) => {
               "cursor-pointer transition-all duration-100 ease-linear hover:bg-grey-50",
               isUploaded(doc.code) && "bg-grey-50"
             )}>
-            <Space align="center" size="large">
+            <div className="flex items-center justify-between">
               <Space>
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-50">
                   <IdentificationIcon className="h-5 w-5 text-primary" />
@@ -104,7 +104,7 @@ const AddDocuments = ({ next }: { next: () => void }) => {
                   <CheckCircleIcon className="h-5 w-5 text-positive" />
                 </div>
               )}
-            </Space>
+            </div>
           </Card>
         ))}
       </div>

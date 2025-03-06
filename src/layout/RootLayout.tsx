@@ -49,7 +49,7 @@ const RootLayout = () => {
 
         if (
           !fromLogin &&
-          !onboardingStatus?.completed &&
+          onboardingStatus?.completed &&
           location.pathname.includes("/onboarding")
         ) {
           navigate("/dashboard", { replace: true });
@@ -61,7 +61,7 @@ const RootLayout = () => {
 
     checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user, fromLogin, onboardingStatus?.completed, location]);
+  }, [session?.user, fromLogin, onboardingStatus?.completed]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });

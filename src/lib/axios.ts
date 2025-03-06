@@ -9,9 +9,8 @@ const api = axios.create({
   // Removed default Content-Type header to allow FormData to work correctly
 });
 
-export const sharedApi = axios.create({
+const sharedApi = axios.create({
   baseURL: ENDPOINTS.APP_SHARED_BASE_URL,
-  validateStatus: status => status < 500,
 });
 
 api.interceptors.request.use(
@@ -68,6 +67,12 @@ api.interceptors.response.use(
 sharedApi.interceptors.response.use(
   response => response,
   error => {
+    // console.log("Interceptor caught an error:", {
+    //   status: error.response?.status,
+    //   message: error.message,
+    //   config: error.config,
+    //   fullError: error,
+    // });
     if (error.response?.status === 401) {
       store.dispatch(clearSession());
       window.location.href = "/login";
@@ -75,5 +80,7 @@ sharedApi.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export { sharedApi };
 
 export default api;

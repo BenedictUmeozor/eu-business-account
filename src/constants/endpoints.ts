@@ -28,6 +28,18 @@ const ENDPOINTS = {
   UPLOAD_PROOF_OF_IDENTIFICATION: "/proof_of_identification",
   UPLOAD_BUSINESS_DOCUMENT: "/upload_business_document",
   FETCH_BUSINESS_DOCUMENTS: "/business_documents",
+
+  // Conversions
+  CONVERSION_INDICATIVE_RATE: "/payment-services/fx_indicative_rate",
+  CONVERSION_RATE: "/payment-services/fx_execute",
+
+  // Transactions
+  GET_CONVERSIONS: (page = 1, row_per_page = 15) =>
+    `/payment-services/conversion_transaction?row_per_page=${row_per_page}&page=${page}`,
+  GET_LOCAL_TRANSACTIONS: (page = 1, row_per_page = 15) =>
+    `/payment-services/transaction_localpayment?row_per_page=${row_per_page}&page=${page}`,
+  GET_INTERNATIONAL_TRANSACTIONS: (page = 1, row_per_page = 15) =>
+    `/payment-services/transaction_international?row_per_page=${row_per_page}&page=${page}`,
 };
 
 export default ENDPOINTS;

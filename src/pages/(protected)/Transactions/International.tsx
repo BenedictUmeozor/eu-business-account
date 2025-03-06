@@ -1,45 +1,90 @@
 import { TRANSACTIONS_TABLE_FILTER } from "@/constants/filter";
-import transactions from "@/data/international.json";
-import { Button, Tag, Table, Select } from "antd";
-import { ColumnsType } from "antd/es/table";
+import ENDPOINTS from "@/constants/endpoints";
+import { Button, Tag, Table, Select, TableProps, Space } from "antd";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
-import { EyeIcon, ListFilter, XIcon } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  EyeIcon,
+  ListFilter,
+  RefreshCwIcon,
+  XIcon,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import LocalReceiptModal from "./LocalTransactionModal";
+import useSharedQueryAction from "@/hooks/use-shared-query-action";
 
 const International = () => {
   const [show, setShow] = useState(false);
+  const [tableState, setTableState] = useState<HM.TableState<HM.Transaction>>();
+  
+  const { data, isPending } = useSharedQueryAction<{
+    transaction: { data: HM.Transaction[] };
+  }>({
+    url: ENDPOINTS.GET_INTERNATIONAL_TRANSACTIONS(tableState?.pagination?.current),
+    key: ["international-transactions", tableState?.pagination?.current],
+  });
 
   const modalRef = useRef<HM.ModalRefObject>(null);
 
-  const columns: ColumnsType<(typeof transactions)[0]> = [
+  const getStatusStyle = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "pending":
+        return "text-pending-500 bg-pending-50";
+      case "completed":
+        return "text-positive bg-positive-50";
+      case "declined":
+        return "text-negative bg-negative-50";
+      case "completedwitherrors":
+        return "text-pending-700 bg-pending-50";
+      default:
+        return "text-positive bg-positive-50";
+    }
+  };
+
+  const columns: TableProps<HM.Transaction>["columns"] = [
     {
       title: "Date & Time",
-      dataIndex: "date_time",
-      key: "date_time",
+      dataIndex: "date",
+      key: "date",
       className: "text-grey-500 text-sm",
-      sorter: (a, b) => a.date_time.localeCompare(b.date_time),
+      sorter: (a, b) => a.date.localeCompare(b.date),
       sortDirections: ["ascend", "descend"],
+      render: (_, record) => (
+        <Space>
+          <div className="h-7 w-7 rounded-full grid place-items-center bg-primary-50 relative">
+            <RefreshCwIcon className="h-4 w-4 text-primary" />
+            {record.type.toLowerCase() === "credit" ? (
+              <div className="absolute -bottom-1 right-0 flex rounded-full w-4 h-4 bg-positive-50 items-center justify-center">
+                <ArrowDownIcon className="h-3 w-3 text-positive" />
+              </div>
+            ) : (
+              <div className="absolute -bottom-1 right-0 flex rounded-full w-4 h-4 bg-negative-50 items-center justify-center">
+                <ArrowUpIcon className="h-3 w-3 text-negative" />
+              </div>
+            )}
+          </div>
+          <span className="text-grey-700 text-sm">{record.date}</span>
+        </Space>
+      ),
     },
     {
       title: "Transaction ID",
-      dataIndex: "tranx_id",
-      key: "tranx_id",
+      dataIndex: "reference",
+      key: "reference",
       className: "text-grey-500 text-sm",
     },
     {
       title: "Beneficiary",
-      dataIndex: "beneficiary",
-      key: "beneficiary",
+      dataIndex: "beneficiary_name",
+      key: "beneficiary_name",
       className: "text-grey-700 text-sm",
-      sorter: (a, b) => a.beneficiary.localeCompare(b.beneficiary),
-      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Balance Before",
-      dataIndex: "balance_before",
-      key: "balance_before",
+      dataIndex: "bal_before",
+      key: "bal_before",
       className: "text-grey-500 text-sm",
     },
     {
@@ -50,23 +95,17 @@ const International = () => {
     },
     {
       title: "Balance After",
-      dataIndex: "balance_after",
-      key: "balance_after",
+      dataIndex: "bal_after",
+      key: "bal_after",
       className: "text-grey-500 text-sm",
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: status => (
-        <Tag
-          className={clsx(
-            "text-sm rounded-md",
-            status === "Success"
-              ? "text-positive bg-positive-50"
-              : "text-negative bg-negative-50"
-          )}>
-          {status}
+      dataIndex: "transaction_status",
+      key: "transaction_status",
+      render: (status) => (
+        <Tag className={clsx(getStatusStyle(status))}>
+          {status || "Completed"}
         </Tag>
       ),
     },
@@ -85,7 +124,7 @@ const International = () => {
     },
   ];
 
-  const rowSelection: TableRowSelection<(typeof transactions)[0]> = {
+  const rowSelection: TableRowSelection<HM.Transaction> = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
@@ -141,11 +180,12 @@ const International = () => {
 
       <div>
         <Table
-          dataSource={transactions}
+          dataSource={data?.transaction?.data || []}
           columns={columns}
           rowSelection={rowSelection}
-          onChange={(_pagination, _filters, sorter) => {
-            console.log("Table changed:", sorter);
+          loading={isPending}
+          onChange={(pagination, filters, sorter, extra) => {
+            setTableState({ pagination, filters, sorter, extra });
           }}
           components={{
             header: {
