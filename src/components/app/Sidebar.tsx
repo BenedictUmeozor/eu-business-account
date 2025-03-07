@@ -63,9 +63,9 @@ const Sidebar = () => {
     },
     {
       key: "4",
-      label: "Conversion",
+      label: "Conversions",
       icon: <RotateCcwSquareIcon className="h-4 w-4" />,
-      to: "/conversion",
+      to: "/conversions",
       active: pathname.startsWith("/conversion"),
     },
   ];

@@ -71,6 +71,9 @@ const TransactionProgress = () =>
 // Transactions
 const Transactions = () => import("./pages/(protected)/Transactions");
 
+// Conversions
+const Conversions = () => import("./pages/(protected)/Conversions");
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -129,6 +132,9 @@ const App = () => {
 
           {/* Transactions */}
           <Route path="transactions" lazy={Transactions} />
+
+          {/* Conversions */}
+          <Route path="conversions" lazy={Conversions} />
         </Route>
         <Route path="*" lazy={NotFound} />
       </Route>
