@@ -1,9 +1,17 @@
 import { useDownloadReceipt } from "@/hooks/use-download-receipt";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import { Button } from "antd";
+import { XCircleIcon, AlertCircleIcon, ClockIcon } from "lucide-react";
+import { CURRENCIES } from "@/constants/currencies";
+import { useEffect, useState } from "react";
 
-const Receipt = () => {
+interface ReceiptProps {
+  transaction: HM.Transaction;
+}
+
+const Receipt = ({ transaction }: ReceiptProps) => {
   const { downloadReceipt, isPdfLoading, isImageLoading, receiptRef } = useDownloadReceipt();
+  const [currency, setCurrency] = useState<HM.Currency>();
 
   const handleDownloadPdf = async () => {
     await downloadReceipt("pdf");
@@ -11,6 +19,43 @@ const Receipt = () => {
 
   const handleDownloadImage = async () => {
     await downloadReceipt("image");
+  };
+
+  useEffect(() => {
+    const cur = CURRENCIES.find(c => c.currencyCode === transaction?.currency);
+    setCurrency(cur);
+  }, [transaction]);
+
+  const getStatusIcon = () => {
+    const status = transaction?.transaction_status?.toLowerCase() || "";
+    
+    if (status === "completed" || status === "success") {
+      return <CheckCircleIcon className="w-4 h-4 text-positive-600" />;
+    } else if (status === "pending") {
+      return <ClockIcon className="w-4 h-4 text-pending-500" />;
+    } else if (status === "declined" || status === "failed") {
+      return <XCircleIcon className="w-4 h-4 text-negative" />;
+    } else if (status === "completedwitherrors") {
+      return <AlertCircleIcon className="w-4 h-4 text-pending-700" />;
+    } else {
+      return <CheckCircleIcon className="w-4 h-4 text-positive-600" />;
+    }
+  };
+
+  const getStatusText = () => {
+    const status = transaction?.transaction_status?.toLowerCase() || "";
+    
+    if (status === "completed" || status === "success") {
+      return <span className="text-positive-600 font-medium">Successful</span>;
+    } else if (status === "pending") {
+      return <span className="text-pending-500 font-medium">Pending</span>;
+    } else if (status === "declined" || status === "failed") {
+      return <span className="text-negative font-medium">Failed</span>;
+    } else if (status === "completedwitherrors") {
+      return <span className="text-pending-700 font-medium">Completed with errors</span>;
+    } else {
+      return <span className="text-positive-600 font-medium">Successful</span>;
+    }
   };
 
   return (
@@ -41,14 +86,14 @@ const Receipt = () => {
           </header>
           <div className="text-center space-y-1">
             <p className="text-positive-600 font-semibold font-nunito text-3xl">
-              £100.00
+              {`${currency?.currencySymbol}${transaction?.amount}`}
             </p>
             <div className="flex items-center justify-center gap-1">
-              <CheckCircleIcon className="w-4 h-4 text-positive-600" />
-              <span className="text-positive-600 font-medium">Successful</span>
+              {getStatusIcon()}
+              {getStatusText()}
             </div>
             <span className="text-grey-600 text-sm">
-              Dec 22, 2024, 13:22:16
+              {transaction?.date}
             </span>
           </div>
           <div>
@@ -56,13 +101,13 @@ const Receipt = () => {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-grey-500">Recipient Name</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  ₦270,000
+                  {transaction?.beneficiary_name}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-grey-500">Payment Reference</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  HMR0910202400145
+                  {transaction?.reference}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
@@ -82,31 +127,31 @@ const Receipt = () => {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-grey-500">Payment Time</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  Dec 22, 2024, 13:22:16
+                  {transaction?.date}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-grey-500">Account Number</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  00004444000
+                  {transaction?.beneficiary_account}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-grey-500">Commission Fee</span>
+                <span className="text-grey-500">Balance Before</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  ₦270
+                  {`${currency?.currencySymbol}${transaction?.bal_before}`}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-grey-500">Balance After</span>
+                <span className="font-medium text-grey-700 font-nunito">
+                  {`${currency?.currencySymbol}${transaction?.bal_after}`}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-grey-500">Recipient's Bank</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  Sterling Bank
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-grey-500">Sender</span>
-                <span className="font-medium text-grey-700 font-nunito">
-                  Michelle Mezie
+                  {transaction?.bank_country || "Sterling Bank"}
                 </span>
               </div>
             </div>

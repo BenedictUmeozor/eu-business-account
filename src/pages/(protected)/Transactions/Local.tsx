@@ -11,9 +11,9 @@ import {
   XIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
-import LocalReceiptModal from "./LocalTransactionModal";
 import useSharedQueryAction from "@/hooks/use-shared-query-action";
 import ENDPOINTS from "@/constants/endpoints";
+import ReceiptModal, { ReceiptRefObject } from "./ReceiptModal";
 
 const LocalTransactions = () => {
   const [show, setShow] = useState(false);
@@ -26,7 +26,7 @@ const LocalTransactions = () => {
     key: ["local-transactions", tableState?.pagination?.current],
   });
 
-  const modalRef = useRef<HM.ModalRefObject>(null);
+  const modalRef = useRef<ReceiptRefObject>(null);
 
   const getStatusStyle = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -112,12 +112,12 @@ const LocalTransactions = () => {
     {
       title: "Action",
       key: "action",
-      render: () => (
+      render: (_, record) => (
         <Button
           type="text"
           icon={<EyeIcon className="w-4 h-4 text-grey-500" />}
           className="text-grey-500"
-          onClick={() => modalRef.current?.openModal()}>
+          onClick={() => modalRef.current?.openModal(record)}>
           View
         </Button>
       ),
@@ -196,7 +196,7 @@ const LocalTransactions = () => {
           }}
         />
       </div>
-      <LocalReceiptModal ref={modalRef} />
+      <ReceiptModal ref={modalRef} />
     </section>
   );
 };

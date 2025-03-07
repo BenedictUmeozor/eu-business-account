@@ -12,21 +12,23 @@ import {
   XIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
-import LocalReceiptModal from "./LocalTransactionModal";
 import useSharedQueryAction from "@/hooks/use-shared-query-action";
+import ReceiptModal, { ReceiptRefObject } from "./ReceiptModal";
 
 const International = () => {
   const [show, setShow] = useState(false);
   const [tableState, setTableState] = useState<HM.TableState<HM.Transaction>>();
-  
+
   const { data, isPending } = useSharedQueryAction<{
     transaction: { data: HM.Transaction[] };
   }>({
-    url: ENDPOINTS.GET_INTERNATIONAL_TRANSACTIONS(tableState?.pagination?.current),
+    url: ENDPOINTS.GET_INTERNATIONAL_TRANSACTIONS(
+      tableState?.pagination?.current
+    ),
     key: ["international-transactions", tableState?.pagination?.current],
   });
 
-  const modalRef = useRef<HM.ModalRefObject>(null);
+  const modalRef = useRef<ReceiptRefObject>(null);
 
   const getStatusStyle = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -103,7 +105,7 @@ const International = () => {
       title: "Status",
       dataIndex: "transaction_status",
       key: "transaction_status",
-      render: (status) => (
+      render: status => (
         <Tag className={clsx(getStatusStyle(status))}>
           {status || "Completed"}
         </Tag>
@@ -112,12 +114,12 @@ const International = () => {
     {
       title: "Action",
       key: "action",
-      render: () => (
+      render: (_, record) => (
         <Button
           type="text"
           icon={<EyeIcon className="w-4 h-4 text-grey-500" />}
           className="text-grey-500"
-          onClick={() => modalRef.current?.openModal()}>
+          onClick={() => modalRef.current?.openModal(record)}>
           View
         </Button>
       ),
@@ -196,7 +198,7 @@ const International = () => {
           }}
         />
       </div>
-      <LocalReceiptModal ref={modalRef} />
+      <ReceiptModal ref={modalRef} />
     </section>
   );
 };

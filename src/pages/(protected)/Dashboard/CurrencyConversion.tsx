@@ -21,12 +21,22 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
     openModal: () => setOpen(true),
   }));
 
+  const handleCloseForm = () => {
+    setOpen(false);
+    setFromAmount("");
+    setFormCurrency("GBP");
+    setToCurrency("USD");
+    setToAmount(undefined);
+    setIndication("");
+  };
+
   const rateMutation = useSharedMutationAction({
     url: ENDPOINTS.CONVERSION_INDICATIVE_RATE,
     method: "POST",
     invalidateQueries: ["conversions"],
     onSuccess: (data: HM.IndicativeRate) => {
       setIndication(data.indication);
+      setToAmount(data.target_amount);
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -38,7 +48,8 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
     method: "POST",
     invalidateQueries: ["conversions"],
     onSuccess: (data: HM.ConversionRate) => {
-      setToAmount(data.target_amount);
+      message.success(data.message);
+      handleCloseForm();
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -47,7 +58,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
 
   const handleConvert = async () => {
     if (fromAmount && formCurrency && toCurrency) {
-      changeMutation.mutate({
+      await changeMutation.mutateAsync({
         amount: fromAmount,
         source_currency: formCurrency,
         target_currency: toCurrency,
@@ -57,16 +68,17 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
     }
   };
 
-  useEffect(() => {
+  const handleConversionRate = async () => {
     if (fromAmount && formCurrency && toCurrency) {
-      rateMutation.mutate({
+      await rateMutation.mutateAsync({
         amount: fromAmount,
         source_currency: formCurrency,
         target_currency: toCurrency,
       });
+    } else {
+      message.error("Please fill in all fields");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromAmount, formCurrency, toCurrency]);
+  };
 
   useEffect(() => {
     const selectedFromCountry = CURRENCIES.find(
@@ -86,7 +98,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
 
   return (
     <Modal
-      onCancel={() => setOpen(false)}
+      onCancel={handleCloseForm}
       open={open}
       width={500}
       footer={null}
@@ -181,16 +193,17 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
               </div>
             </div>
           </div>
-          <div
-            className="cursor-pointer flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-400 transform hover:bg-secondary-500"
+          <button
+            className="cursor-pointer  flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-400 transform hover:bg-secondary-500"
             role="button"
-            onClick={handleConvert}>
-            {changeMutation.isPending ? (
+            disabled={changeMutation.isPending}
+            onClick={handleConversionRate}>
+            {rateMutation.isPending ? (
               <Loader2Icon className="w-5 h-5 text-white animate-spin" />
             ) : (
               <ArrowDownIcon className="w-5 h-5 text-white" />
             )}
-          </div>
+          </button>
         </div>
 
         {rateMutation.isPending ? (
@@ -202,7 +215,13 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
         ) : null}
         <div className="h-14 rounded-[60px] bg-primary-100 flex items-center justify-between gap-4 px-4">
           <span className="text-grey-600">Conversion fees: 0.00</span>
-          <Button size="large" type="primary" shape="round" className="w-48">
+          <Button
+            size="large"
+            type="primary"
+            shape="round"
+            className="w-48"
+            loading={changeMutation.isPending}
+            onClick={handleConvert}>
             Convert
           </Button>
         </div>

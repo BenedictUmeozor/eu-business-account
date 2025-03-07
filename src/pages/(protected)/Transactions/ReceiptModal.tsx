@@ -10,8 +10,10 @@ import {
 } from "react";
 import Receipt from "./Receipt";
 import { CURRENCIES } from "@/constants/currencies";
+import { XCircleIcon, AlertCircleIcon, ClockIcon } from "lucide-react";
+import clsx from "clsx";
 
-type ReceiptRefObject = {
+export type ReceiptRefObject = {
   openModal: (transaction: HM.Transaction) => void;
 };
 
@@ -43,6 +45,39 @@ const ReceiptModal = forwardRef<ReceiptRefObject>((_props, ref) => {
     setCurrency(cur);
   }, [transaction]);
 
+  const getStatusIcon = () => {
+    const status = transaction?.transaction_status?.toLowerCase() || "";
+
+    if (status === "completed" || status === "success") {
+      return <CheckCircleIcon className="w-4 h-4 text-positive-600" />;
+    } else if (status === "pending") {
+      return <ClockIcon className="w-4 h-4 text-pending-500" />;
+    } else if (status === "declined" || status === "failed") {
+      return <XCircleIcon className="w-4 h-4 text-negative" />;
+    } else if (status === "completedwitherrors") {
+      return <AlertCircleIcon className="w-4 h-4 text-pending-700" />;
+    } else {
+      return <CheckCircleIcon className="w-4 h-4 text-positive-600" />;
+    }
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "pending":
+        return "text-pending-500";
+      case "completed":
+      case "success":
+        return "text-positive-600";
+      case "declined":
+      case "failed":
+        return "text-negative";
+      case "completedwitherrors":
+        return "text-pending-700";
+      default:
+        return "text-positive-600";
+    }
+  };
+
   return (
     <Modal
       open={open}
@@ -56,8 +91,8 @@ const ReceiptModal = forwardRef<ReceiptRefObject>((_props, ref) => {
           </span>
         ) : null
       }>
-      {showReceipt ? (
-        <Receipt />
+      {showReceipt && transaction ? (
+        <Receipt transaction={transaction} />
       ) : (
         <section>
           <header className="flex items-center justify-center flex-col gap-6 border-0 border-t border-b border-solid border-grey-200 py-3">
@@ -78,9 +113,13 @@ const ReceiptModal = forwardRef<ReceiptRefObject>((_props, ref) => {
                 {`${currency?.currencySymbol}${transaction?.amount}`}
               </p>
               <div className="flex items-center justify-center gap-1">
-                <CheckCircleIcon className="w-4 h-4 text-positive-600" />
-                <span className="text-positive-600 font-medium">
-                  Successful
+                {getStatusIcon()}
+                <span
+                  className={clsx(
+                    "font-medium",
+                    getStatusStyle(transaction?.transaction_status || "")
+                  )}>
+                  {transaction?.transaction_status || "Successful"}
                 </span>
               </div>
             </div>
@@ -95,7 +134,7 @@ const ReceiptModal = forwardRef<ReceiptRefObject>((_props, ref) => {
             <div className="flex items-center justify-between text-sm">
               <span className="text-grey-500">Payment Reference</span>
               <span className="font-medium text-grey-700 font-nunito">
-                HMR0910202400145
+                {transaction?.reference || "HMR0910202400145"}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
@@ -115,25 +154,31 @@ const ReceiptModal = forwardRef<ReceiptRefObject>((_props, ref) => {
             <div className="flex items-center justify-between text-sm">
               <span className="text-grey-500">Payment Time</span>
               <span className="font-medium text-grey-700 font-nunito">
-                Dec 22, 2024, 13:22:16
+                {transaction?.date || "Dec 22, 2024, 13:22:16"}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-grey-500">Account Number</span>
               <span className="font-medium text-grey-700 font-nunito">
-                00004444000
+                {transaction?.beneficiary_account || "00004444000"}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-grey-500">Commission Fee</span>
+              <span className="text-grey-500">Balance Before</span>
               <span className="font-medium text-grey-700 font-nunito">
-                ₦270
+                {`${currency?.currencySymbol}${transaction?.bal_before}`}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-grey-500">Balance After</span>
+              <span className="font-medium text-grey-700 font-nunito">
+                {`${currency?.currencySymbol}${transaction?.bal_after}`}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-grey-500">Recipient's Bank</span>
               <span className="font-medium text-grey-700 font-nunito">
-                Sterling Bank
+                {transaction?.bank_country || "Sterling Bank"}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
