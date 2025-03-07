@@ -220,6 +220,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
             type="primary"
             shape="round"
             className="w-48"
+            disabled={!toAmount}
             loading={changeMutation.isPending}
             onClick={handleConvert}>
             Convert
