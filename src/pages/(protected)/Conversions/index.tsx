@@ -14,14 +14,19 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import EmptyConvertions from "./EmptyConvertions";
+import ConversionForm from "./ConversionForm";
 
 const ConversionsPage = () => {
   const [show, setShow] = useState(false);
+  const [showConversionForm, setShowConversionForm] = useState(false);
   const [tableState, setTableState] =
     useState<HM.TableState<HM.ConversionTransaction>>();
 
   const { data, isPending } = useSharedQueryAction<{
-    transaction: { data: HM.ConversionTransaction[] };
+    transaction: {
+      data: HM.ConversionTransaction[];
+    };
+    pagination: HM.Pagination;
   }>({
     url: ENDPOINTS.GET_CONVERSIONS(tableState?.pagination?.current),
     key: ["conversions", tableState?.pagination?.current],
@@ -123,76 +128,110 @@ const ConversionsPage = () => {
     },
   };
 
+  const handleOpenConversionForm = () => {
+    setShowConversionForm(true);
+  };
+
+  const handleCloseConversionForm = () => {
+    setShowConversionForm(false);
+  };
+
   return (
     <div className="space-y-8">
-      <h2 className="text-grey-600 text-xl font-medium">Conversions</h2>
-      
-      <section className="space-y-4">
-        {show && (
-          <div className="w-full flex items-center justify-between bg-white shadow-sm rounded-lg p-3">
-            <div className="flex items-center gap-2">
-              <Select
-                placeholder="Select"
-                options={TRANSACTIONS_TABLE_FILTER.days}
-                className="w-36"
-              />
-              <Select
-                placeholder="Select"
-                options={TRANSACTIONS_TABLE_FILTER.currency}
-                className="w-36"
-              />
-              <Select
-                placeholder="Select"
-                options={TRANSACTIONS_TABLE_FILTER.status}
-                className="w-36"
-              />
+      <header className="flex items-center justify-between">
+        <h2 className="text-grey-600 text-xl font-medium">Conversions</h2>
+        <Button
+          className="!text-base w-48"
+          type="primary"
+          size="large"
+          shape="round"
+          onClick={handleOpenConversionForm}>
+          New conversion
+        </Button>
+      </header>
+
+      {showConversionForm ? (
+        <ConversionForm onClose={handleCloseConversionForm} />
+      ) : (
+        <section className="space-y-4">
+          {show && (
+            <div className="w-full flex items-center justify-between bg-white shadow-sm rounded-lg p-3">
+              <div className="flex items-center gap-2">
+                <Select
+                  placeholder="Select"
+                  options={TRANSACTIONS_TABLE_FILTER.days}
+                  className="w-36"
+                />
+                <Select
+                  placeholder="Select"
+                  options={TRANSACTIONS_TABLE_FILTER.currency}
+                  className="w-36"
+                />
+                <Select
+                  placeholder="Select"
+                  options={TRANSACTIONS_TABLE_FILTER.status}
+                  className="w-36"
+                />
+              </div>
+              <Button
+                type="primary"
+                icon={<XIcon className="w-4 h-4 text-grey-100" />}
+                className="bg-grey-400 text-grey-100"
+                onClick={() => setShow(false)}>
+                Close
+              </Button>
             </div>
+          )}
+
+          <div className="w-full flex items-center justify-between bg-white shadow-sm rounded-lg p-3">
+            <h5 className="text-grey-600 font-medium text-base">
+              Recent Conversions
+            </h5>
             <Button
               type="primary"
-              icon={<XIcon className="w-4 h-4 text-grey-100" />}
-              className="bg-grey-400 text-grey-100"
-              onClick={() => setShow(false)}>
-              Close
+              icon={<ListFilter className="h-4 w-4 text-grey-500" />}
+              className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200"
+              onClick={() => setShow(true)}>
+              Filter
             </Button>
           </div>
-        )}
 
-        <div className="w-full flex items-center justify-between bg-white shadow-sm rounded-lg p-3">
-          <h5 className="text-grey-600 font-medium text-base">
-            Recent Conversions
-          </h5>
-          <Button
-            type="primary"
-            icon={<ListFilter className="h-4 w-4 text-grey-500" />}
-            className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200"
-            onClick={() => setShow(true)}>
-            Filter
-          </Button>
-        </div>
-        
-        {hasData ? (
-          <div>
-            <Table
-              dataSource={data.transaction.data}
-              columns={columns}
-              rowSelection={rowSelection}
-              onChange={(pagination, filters, sorter, extra) => {
-                setTableState({ pagination, filters, sorter, extra });
-              }}
-              loading={isPending}
-              components={{
-                header: {
-                  cell: (props: any) => (
-                    <th {...props} className="text-grey-500 font-medium text-xs" />
-                  ),
-                },
-              }}
-            />
-          </div>
-        ) : (
-          <EmptyConvertions />
-        )}
-      </section>
+          {hasData ? (
+            <div>
+              <Table
+                dataSource={data.transaction.data}
+                columns={columns}
+                rowSelection={rowSelection}
+                onChange={(pagination, filters, sorter, extra) => {
+                  setTableState({ pagination, filters, sorter, extra });
+                }}
+                loading={isPending}
+                pagination={
+                  data?.pagination?.current_page === data?.pagination?.no_of_pages
+                    ? false
+                    : {
+                        current: data?.pagination?.current_page,
+                        total: data?.pagination?.no_of_pages,
+                        pageSize: data?.pagination?.row_per_page,
+                      }
+                }
+                components={{
+                  header: {
+                    cell: (props: any) => (
+                      <th
+                        {...props}
+                        className="text-grey-500 font-medium text-xs"
+                      />
+                    ),
+                  },
+                }}
+              />
+            </div>
+          ) : (
+            <EmptyConvertions onShowConversionForm={handleOpenConversionForm} />
+          )}
+        </section>
+      )}
     </div>
   );
 };

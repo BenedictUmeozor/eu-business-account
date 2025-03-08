@@ -45,6 +45,12 @@ a {
   border: none !important;
 }
 
+.antd-select-custom.page .ant-select-selector {
+  background-color: rgba(30, 136, 252, 0.4) !important;
+  color: white !important;
+  border: none !important;
+}
+
 .antd-select-custom .ant-select-selection-item {
   color: white !important;
 }

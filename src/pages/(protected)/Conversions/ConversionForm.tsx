@@ -1,14 +1,17 @@
-import { Button, Input, message, Modal, Select, Spin } from "antd";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { NumericFormat } from "react-number-format";
+import { Button, Input, message, Select, Spin } from "antd";
 import { ArrowDownIcon, Loader2Icon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { NumericFormat } from "react-number-format";
 import ENDPOINTS from "@/constants/endpoints";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
 import { CURRENCIES } from "@/constants/currencies";
 
-const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
-  const [open, setOpen] = useState(false);
+interface ConversionFormProps {
+  onClose: () => void;
+}
+
+const ConversionForm = ({ onClose }: ConversionFormProps) => {
   const [currencySymbol, setCurrencySymbol] = useState("£");
   const [toCurrencySymbol, setToCurrencySymbol] = useState("$");
   const [fromAmount, setFromAmount] = useState("");
@@ -17,12 +20,8 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
   const [toAmount, setToAmount] = useState<number>();
   const [indication, setIndication] = useState("");
 
-  useImperativeHandle(ref, () => ({
-    openModal: () => setOpen(true),
-  }));
-
   const handleCloseForm = () => {
-    setOpen(false);
+    onClose();
     setFromAmount("");
     setFormCurrency("GBP");
     setToCurrency("USD");
@@ -97,19 +96,14 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
   }, [formCurrency, toCurrency]);
 
   return (
-    <Modal
-      onCancel={handleCloseForm}
-      open={open}
-      width={500}
-      footer={null}
-      title={
-        <span className="text-xl font-semibold text-grey-600">
-          Currency Conversion
-        </span>
-      }>
+    <div className="w-full bg-white shadow-sm rounded-lg p-5 mb-12 max-w-lg mx-auto">
+      <div className="mb-4">
+        <h3 className="text-xl font-semibold text-grey-600">Currency Conversion</h3>
+      </div>
+      
       <section className="space-y-4">
         <div className="h-64 relative p-3 bg-primary-50 rounded-xl flex flex-col gap-2">
-          <div className="h-32 bg-secondary-400 rounded-lg py-3 px-4 flex items-center justify-center">
+          <div className="h-32 bg-primary rounded-lg py-3 px-4 flex items-center justify-center">
             <div className="space-y-4 w-full">
               <div className="flex items-center justify-between text-sm text-white">
                 <span>From</span>
@@ -133,7 +127,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
                 </div>
                 <div className="w-28">
                   <Select
-                    className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
+                    className="!bg-[#0B3E81] antd-select-custom page text-white rounded-lg"
                     style={{ backgroundColor: "#0B3E81", color: "white" }}
                     value={formCurrency}
                     onChange={value => setFormCurrency(value)}
@@ -158,7 +152,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
               </div>
             </div>
           </div>
-          <div className="h-32 bg-secondary-400 rounded-lg py-3 px-4 flex items-center justify-center">
+          <div className="h-32 bg-primary rounded-lg py-3 px-4 flex items-center justify-center">
             <div className="space-y-4 text-white w-full">
               <span className="text-sm">Recipient gets</span>
               <div className="flex items-center justify-between">
@@ -168,7 +162,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
                 </span>
                 <div className="w-28">
                   <Select
-                    className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
+                    className="!bg-[#0B3E81] antd-select-custom page text-white rounded-lg"
                     style={{ backgroundColor: "#0B3E81", color: "white" }}
                     value={toCurrency}
                     onChange={value => setToCurrency(value)}
@@ -194,7 +188,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
             </div>
           </div>
           <button
-            className="cursor-pointer  flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-400 transform hover:bg-secondary-500"
+            className="cursor-pointer flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary transform hover:bg-secondary-500"
             role="button"
             disabled={changeMutation.isPending}
             onClick={handleConversionRate}>
@@ -227,8 +221,8 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject>((_props, ref) => {
           </Button>
         </div>
       </section>
-    </Modal>
+    </div>
   );
-});
+};
 
-export default CurrencyConversion;
+export default ConversionForm;

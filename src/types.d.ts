@@ -186,6 +186,13 @@ declare global {
       economic_activity: string;
     }
 
+    interface Pagination {
+      total_record: number;
+      row_per_page: number;
+      no_of_pages: number;
+      current_page: number;
+    }
+
     interface PersonalDetails {
       status: string;
       message: string;

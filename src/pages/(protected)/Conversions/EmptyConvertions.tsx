@@ -1,10 +1,10 @@
 import { Button } from "antd";
-import { useRef } from "react";
-import CurrencyConversion from "../Dashboard/CurrencyConversion";
 
-const EmptyConvertions = () => {
-  const modalRef = useRef<HM.ModalRefObject>(null);
+interface EmptyConvertionsProps {
+  onShowConversionForm: () => void;
+}
 
+const EmptyConvertions = ({ onShowConversionForm }: EmptyConvertionsProps) => {
   return (
     <div className="border border-grey-200 border-solid rounded-xl flex items-center justify-center min-h-80 bg-white py-12">
       <div className="w-full max-w-96 flex flex-col gap-6 items-center justify-center">
@@ -27,11 +27,10 @@ const EmptyConvertions = () => {
           className="bg-primary-50 text-primary w-48"
           shape="round"
           size="large"
-          onClick={() => modalRef.current?.openModal()}>
+          onClick={onShowConversionForm}>
           Try now
         </Button>
       </div>
-      <CurrencyConversion ref={modalRef} />
     </div>
   );
 };
