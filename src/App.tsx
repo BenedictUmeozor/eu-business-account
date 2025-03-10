@@ -13,10 +13,12 @@ import ErrorBoundary from "./pages/error";
 
 const NotFound = () => import("./pages/not-found");
 
+// Auth Pages
 const GetStarted = () => import("./pages/(auth)/GetStarted");
 const OTPVerification = () => import("./pages/(auth)/OTPVerification");
 const EmailVerified = () => import("./pages/(auth)/EmailVerified");
 const Login = () => import("./pages/(auth)/Login");
+const ForgotPassword = () => import("./pages/(auth)/ForgotPassword");
 
 const Onboarding = () => import("./pages/(protected)/Onboarding");
 
@@ -85,6 +87,7 @@ const App = () => {
           <Route path="verify-email" lazy={OTPVerification} />
           <Route path="email-verified" lazy={EmailVerified} />
           <Route path="login" lazy={Login} />
+          <Route path="forgot-password" lazy={ForgotPassword} />
         </Route>
         <Route Component={RootLayout}>
           <Route index element={<Navigate to="/dashboard" replace />} />

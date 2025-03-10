@@ -47,12 +47,12 @@ const GetStartedLayout = () => {
   }
 
   return (
-    <div className="relative flex min-h-screen w-full overflow-hidden">
+    <div className="relative flex min-h-screen w-full overflow-hidden pb-12">
       <div className="absolute inset-0 bg-primary">
         <div className="absolute bottom-0 left-0 right-0 h-[35%] origin-[100%] -skew-y-6 transform bg-primary-50" />
       </div>
       <div ref={ref} />
-      <section className="w-full max-w-7xl mx-auto space-y-8 overflow-y-auto lg:px-8 px-4 min-h-screen z-10 pt-8">
+      <section className="w-full max-w-7xl mx-auto space-y-8 lg:px-8 px-4 min-h-screen z-10 pt-8">
         <a
           href="https://hellomemoney.com/"
           className="flex items-center gap-2 max-lg:justify-center">
@@ -67,12 +67,12 @@ const GetStartedLayout = () => {
         </a>
         <div className="relative mx-auto grid grid-cols-1 items-start gap-12 lg:grid-cols-2 justify-between">
           {/* QR code positioned on the dividing line */}
-          <div className="absolute left-0 top-[65%] z-10 space-y-2 max-lg:hidden">
-            <div className="flex items-center justify-center w-36">
+          <div className="absolute left-0 top-[72.5%] z-10 space-y-2 max-lg:hidden flex flex-col items-center justify-center mb-2">
+            <div className="flex items-center justify-center w-32">
               <img
                 src="/images/qrcode.png"
                 alt=""
-                className="h-36 w-36 object-contain"
+                className="w-full object-contain"
               />
             </div>
             <p className="w-40 text-center px-2 text-grey-600 font-medium">
