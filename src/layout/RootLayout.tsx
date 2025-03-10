@@ -67,12 +67,8 @@ const RootLayout = () => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [navigation.state, navigation.location?.pathname, params]);
 
-  if (isChecking || isCheckingProgress) {
+  if (isChecking || isCheckingProgress || !session?.user) {
     return <Loader />;
-  }
-
-  if (!session?.user) {
-    return null;
   }
 
   return (
