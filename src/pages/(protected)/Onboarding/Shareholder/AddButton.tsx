@@ -19,10 +19,7 @@ const AddButton = ({
     [shareholder]
   );
 
-  const hasUploaded = useMemo(
-    () => !!shareholder?.documents?.data?.length,
-    [shareholder]
-  );
+  const hasUploaded = !!shareholder?.documents?.data?.length;
 
   const handleAddClick = () => {
     if (canAddShareholder) {

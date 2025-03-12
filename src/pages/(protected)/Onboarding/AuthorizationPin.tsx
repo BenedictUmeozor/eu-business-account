@@ -53,6 +53,7 @@ const AuthorizationPin = ({ next }: { next: () => void }) => {
           htmlType="submit"
           size="large"
           shape="round"
+          loading={mutation.isPending}
           className="w-48">
           Next
         </Button>
