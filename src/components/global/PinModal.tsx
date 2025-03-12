@@ -1,4 +1,4 @@
-import { Button, Input, Modal } from "antd";
+import { Button, Form, FormProps, Input, Modal } from "antd";
 import { forwardRef, memo, useImperativeHandle, useState } from "react";
 
 export type PinRefObject = {
@@ -7,7 +7,7 @@ export type PinRefObject = {
 };
 
 interface Props {
-  onSubmit: () => void | Promise<void>;
+  onSubmit: (pin: string) => void | Promise<void>;
   loading?: boolean;
   title?: string;
 }
@@ -15,14 +15,16 @@ interface Props {
 const PinModal = forwardRef<PinRefObject, Props>(
   ({ onSubmit, loading, title = "Enter PassCode" }, ref) => {
     const [open, setOpen] = useState(false);
+    const [form] = Form.useForm<{ pin: string }>();
 
     useImperativeHandle(ref, () => ({
       openModal: () => setOpen(true),
       closeModal: () => setOpen(false),
     }));
 
-    const handleSubmit = () => {
-      onSubmit();
+    const onFinish: FormProps<{ pin: string }>["onFinish"] = async values => {
+      onSubmit(values.pin);
+      form.resetFields();
     };
 
     return (
@@ -39,23 +41,31 @@ const PinModal = forwardRef<PinRefObject, Props>(
               Enter your four digit passcode to continue
             </p>
           </header>
-          <div className="w-56 mx-auto">
-            <Input.OTP length={4} style={{ width: "100%" }} />
-          </div>
-          <div className="flex flex-col items-center justify-center gap-6">
-            <Button
-              type="primary"
-              size="large"
-              className="w-48"
-              shape="round"
-              onClick={handleSubmit}
-              loading={loading}>
-              Continue
-            </Button>
-            <Button type="link" className="text-primary !text-base">
-              Forgot Pin?
-            </Button>
-          </div>
+          <Form form={form} onFinish={onFinish} className="space-y-10">
+            <Form.Item
+              name="pin"
+              className="w-56 mx-auto"
+              rules={[{ required: true, message: "Passcode is required" }]}>
+              <Input.OTP length={4} style={{ width: "100%" }} />
+            </Form.Item>
+            <div className="flex flex-col items-center justify-center gap-6">
+              <Button
+                type="primary"
+                size="large"
+                className="w-48"
+                shape="round"
+                htmlType="submit"
+                loading={loading}>
+                Continue
+              </Button>
+              <Button
+                type="link"
+                htmlType="button"
+                className="text-primary !text-base">
+                Forgot Pin?
+              </Button>
+            </div>
+          </Form>
         </section>
       </Modal>
     );

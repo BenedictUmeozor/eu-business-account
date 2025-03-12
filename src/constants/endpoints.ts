@@ -28,6 +28,9 @@ const ENDPOINTS = {
   UPLOAD_PROOF_OF_IDENTIFICATION: "/proof_of_identification",
   UPLOAD_BUSINESS_DOCUMENT: "/upload_business_document",
   FETCH_BUSINESS_DOCUMENTS: "/business_documents",
+  SETUP_PASSCODE: "/onboarding/setup_passcode",
+  FETCH_SECURITY_QUESTIONS: "/onboarding/fetch_questions",
+  SET_SECURITY_QUESTION: "/onboarding/set_security_question",
 
   // Conversions
   CONVERSION_INDICATIVE_RATE: "/payment-services/fx_indicative_rate",
@@ -40,6 +43,18 @@ const ENDPOINTS = {
     `/payment-services/transaction_localpayment?row_per_page=${row_per_page}&page=${page}`,
   GET_INTERNATIONAL_TRANSACTIONS: (page = 1, row_per_page = 15) =>
     `/payment-services/transaction_international?row_per_page=${row_per_page}&page=${page}`,
+  GET_RECEIPT: (id: string) =>
+    `/payment-services/get_transaction?request_id=${id}`,
+
+  // Beneficiaries
+  SAVE_BENEFICIARY: "/account-services/save_beneficiary",
+  FETCH_SINGLE_BENEFICIARY: "/account-services/get_beneficiary",
+  FETCH_BENEFICIARY_BY_CURRENCY: "/account-services/beneficiary_by_currency",
+
+  // Payments
+  REGISTER_DEVICE: "/customer-services/register_device_web",
+  INITIATE_LOCAL_PAYMENT: "/payment-services/initiate_sca_payment",
+  DEVICE_SCA_STATUS: "/customer-services/sca_status",
 };
 
 export default ENDPOINTS;

@@ -193,6 +193,36 @@ declare global {
       current_page: number;
     }
 
+    interface Question {
+      question_id: number;
+      question: string;
+    }
+
+    interface Beneficiary {
+      beneficiary_id: number;
+      type: "Personal" | "Business";
+      category: string;
+      fname: string | null;
+      lname: string | null;
+      oname: string | null;
+      fullname: string | null;
+      receiver_email: string | null;
+      currency: string;
+      account_number: string;
+      bank_name: string | null;
+      bank_code: string | null;
+      account_type: string | null;
+      bank_country: string;
+      ben_country: string;
+      ben_city: string | null;
+      ben_address: string | null;
+      routing_number: string | null;
+      iban: string | null;
+      bic: string | null;
+      company_name?: string | null;
+      corresponding_bank: string | null;
+    }
+
     interface PersonalDetails {
       status: string;
       message: string;
@@ -256,6 +286,52 @@ declare global {
         }[];
       };
     }
+
+    interface SingleReceipt {
+      status: string;
+      type: string;
+      category: string;
+      currency: string;
+      amount_sent: {
+        currency: string;
+        value: number;
+      };
+      transaction_status: string;
+      date: {
+        value: string | null;
+        posting: string;
+      };
+      charges: {
+        currency: string;
+        value: number | null;
+      };
+      balance: {
+        balance_before: number;
+        balance_after: number | null;
+      };
+      beneficiary: {
+        country: string;
+        account_number: string;
+        name: string;
+        city: string | null;
+        address: string | null;
+      };
+      bank: {
+        bank_name: string | null;
+        bank_country: string;
+        bic: string;
+      };
+      sender: {
+        sender_name: string;
+        sender_account: string;
+      };
+      reference: string | null;
+      narration: string;
+      request_status: string;
+      exchange_rate: number | null;
+      errors: string[];
+    }
+
     interface ShareholderResponse {
       status: string;
       shareholder: {

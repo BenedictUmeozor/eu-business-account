@@ -7,6 +7,9 @@ import Transactions from "./Transactions";
 import AssetLineChart from "./LineChart";
 import { Link } from "react-router";
 import USDollars from "./USDollars";
+import Euro from "./Euro";
+import NGNaira from "./NGNaira";
+import DKK from "./DKK";
 
 const Dashboard = () => {
   const items: TabsProps["items"] = useMemo(
@@ -24,17 +27,17 @@ const Dashboard = () => {
       {
         key: "3",
         label: "EUR",
-        children: <BritishPounds />,
+        children: <Euro />,
       },
       {
         key: "4",
         label: "NGN",
-        children: <BritishPounds />,
+        children: <NGNaira />,
       },
       {
         key: "5",
         label: "DKK",
-        children: <BritishPounds />,
+        children: <DKK />,
       },
     ],
     []
@@ -45,7 +48,9 @@ const Dashboard = () => {
       <div className="flex items-center justify-between">
         <BalanceInfo />
         <Space>
-          <Link to="/dashboard/send-money">
+          <Link
+            to="/dashboard/send-money?currency=GBP"
+            state={{ currency: "GBP" }}>
             <Button
               type="primary"
               className="bg-primary-50 text-primary"

@@ -86,20 +86,20 @@ const useCheckOnboardingProgress = (email?: string, path?: string) => {
 
       if (identityVerification === 0) {
         // Identity Verification step
-        navigate("/onboarding", { state: { current: 3 } });
+        navigate("/onboarding", { state: { current: 5 } });
         return;
       }
 
       if (shareholder === 0 || shareholderDocument === 0) {
         // Add Shareholders step
-        navigate("/onboarding", { state: { current: 4 } });
+        navigate("/onboarding", { state: { current: 6 } });
         return;
       }
 
       if (!allIsTruthy(businessDocuments)) {
         // Add Documents step
         console.log("All truthy still running", allIsTruthy(businessDocuments));
-        navigate("/onboarding", { state: { current: 5 } });
+        navigate("/onboarding", { state: { current: 7 } });
         return;
       }
 

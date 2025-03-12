@@ -1,15 +1,16 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { PAYMENT_TYPES } from "../constants";
 import { message, Space, Tag } from "antd";
 
 const LocalPayments = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const handleNavigate = (to: string, comingSoon?: boolean) => {
     if (comingSoon) {
       return message.info("This feature is coming soon");
     }
-    navigate(to);
+    navigate(`${to}?currency=${searchParams.get("currency")}`);
   };
 
   return (

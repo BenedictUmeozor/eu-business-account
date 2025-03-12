@@ -10,7 +10,7 @@ import VirtualList from "rc-virtual-list";
 import ENDPOINTS from "@/constants/endpoints";
 import { useRef } from "react";
 import { BENEFICIARIES } from "../../constants";
-import AddBeneficiaryModal from "../../AddBeneficiaryModal";
+// import AddBeneficiaryModal from "../../AddBeneficiaryModal";
 
 interface FormValues {
   name: string;
@@ -125,7 +125,7 @@ const SelectInternationalBeneficiary = () => {
           </section>
         </div>
       </div>
-      <AddBeneficiaryModal ref={modalRef} />
+      {/* <AddBeneficiaryModal ref={modalRef} /> */}
     </div>
   );
 };

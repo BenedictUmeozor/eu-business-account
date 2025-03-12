@@ -1,7 +1,8 @@
-import { memo, ReactNode, useState } from "react";
+import { memo, ReactNode, useEffect, useMemo, useState } from "react";
 import { Input, Select, Form } from "antd";
-import type { Rule } from 'rc-field-form/lib/interface';
+import type { Rule } from "rc-field-form/lib/interface";
 import codes from "@/data/codes.json";
+import { Currency } from "@/constants/currencies";
 
 interface PhoneNumberInputProps {
   name: string;
@@ -18,6 +19,8 @@ interface PhoneNumberInputProps {
   disabled?: boolean;
   dialCodeRules?: Rule[];
   phoneNumberRules?: Rule[];
+  array?: Currency[];
+  currency?: string;
 }
 
 const PhoneNumberInput = ({
@@ -29,6 +32,8 @@ const PhoneNumberInput = ({
   disabled = false,
   dialCodeRules,
   phoneNumberRules,
+  array,
+  currency,
 }: PhoneNumberInputProps) => {
   const [phoneNumber, setPhoneNumber] = useState("+44");
   const [dialCode, setDialCode] = useState("+44");
@@ -49,6 +54,28 @@ const PhoneNumberInput = ({
     setPhoneValue(newValue);
   };
 
+  const countries = useMemo(() => {
+    if (array) {
+      return array;
+    }
+    return codes;
+  }, [array]);
+
+  useEffect(() => {
+    if (currency && array) {
+      const currencyItem = array.find(c => c.currencyCode === currency);
+      if (currencyItem) {
+        const country = countries.find(
+          c => c.countryCode === currencyItem.countryCode
+        );
+        if (country && country.callingCode) {
+          handleCodeChange(country.callingCode);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency, countries, array]);
+
   return (
     <Form.Item label={label} name={name} rules={phoneNumberRules}>
       <Input
@@ -67,13 +94,13 @@ const PhoneNumberInput = ({
               dropdownStyle={{ minWidth: "200px" }}
               onChange={handleCodeChange}
               value={dialCode}
-              options={codes.map(c => ({
+              options={countries.map(c => ({
                 label: (
                   <div className="flex items-center gap-2">
                     <img
                       src={c.flag}
                       alt={c.countryCode}
-                      className="h-4 w-6 object-cover"
+                      className="h-6 w-6 rounded-full object-cover"
                     />
                     <span>{c.countryCode}</span>
                   </div>

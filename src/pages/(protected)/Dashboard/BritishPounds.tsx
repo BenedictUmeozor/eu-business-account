@@ -14,6 +14,7 @@ import Colors from "@/constants/colors";
 import CurrencyConversion from "./CurrencyConversion";
 import MoreActions from "./MoreActions";
 import AccountRequestModal from "./AccountRequest";
+import ENDPOINTS from "@/constants/endpoints";
 
 const data = [
   { name: "Total money in", value: 0, color: Colors.positive },
@@ -79,7 +80,11 @@ const BritishPounds = () => {
         <header className="flex items-start justify-between">
           <div className="space-y-2">
             <div className="h-11 w-11 rounded-full overflow-hidden grid place-items-center">
-              <img src={"/images/gb.png"} alt="gb" className="w-full h-full" />
+              <img
+                src={ENDPOINTS.FLAG_URL("gb")}
+                alt="gb"
+                className="w-full h-full object-cover"
+              />
             </div>
             <p className="font-medium text-grey-500">Total GBP Balance</p>
             <p className="text-3xl text-grey-600 font-semibold font-nunito">
@@ -104,7 +109,8 @@ const BritishPounds = () => {
           </Button>
           <div className="flex items-center gap-4">
             <Link
-              to="/dashboard/send-money"
+              to="/dashboard/send-money?currency=GBP"
+              state={{ currency: "GBP" }}
               className="flex flex-col items-center justify-center gap-1 text-primary group">
               <div
                 className="bg-primary-50 h-12 w-12 group-hover:bg-primary-100 transition-all duration-200 ease-linear rounded-full p-0 flex items-center justify-center cursor-pointer"

@@ -1,11 +1,12 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { SEND_MONEY_OPTIONS } from "./constants";
 
 const SendMoney = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const handleNavigate = (to: string) => {
-    navigate(to);
+    navigate(`${to}?currency=${searchParams.get("currency")}`);
   };
 
   return (
@@ -22,7 +23,10 @@ const SendMoney = () => {
         </header>
         <section className="space-y-4">
           {SEND_MONEY_OPTIONS.map(option => (
-            <div className="flex items-center gap-6 rounded-xl shadow p-5 bg-white cursor-pointer border-2 transition-all duration-200 ease-linear border-solid border-transparent hover:border-primary" key={option.title} onClick={() => handleNavigate(option.to)}>
+            <div
+              className="flex items-center gap-6 rounded-xl shadow p-5 bg-white cursor-pointer border-2 transition-all duration-200 ease-linear border-solid border-transparent hover:border-primary"
+              key={option.title}
+              onClick={() => handleNavigate(option.to)}>
               <img
                 src={option.image}
                 alt={option.title}

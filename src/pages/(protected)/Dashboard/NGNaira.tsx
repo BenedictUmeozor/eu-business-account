@@ -18,8 +18,8 @@ import MoreActions from "./MoreActions";
 import ENDPOINTS from "@/constants/endpoints";
 
 const data = [
-  { name: "Total money in", value: 1200.0, color: Colors.positive },
-  { name: "Total money out", value: 700.95, color: Colors.pending },
+  { name: "Total money in", value: 250000.0, color: Colors.positive },
+  { name: "Total money out", value: 125500.0, color: Colors.pending },
 ];
 
 const DoughnutChart = () => {
@@ -63,7 +63,7 @@ const DoughnutChart = () => {
               />
               <div className="space-y-0.5">
                 <p className="text-sm text-grey-500">{entry.name}</p>
-                <p className="font-medium">£{entry.value.toFixed(2)}</p>
+                <p className="font-medium">₦{entry.value.toLocaleString()}</p>
               </div>
             </div>
           ))}
@@ -73,7 +73,7 @@ const DoughnutChart = () => {
   );
 };
 
-const USDollars = () => {
+const NGNaira = () => {
   const conversionRef = useRef<HM.ModalRefObject>(null);
   const optionsRef = useRef<HM.ModalRefObject>(null);
 
@@ -82,12 +82,16 @@ const USDollars = () => {
       <div className="p-6 shadow rounded-md flex flex-col gap-6 justify-between bg-white">
         <header className="flex items-start justify-between">
           <div className="space-y-2">
-            <div className="h-11 w-11 rounded-full overflow-hidden grid place-items-center">
-              <img src={ENDPOINTS.FLAG_URL("us")} alt="gb" className="w-full h-full object-cover" />
+            <div className="h-11 w-11 rounded-full overflow-hidden grid place-items-center bg-green-50">
+              <img
+                src={ENDPOINTS.FLAG_URL("ng")}
+                alt="gb"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <p className="font-medium text-grey-500">Total USD Balance</p>
+            <p className="font-medium text-grey-500">Total Naira Balance</p>
             <p className="text-3xl text-grey-600 font-semibold font-nunito">
-              $444.00
+              ₦450,000.00
             </p>
           </div>
           <Tag
@@ -100,7 +104,8 @@ const USDollars = () => {
           <ClipboardCopy />
           <div className="flex items-center gap-4">
             <Link
-              to="/dashboard/send-money?currency=USD"
+              to="/dashboard/send-money?currency=NGN"
+              state={{ currency: "NGN" }}
               className="flex flex-col items-center justify-center gap-1 text-primary group">
               <div
                 className="bg-primary-50 h-12 w-12 group-hover:bg-primary-100 transition-all duration-200 ease-linear rounded-full p-0 flex items-center justify-center cursor-pointer"
@@ -165,8 +170,8 @@ const ClipboardCopy = () => {
 
   return (
     <div className="flex items-center gap-0.5 bg-gray-50 rounded-md p-1 px-2.5">
-      <span className="text-sm text-grey-500">Hellome... 4044209090</span>
-      <CopyToClipboard text="Hellome... 4044209090" onCopy={handleCopy}>
+      <span className="text-sm text-grey-500">Hellome... 2234901122</span>
+      <CopyToClipboard text="Hellome... 2234901122" onCopy={handleCopy}>
         <Button
           type="text"
           icon={
@@ -182,4 +187,4 @@ const ClipboardCopy = () => {
   );
 };
 
-export default USDollars;
+export default NGNaira;

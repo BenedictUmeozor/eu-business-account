@@ -13,6 +13,8 @@ import OnboardingSuccess from "./OnboardingSuccess";
 import AddDocuments from "./Documents";
 import OnboardingProvider from "@/providers/OnboardingContext";
 import { useOnboardingContext } from "@/contexts/onboarding";
+import SecurityQuestions from "./SecurityQuestions";
+import AuthorizationPin from "./AuthorizationPin";
 
 const steps: StepProps[] = [
   {
@@ -23,6 +25,12 @@ const steps: StepProps[] = [
   },
   {
     title: "Personal Information",
+  },
+  {
+    title: "Security Questions",
+  },
+  {
+    title: "Authorization PIN",
   },
   {
     title: "Identity Verification",
@@ -95,11 +103,13 @@ const Onboarding = () => {
         {current === 0 && <BusinessNameSearch next={next} />}
         {current === 1 && <BusinessInformation next={next} />}
         {current === 2 && <PersonalInfo next={next} />}
-        {current === 3 && <IdentityVerification next={next} />}
-        {current === 4 && <AddShareholders next={next} />}
-        {current === 5 && <AddDocuments next={next} />}
-        {current === 6 && <Review nextAction={next} />}
-        {current === 7 && <OnboardingSuccess />}
+        {current === 3 && <SecurityQuestions next={next} />}
+        {current === 4 && <AuthorizationPin next={next} />}
+        {current === 5 && <IdentityVerification next={next} />}
+        {current === 6 && <AddShareholders next={next} />}
+        {current === 7 && <AddDocuments next={next} />}
+        {current === 8 && <Review nextAction={next} />}
+        {current === 9 && <OnboardingSuccess />}
       </div>
     </section>
   );
