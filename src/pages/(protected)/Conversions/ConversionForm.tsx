@@ -5,7 +5,8 @@ import { NumericFormat } from "react-number-format";
 import ENDPOINTS from "@/constants/endpoints";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
-import { CURRENCIES } from "@/constants/currencies";
+import useAccountBalances from "@/hooks/use-account-balances";
+import usePartnerCurrency from "@/hooks/use-partner-currency";
 
 interface ConversionFormProps {
   onClose: () => void;
@@ -20,6 +21,9 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
   const [toAmount, setToAmount] = useState<number>();
   const [indication, setIndication] = useState("");
 
+  const { fetchBalance } = useAccountBalances();
+  const { currencies, loading } = usePartnerCurrency();
+
   const handleCloseForm = () => {
     onClose();
     setFromAmount("");
@@ -27,6 +31,24 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
     setToCurrency("USD");
     setToAmount(undefined);
     setIndication("");
+  };
+
+  const handleFromCurrencyChange = (value: string) => {
+    setFormCurrency(value);
+    if (value === toCurrency) {
+      const alternativeCurrency =
+        currencies.find(c => c.currencyCode !== value)?.currencyCode || "USD";
+      setToCurrency(alternativeCurrency);
+    }
+  };
+
+  const handleToCurrencyChange = (value: string) => {
+    setToCurrency(value);
+    if (value === formCurrency) {
+      const alternativeCurrency =
+        currencies.find(c => c.currencyCode !== value)?.currencyCode || "GBP";
+      setFormCurrency(alternativeCurrency);
+    }
   };
 
   const rateMutation = useSharedMutationAction({
@@ -42,13 +64,24 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
     },
   });
 
-  const changeMutation = useSharedMutationAction({
+  const changeMutation = useSharedMutationAction<
+    HM.ConversionRate,
+    {
+      source_currency: string;
+      target_currency: string;
+      amount: string;
+    }
+  >({
     url: ENDPOINTS.CONVERSION_RATE,
     method: "POST",
     invalidateQueries: ["conversions"],
-    onSuccess: (data: HM.ConversionRate) => {
+    onSuccess: async (data, variables) => {
       message.success(data.message);
       handleCloseForm();
+      await Promise.all([
+        fetchBalance(variables.source_currency),
+        fetchBalance(variables.target_currency),
+      ]);
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -80,10 +113,22 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
   };
 
   useEffect(() => {
-    const selectedFromCountry = CURRENCIES.find(
+    if (fromAmount && formCurrency && toCurrency) {
+      rateMutation.mutate({
+        amount: fromAmount,
+        source_currency: formCurrency,
+        target_currency: toCurrency,
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromAmount, formCurrency, toCurrency]);
+
+  useEffect(() => {
+    const selectedFromCountry = currencies.find(
       c => c.currencyCode === formCurrency
     );
-    const selectedToCountry = CURRENCIES.find(
+    const selectedToCountry = currencies.find(
       c => c.currencyCode === toCurrency
     );
 
@@ -93,14 +138,16 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
     if (selectedToCountry) {
       setToCurrencySymbol(selectedToCountry.currencySymbol);
     }
-  }, [formCurrency, toCurrency]);
+  }, [formCurrency, toCurrency, currencies]);
 
   return (
     <div className="w-full bg-white shadow-sm rounded-lg p-5 mb-12 max-w-lg mx-auto">
       <div className="mb-4">
-        <h3 className="text-xl font-semibold text-grey-600">Currency Conversion</h3>
+        <h3 className="text-xl font-semibold text-grey-600">
+          Currency Conversion
+        </h3>
       </div>
-      
+
       <section className="space-y-4">
         <div className="h-64 relative p-3 bg-primary-50 rounded-xl flex flex-col gap-2">
           <div className="h-32 bg-primary rounded-lg py-3 px-4 flex items-center justify-center">
@@ -130,8 +177,9 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
                     className="!bg-[#0B3E81] antd-select-custom page text-white rounded-lg"
                     style={{ backgroundColor: "#0B3E81", color: "white" }}
                     value={formCurrency}
-                    onChange={value => setFormCurrency(value)}
-                    options={CURRENCIES.map(c => ({
+                    onChange={handleFromCurrencyChange}
+                    loading={loading}
+                    options={currencies.map(c => ({
                       label: (
                         <div className="flex items-center gap-2 bg-transparent">
                           <img
@@ -146,6 +194,7 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
                         </div>
                       ),
                       value: c.currencyCode,
+                      disabled: c.currencyCode === toCurrency,
                     }))}
                   />
                 </div>
@@ -165,8 +214,9 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
                     className="!bg-[#0B3E81] antd-select-custom page text-white rounded-lg"
                     style={{ backgroundColor: "#0B3E81", color: "white" }}
                     value={toCurrency}
-                    onChange={value => setToCurrency(value)}
-                    options={CURRENCIES.map(c => ({
+                    onChange={handleToCurrencyChange}
+                    loading={loading}
+                    options={currencies.map(c => ({
                       label: (
                         <div className="flex items-center gap-2 bg-transparent">
                           <img
@@ -181,6 +231,7 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
                         </div>
                       ),
                       value: c.currencyCode,
+                      disabled: c.currencyCode === formCurrency,
                     }))}
                   />
                 </div>
@@ -217,7 +268,7 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
             disabled={!toAmount || rateMutation.isPending}
             loading={changeMutation.isPending}
             onClick={handleConvert}>
-            Convert
+            Deposit
           </Button>
         </div>
       </section>

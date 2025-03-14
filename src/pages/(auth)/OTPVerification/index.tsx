@@ -13,6 +13,7 @@ interface FormValues {
 
 interface LocationState {
   email: string;
+  password: string;
 }
 
 const OTPVerification = () => {
@@ -25,6 +26,7 @@ const OTPVerification = () => {
   const [isChecking, setIsChecking] = useState(true);
 
   const email = (location.state as LocationState)?.email;
+  const password = (location.state as LocationState)?.password;
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -81,6 +83,7 @@ const OTPVerification = () => {
       navigate("/email-verified", {
         state: {
           email,
+          password,
         },
       });
     },
@@ -107,11 +110,9 @@ const OTPVerification = () => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  if (isChecking) {
+  if (isChecking || !email) {
     return <Loader />;
   }
-
-  if (!email) return null;
 
   return (
     <section className="ml-auto space-y-6 rounded-xl bg-white p-6 shadow-lg lg:max-w-[466px]">

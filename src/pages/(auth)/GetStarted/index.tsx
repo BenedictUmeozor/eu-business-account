@@ -79,17 +79,17 @@ const GetStarted = () => {
     url: ENDPOINTS.CREATE_ACCOUNT,
     mutationKey: ["create-account"],
     onSuccess: (data, variables) => {
-      const { email } = variables;
+      const { email, password } = variables;
       setApiError(null);
       message.success(data.message);
-      navigate("/verify-email", { state: { email } });
+      navigate("/verify-email", { state: { email, password } });
     },
     onError(error) {
       const errorMessage = getErrorMessage(error);
       message.error(errorMessage);
       setApiError(errorMessage);
       // Scroll to top of the page where error is displayed
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
   });
 
@@ -131,7 +131,7 @@ const GetStarted = () => {
         </h5>
         <p className="text-grey-600">Fill the form to get started now</p>
       </header>
-      
+
       {apiError && (
         <Alert
           message={apiError}
@@ -245,9 +245,11 @@ const GetStarted = () => {
               { required: true, message: "Please create a password" },
               { min: 8, message: "Password must be at least 8 characters" },
               {
-                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/,
-                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-              }
+                pattern:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/,
+                message:
+                  "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+              },
             ]}>
             <Input.Password className="w-full" placeholder="Create Password" />
           </Form.Item>
@@ -291,11 +293,13 @@ const GetStarted = () => {
               {
                 validator: (_, value) => {
                   if (value === "NO") {
-                    return Promise.reject("You must have a registered business to create an account");
+                    return Promise.reject(
+                      "You must have a registered business to create an account"
+                    );
                   }
                   return Promise.resolve();
-                }
-              }
+                },
+              },
             ]}>
             <Radio.Group className="w-full">
               <div className="grid grid-cols-2 gap-2">

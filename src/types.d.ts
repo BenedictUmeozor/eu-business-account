@@ -93,18 +93,80 @@ declare global {
       source_account: string;
       currency: string;
       amount: number;
-      bank_country?: any;
+      charge: number;
+      bank_country: string;
       beneficiary_account: string;
       beneficiary_name: string;
       reference: string;
-      request_id?: any;
+      request_id: string;
       transaction_status: string;
       request_status?: any;
+      date: string;
       type: string;
       category: string;
-      bal_before: number;
-      bal_after: number;
-      date: string;
+      binding_ref?: any;
+      balance_before: number;
+      balance_after?: any;
+    }
+
+    interface AccountDetails {
+      accountRef: string;
+      accountName: string;
+      accountType: string;
+      currency: string;
+      customer_number: string;
+      account_number: string;
+      vibans: string[];
+      ibans: Record<string, string>;
+    }
+
+    interface BalanceInfo {
+      type: string;
+      amount: number;
+      ccy: string;
+    }
+
+    interface Bank {
+      id: number;
+      code: string;
+      name: string;
+      logo: string;
+      created: string;
+    }
+
+    interface SepaCountry {
+      country: string;
+      iso: string;
+    }
+
+    interface PartnerCurrency {
+      name: string;
+      currency: string;
+    }
+
+    interface AccountCurrency {
+      status: string;
+      details: {
+        currencies: string[][];
+      };
+    }
+
+    interface ResolveBankData {
+      status: string;
+      message: string;
+      beneficiary_name?: any;
+      bank_country: string;
+      account_number?: any;
+      beneficiary_country: string;
+      currency: string;
+      bank?: any;
+    }
+
+    interface AccountBalances {
+      data: {
+        currency: string;
+        balance: BalanceInfo;
+      }[];
     }
 
     interface ConversionTransaction {

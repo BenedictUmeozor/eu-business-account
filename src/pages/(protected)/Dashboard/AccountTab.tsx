@@ -1,24 +1,25 @@
+import { memo, useMemo, useRef } from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Button, Tag } from "antd";
+import Colors from "@/constants/colors";
+import CurrencyConversion from "./CurrencyConversion";
+import MoreActions from "./MoreActions";
 import {
-  CheckCheckIcon,
-  CircleCheckBigIcon,
-  CopyIcon,
-  SendIcon,
+  ArrowUpRightIcon,
+  EllipsisVerticalIcon,
+  InfoIcon,
   PlusIcon,
   RotateCwSquareIcon,
-  EllipsisVerticalIcon,
+  SendIcon,
 } from "lucide-react";
-import { useRef, useState } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Link } from "react-router";
-import Colors from "@/constants/colors";
-import MoreActions from "./MoreActions";
 import ENDPOINTS from "@/constants/endpoints";
+import { CURRENCIES } from "@/constants/currencies";
+import { useAppSelector } from "@/hooks";
 
 const data = [
-  { name: "Total money in", value: 1200.0, color: Colors.positive },
-  { name: "Total money out", value: 700.95, color: Colors.pending },
+  { name: "Total money in", value: 0, color: Colors.positive },
+  { name: "Total money out", value: 0, color: Colors.pending },
 ];
 
 const DoughnutChart = () => {
@@ -37,7 +38,7 @@ const DoughnutChart = () => {
         <ResponsiveContainer width={200} height={200}>
           <PieChart>
             <Pie
-              data={data}
+              data={[{ value: 1 }]}
               cx="50%"
               cy="50%"
               innerRadius={60}
@@ -45,11 +46,8 @@ const DoughnutChart = () => {
               dataKey="value"
               startAngle={90}
               endAngle={450}>
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
+              <Cell fill="#E5F1FF" />
             </Pie>
-            <Tooltip />
           </PieChart>
         </ResponsiveContainer>
 
@@ -72,7 +70,18 @@ const DoughnutChart = () => {
   );
 };
 
-const USDollars = () => {
+const AccountTab = ({ currency }: { currency: string }) => {
+  const balances = useAppSelector(state => state.accounts.balances);
+
+  const fullInfo = useMemo(
+    () => CURRENCIES.find(c => c.currencyCode === currency),
+    [currency]
+  );
+
+  const balance = useMemo(() => {
+    return balances?.find(bal => bal.ccy === currency);
+  }, [balances, currency]);
+
   const conversionRef = useRef<HM.ModalRefObject>(null);
   const optionsRef = useRef<HM.ModalRefObject>(null);
 
@@ -82,24 +91,41 @@ const USDollars = () => {
         <header className="flex items-start justify-between">
           <div className="space-y-2">
             <div className="h-11 w-11 rounded-full overflow-hidden grid place-items-center">
-              <img src={ENDPOINTS.FLAG_URL("us")} alt="gb" className="w-full h-full object-cover" />
+              <img
+                src={ENDPOINTS.FLAG_URL(
+                  fullInfo?.countryCode?.toLowerCase() ?? ""
+                )}
+                alt="gb"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <p className="font-medium text-grey-500">Total USD Balance</p>
+            <p className="font-medium text-grey-500">
+              Total {currency} Balance
+            </p>
             <p className="text-3xl text-grey-600 font-semibold font-nunito">
-              $444.00
+              {fullInfo?.currencySymbol}
+              {balance?.amount ?? "0.00"}
             </p>
           </div>
           <Tag
             className="bg-positive-50 !text-positive flex items-center gap-0.5 text-sm p-1 px-1.5 rounded-md"
-            icon={<CircleCheckBigIcon className="w-4 h-4 text-positive" />}>
+            icon={<InfoIcon className="w-4 h-4 text-positive" />}>
             Active
           </Tag>
         </header>
         <div className="flex items-end justify-between">
-          <ClipboardCopy />
+          <Button
+            type="primary"
+            shape="round"
+            className="bg-grey-50 text-grey"
+            icon={<ArrowUpRightIcon className="w-4 h-4 text-grey" />}
+            iconPosition="end">
+            View Account Details
+          </Button>
           <div className="flex items-center gap-4">
             <Link
-              to="/dashboard/send-money?currency=USD"
+              to={`/dashboard/send-money?currency=${currency}`}
+              state={{ currency }}
               className="flex flex-col items-center justify-center gap-1 text-primary group">
               <div
                 className="bg-primary-50 h-12 w-12 group-hover:bg-primary-100 transition-all duration-200 ease-linear rounded-full p-0 flex items-center justify-center cursor-pointer"
@@ -146,38 +172,15 @@ const USDollars = () => {
       <div className="p-6 shadow rounded-md bg-white">
         <DoughnutChart />
       </div>
+      <CurrencyConversion
+        ref={conversionRef}
+        currency={currency}
+        balance={balance?.amount}
+        symbol={fullInfo?.currencySymbol}
+      />
       <MoreActions ref={optionsRef} />
     </section>
   );
 };
 
-const ClipboardCopy = () => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-  };
-
-  return (
-    <div className="flex items-center gap-0.5 bg-gray-50 rounded-md p-1 px-2.5">
-      <span className="text-sm text-grey-500">Hellome... 4044209090</span>
-      <CopyToClipboard text="Hellome... 4044209090" onCopy={handleCopy}>
-        <Button
-          type="text"
-          icon={
-            copied ? (
-              <CheckCheckIcon className="w-4 h-4 text-grey-500" />
-            ) : (
-              <CopyIcon className="w-4 h-4 text-grey-500" />
-            )
-          }
-        />
-      </CopyToClipboard>
-    </div>
-  );
-};
-
-export default USDollars;
+export default memo(AccountTab);

@@ -10,7 +10,8 @@ interface ReceiptProps {
 }
 
 const Receipt = ({ transaction }: ReceiptProps) => {
-  const { downloadReceipt, isPdfLoading, isImageLoading, receiptRef } = useDownloadReceipt();
+  const { downloadReceipt, isPdfLoading, isImageLoading, receiptRef } =
+    useDownloadReceipt();
   const [currency, setCurrency] = useState<HM.Currency>();
 
   const handleDownloadPdf = async () => {
@@ -28,7 +29,7 @@ const Receipt = ({ transaction }: ReceiptProps) => {
 
   const getStatusIcon = () => {
     const status = transaction?.transaction_status?.toLowerCase() || "";
-    
+
     if (status === "completed" || status === "success") {
       return <CheckCircleIcon className="w-4 h-4 text-positive-600" />;
     } else if (status === "pending") {
@@ -44,7 +45,7 @@ const Receipt = ({ transaction }: ReceiptProps) => {
 
   const getStatusText = () => {
     const status = transaction?.transaction_status?.toLowerCase() || "";
-    
+
     if (status === "completed" || status === "success") {
       return <span className="text-positive-600 font-medium">Successful</span>;
     } else if (status === "pending") {
@@ -52,7 +53,11 @@ const Receipt = ({ transaction }: ReceiptProps) => {
     } else if (status === "declined" || status === "failed") {
       return <span className="text-negative font-medium">Failed</span>;
     } else if (status === "completedwitherrors") {
-      return <span className="text-pending-700 font-medium">Completed with errors</span>;
+      return (
+        <span className="text-pending-700 font-medium">
+          Completed with errors
+        </span>
+      );
     } else {
       return <span className="text-positive-600 font-medium">Successful</span>;
     }
@@ -92,9 +97,7 @@ const Receipt = ({ transaction }: ReceiptProps) => {
               {getStatusIcon()}
               {getStatusText()}
             </div>
-            <span className="text-grey-600 text-sm">
-              {transaction?.date}
-            </span>
+            <span className="text-grey-600 text-sm">{transaction?.date}</span>
           </div>
           <div>
             <div className="border-0 border-dashed border-t border-grey-200 border-b py-3 space-y-2">
@@ -139,19 +142,19 @@ const Receipt = ({ transaction }: ReceiptProps) => {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-grey-500">Balance Before</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  {`${currency?.currencySymbol}${transaction?.bal_before}`}
+                  {`${currency?.currencySymbol}${transaction?.balance_before}`}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-grey-500">Balance After</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  {`${currency?.currencySymbol}${transaction?.bal_after}`}
+                  {`${currency?.currencySymbol}${transaction?.balance_after}`}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-grey-500">Recipient's Bank</span>
                 <span className="font-medium text-grey-700 font-nunito">
-                  {transaction?.bank_country || "Sterling Bank"}
+                  {transaction?.bank_country || "N/A"}
                 </span>
               </div>
             </div>

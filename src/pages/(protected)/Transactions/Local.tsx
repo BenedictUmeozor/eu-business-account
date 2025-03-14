@@ -8,6 +8,7 @@ import {
   EyeIcon,
   ListFilter,
   RefreshCwIcon,
+  UploadIcon,
   XIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
@@ -83,8 +84,8 @@ const LocalTransactions = () => {
     },
     {
       title: "Balance Before",
-      dataIndex: "bal_before",
-      key: "bal_before",
+      dataIndex: "balance_before",
+      key: "balance_before",
       className: "text-grey-500 text-sm",
     },
     {
@@ -95,15 +96,15 @@ const LocalTransactions = () => {
     },
     {
       title: "Balance After",
-      dataIndex: "bal_after",
-      key: "bal_after",
+      dataIndex: "balance_after",
+      key: "balance_after",
       className: "text-grey-500 text-sm",
     },
     {
       title: "Status",
       dataIndex: "transaction_status",
       key: "transaction_status",
-      render: (status) => (
+      render: status => (
         <Tag className={clsx(getStatusStyle(status))}>
           {status || "Completed"}
         </Tag>
@@ -169,13 +170,22 @@ const LocalTransactions = () => {
         <h5 className="text-grey-600 font-medium text-base">
           Recent Transactions
         </h5>
-        <Button
-          type="primary"
-          icon={<ListFilter className="h-4 w-4 text-grey-500" />}
-          className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200"
-          onClick={() => setShow(true)}>
-          Filter
-        </Button>
+        <Space>
+          <Button
+            type="primary"
+            icon={<UploadIcon className="h-4 w-4 text-grey-500" />}
+            className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200">
+            Export
+          </Button>
+
+          <Button
+            type="primary"
+            icon={<ListFilter className="h-4 w-4 text-grey-500" />}
+            className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200"
+            onClick={() => setShow(true)}>
+            Filter
+          </Button>
+        </Space>
       </div>
 
       <div>

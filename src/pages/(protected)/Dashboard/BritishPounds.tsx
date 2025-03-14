@@ -11,9 +11,7 @@ import { useRef } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Link } from "react-router";
 import Colors from "@/constants/colors";
-import CurrencyConversion from "./CurrencyConversion";
 import MoreActions from "./MoreActions";
-import AccountRequestModal from "./AccountRequest";
 import ENDPOINTS from "@/constants/endpoints";
 
 const data = [
@@ -72,7 +70,6 @@ const DoughnutChart = () => {
 const BritishPounds = () => {
   const conversionRef = useRef<HM.ModalRefObject>(null);
   const optionsRef = useRef<HM.ModalRefObject>(null);
-  const requestRef = useRef<HM.ModalRefObject>(null);
 
   return (
     <section className="grid grid-cols-[1.9fr_1.1fr] gap-4">
@@ -103,9 +100,8 @@ const BritishPounds = () => {
             shape="round"
             className="bg-primary-50 text-primary"
             icon={<ArrowUpRightIcon className="w-4 h-4 text-primary" />}
-            iconPosition="end"
-            onClick={() => requestRef.current?.openModal()}>
-            Request GBP IBAN
+            iconPosition="end">
+            Request Account Details
           </Button>
           <div className="flex items-center gap-4">
             <Link
@@ -157,9 +153,7 @@ const BritishPounds = () => {
       <div className="p-6 shadow rounded-md bg-white">
         <DoughnutChart />
       </div>
-      <CurrencyConversion ref={conversionRef} />
       <MoreActions ref={optionsRef} />
-      <AccountRequestModal ref={requestRef} />
     </section>
   );
 };

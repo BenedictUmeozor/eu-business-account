@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { StepProps, Steps, Tag } from "antd";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import Welcome from "./Welcome";
 import BusinessNameSearch from "./BusinessNameSearch";
@@ -11,8 +10,6 @@ import AddShareholders from "./Shareholder";
 import Review from "./Review";
 import OnboardingSuccess from "./OnboardingSuccess";
 import AddDocuments from "./Documents";
-import OnboardingProvider from "@/providers/OnboardingContext";
-import { useOnboardingContext } from "@/contexts/onboarding";
 import SecurityQuestions from "./SecurityQuestions";
 import AuthorizationPin from "./AuthorizationPin";
 
@@ -48,7 +45,7 @@ const steps: StepProps[] = [
 
 const Onboarding = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const { current, setCurrent } = useOnboardingContext();
+  const [current, setCurrent] = useState(-1);
   const location = useLocation();
 
   const next = useCallback(() => {
@@ -115,11 +112,5 @@ const Onboarding = () => {
   );
 };
 
-const OnboardingWrapper = () => (
-  <OnboardingProvider>
-    <Onboarding />
-  </OnboardingProvider>
-);
-
-export const Component = OnboardingWrapper;
-export default OnboardingWrapper;
+export const Component = Onboarding;
+export default Onboarding;

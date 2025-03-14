@@ -10,6 +10,7 @@ import {
   ArrowUpIcon,
   ListFilter,
   RefreshCwIcon,
+  UploadIcon,
   XIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -155,13 +156,22 @@ const Conversions = () => {
         <h5 className="text-grey-600 font-medium text-base">
           Recent Conversions
         </h5>
-        <Button
-          type="primary"
-          icon={<ListFilter className="h-4 w-4 text-grey-500" />}
-          className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200"
-          onClick={() => setShow(true)}>
-          Filter
-        </Button>
+        <Space>
+          <Button
+            type="primary"
+            icon={<UploadIcon className="h-4 w-4 text-grey-500" />}
+            className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200">
+            Export
+          </Button>
+
+          <Button
+            type="primary"
+            icon={<ListFilter className="h-4 w-4 text-grey-500" />}
+            className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200"
+            onClick={() => setShow(true)}>
+            Filter
+          </Button>
+        </Space>
       </div>
       <div>
         <Table

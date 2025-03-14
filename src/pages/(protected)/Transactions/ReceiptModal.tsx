@@ -166,13 +166,13 @@ const ReceiptModal = forwardRef<ReceiptRefObject>((_props, ref) => {
             <div className="flex items-center justify-between text-sm">
               <span className="text-grey-500">Balance Before</span>
               <span className="font-medium text-grey-700 font-nunito">
-                {`${currency?.currencySymbol}${transaction?.bal_before}`}
+                {`${currency?.currencySymbol}${transaction?.balance_before}`}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-grey-500">Balance After</span>
               <span className="font-medium text-grey-700 font-nunito">
-                {`${currency?.currencySymbol}${transaction?.bal_after}`}
+                {`${currency?.currencySymbol}${transaction?.balance_after}`}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
@@ -181,12 +181,12 @@ const ReceiptModal = forwardRef<ReceiptRefObject>((_props, ref) => {
                 {transaction?.bank_country || "Sterling Bank"}
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm">
+            {/* <div className="flex items-center justify-between text-sm">
               <span className="text-grey-500">Sender</span>
               <span className="font-medium text-grey-700 font-nunito">
                 Michelle Mezie
               </span>
-            </div>
+            </div> */}
           </div>
           <div className="my-4 flex flex-col gap-6 items-center justify-center">
             <Button

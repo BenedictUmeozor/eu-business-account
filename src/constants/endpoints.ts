@@ -50,11 +50,24 @@ const ENDPOINTS = {
   SAVE_BENEFICIARY: "/account-services/save_beneficiary",
   FETCH_SINGLE_BENEFICIARY: "/account-services/get_beneficiary",
   FETCH_BENEFICIARY_BY_CURRENCY: "/account-services/beneficiary_by_currency",
+  BANK_LIST: "/account-services/bank_list",
+  RESOLVE_BANK_DETAILS: "/account-services/resolve_bank_details",
 
   // Payments
   REGISTER_DEVICE: "/customer-services/register_device_web",
   INITIATE_LOCAL_PAYMENT: "/payment-services/initiate_sca_payment",
   DEVICE_SCA_STATUS: "/customer-services/sca_status",
+
+  // Accounts
+  GET_ACCOUNTS: "/account-services/get_accounts",
+  GET_ACCOUNT_BALANCES: "/account-services/account_balances",
+  GET_ACCOUNT_CURRENCIES: "/account-services/client_currency",
+  REQUEST_ACCOUNT_CUURENCY: "/account-services/request_account_currency",
+  GET_BALANCE: "/account-services/get_balances",
+
+  // Others
+  PARTNER_CURRENCY: "/payment-services/partner_currency",
+  SEPA_COUNTRIES: "/account-services/sepa_countries",
 };
 
 export default ENDPOINTS;

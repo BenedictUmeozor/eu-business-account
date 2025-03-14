@@ -72,7 +72,7 @@ const Transactions = () => {
       },
       {
         title: "Balance Before",
-        dataIndex: selected === "Conversion" ? "balance_before" : "bal_before",
+        dataIndex: "balance_before",
         key: "balance_before",
         className: "text-grey-500 text-sm",
       },
@@ -84,7 +84,7 @@ const Transactions = () => {
       },
       {
         title: "Balance After",
-        dataIndex: selected === "Conversion" ? "balance_after" : "bal_after",
+        dataIndex: "balance_after",
         key: "balance_after",
         className: "text-grey-500 text-sm",
       },

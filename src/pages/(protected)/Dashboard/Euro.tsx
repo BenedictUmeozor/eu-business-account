@@ -13,7 +13,6 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Link } from "react-router";
 import Colors from "@/constants/colors";
-import CurrencyConversion from "./CurrencyConversion";
 import MoreActions from "./MoreActions";
 import ENDPOINTS from "@/constants/endpoints";
 
@@ -152,7 +151,6 @@ const Euro = () => {
       <div className="p-6 shadow rounded-md bg-white">
         <DoughnutChart />
       </div>
-      <CurrencyConversion ref={conversionRef} />
       <MoreActions ref={optionsRef} />
     </section>
   );

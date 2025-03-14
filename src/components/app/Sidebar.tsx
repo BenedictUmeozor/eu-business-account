@@ -86,14 +86,14 @@ const Sidebar = () => {
   return (
     <aside className="bg-secondary-500 max-lg:hidden relative h-screen w-[200px] overflow-y-auto grid grid-rows-[auto_1fr] pb-6 gap-6 no-scrollbar">
       {loading && <Loader />}
-      <a
-        href="https://hellomemoney.com/"
+      <Link
+        to="/"
         className="flex items-center justify-center gap-2 sticky top-0 z-10 pt-6 bg-secondary-500 pb-2">
         <img src="/images/hellome.png" alt="Hellomemoney" className="h-7 w-7" />
         <p className="font-cabinet text-lg font-bold text-white no-underline">
           HelloMe Money
         </p>
-      </a>
+      </Link>
       <div className="space-y-12">
         <nav className="space-y-8">
           <ul className="space-y-2">

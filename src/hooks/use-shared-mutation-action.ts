@@ -29,37 +29,48 @@ function useSharedMutationAction<TData = unknown, TVariables = unknown>({
 }: MutationConfig<TData, TVariables>) {
   const queryClient = useQueryClient();
 
-  const mutationFn = useCallback(async (variables: TVariables) => {
-    const response: AxiosResponse<TData> = await sharedApi.request({
-      url,
-      method,
-      data: variables,
-    });
+  const mutationFn = useCallback(
+    async (variables: TVariables) => {
+      const response: AxiosResponse<TData> = await sharedApi.request({
+        url,
+        method,
+        data: variables,
+      });
 
-    if (response.status >= 400) {
-      throw new Error((response.data as HM.QueryResponse).message);
-    }
-
-    return response.data;
-  }, [url, method]);
-
-  const mutationOptions = useMemo(() => ({
-    onSuccess: async (data: TData, variables: TVariables, context: unknown) => {
-      if (invalidateQueries.length > 0) {
-        await Promise.all(
-          invalidateQueries.map(query =>
-            queryClient.invalidateQueries({ queryKey: [query] })
-          )
-        );
+      if (response.status >= 400) {
+        throw new Error((response.data as HM.QueryResponse).message);
       }
 
-      onSuccess?.(data, variables, context);
+      return response.data;
     },
-    onError: (error: AxiosError, variables: TVariables, context: unknown) => {
-      onError?.(error, variables, context);
-    },
-    ...options,
-  }), [queryClient, invalidateQueries, onSuccess, onError, options]);
+    [url, method]
+  );
+
+  const mutationOptions = useMemo(
+    () => ({
+      onSuccess: async (
+        data: TData,
+        variables: TVariables,
+        context: unknown
+      ) => {
+        if (invalidateQueries.length > 0) {
+          await Promise.all(
+            invalidateQueries.map(query =>
+              queryClient.invalidateQueries({ queryKey: [query] })
+            )
+          );
+        }
+
+        onSuccess?.(data, variables, context);
+      },
+      onError: (error: AxiosError, variables: TVariables, context: unknown) => {
+        onError?.(error, variables, context);
+      },
+      ...options,
+      retry: false,
+    }),
+    [queryClient, invalidateQueries, onSuccess, onError, options]
+  );
 
   return useMutation<TData, AxiosError, TVariables>({
     mutationFn,

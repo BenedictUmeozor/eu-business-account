@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import GetStartedLayout from "./layout/GetStartedLayout";
 import SendMoneyLayout from "./layout/SendMoneyLayout";
 import ErrorBoundary from "./pages/error";
+import AccountsProvider from "./providers/AccountsProvider";
 
 const NotFound = () => import("./pages/not-found");
 
@@ -89,7 +90,12 @@ const App = () => {
           <Route path="login" lazy={Login} />
           <Route path="forgot-password" lazy={ForgotPassword} />
         </Route>
-        <Route Component={RootLayout}>
+        <Route
+          element={
+            <AccountsProvider>
+              <RootLayout />
+            </AccountsProvider>
+          }>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="onboarding" lazy={Onboarding} />
           <Route path="dashboard" lazy={Dashboard} />
