@@ -1,5 +1,8 @@
-import { Button, Form, Input, Segmented } from "antd";
+import { Button, Form, Input, Segmented, message } from "antd";
 import { useNavigate } from "react-router";
+import ENDPOINTS from "@/constants/endpoints";
+import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
+import { getErrorMessage } from "@/utils";
 
 interface FormValues {
   email: string;
@@ -7,11 +10,24 @@ interface FormValues {
 
 const ForgotPassword = () => {
   const [form] = Form.useForm<FormValues>();
-
   const navigate = useNavigate();
 
+  const forgotPasswordMutation = useSharedMutationAction<any, FormValues>({
+    url: ENDPOINTS.FORGOT_PASSWORD_LINK,
+    mutationKey: ["forgot-password"],
+    onSuccess: (response) => {
+      message.success(response.message || "OTP sent successfully");
+      navigate("/forgot-password/reset", { 
+        state: { email: form.getFieldValue("email") } 
+      });
+    },
+    onError: (error) => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
   const onFinish = (values: FormValues) => {
-    console.log("Form values:", values);
+    forgotPasswordMutation.mutate(values);
   };
 
   return (
@@ -31,7 +47,7 @@ const ForgotPassword = () => {
         </h5>
         <p className="text-grey-600">
           Please enter the email you used to registered with to request a
-          password reset.{" "}
+          password reset.
         </p>
       </header>
       <Form
@@ -56,8 +72,9 @@ const ForgotPassword = () => {
             shape="round"
             htmlType="submit"
             className="w-full"
-            size="large">
-            Send reset link
+            size="large"
+            loading={forgotPasswordMutation.isPending}>
+            Send OTP
           </Button>
           <Button
             type="text"

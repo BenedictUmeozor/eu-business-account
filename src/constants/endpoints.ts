@@ -31,6 +31,8 @@ const ENDPOINTS = {
   SETUP_PASSCODE: "/onboarding/setup_passcode",
   FETCH_SECURITY_QUESTIONS: "/onboarding/fetch_questions",
   SET_SECURITY_QUESTION: "/onboarding/set_security_question",
+  FORGOT_PASSWORD_LINK: "/onboarding/reset_password",
+  RESET_ACCOUNT_PASSWORD: "/onboarding/reset_account_password",
 
   // Conversions
   CONVERSION_INDICATIVE_RATE: "/payment-services/fx_indicative_rate",

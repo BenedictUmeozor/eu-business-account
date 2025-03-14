@@ -20,6 +20,7 @@ const OTPVerification = () => import("./pages/(auth)/OTPVerification");
 const EmailVerified = () => import("./pages/(auth)/EmailVerified");
 const Login = () => import("./pages/(auth)/Login");
 const ForgotPassword = () => import("./pages/(auth)/ForgotPassword");
+const ResetPassword = () => import("./pages/(auth)/ResetPassword");
 
 const Onboarding = () => import("./pages/(protected)/Onboarding");
 
@@ -89,6 +90,7 @@ const App = () => {
           <Route path="email-verified" lazy={EmailVerified} />
           <Route path="login" lazy={Login} />
           <Route path="forgot-password" lazy={ForgotPassword} />
+          <Route path="forgot-password/reset" lazy={ResetPassword} />
         </Route>
         <Route
           element={
