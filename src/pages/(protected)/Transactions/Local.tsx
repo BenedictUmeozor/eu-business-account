@@ -15,6 +15,7 @@ import { useRef, useState } from "react";
 import useSharedQueryAction from "@/hooks/use-shared-query-action";
 import ENDPOINTS from "@/constants/endpoints";
 import ReceiptModal, { ReceiptRefObject } from "./ReceiptModal";
+import ExportModalRef from "./ExportModalRef";
 
 const LocalTransactions = () => {
   const [show, setShow] = useState(false);
@@ -28,6 +29,7 @@ const LocalTransactions = () => {
   });
 
   const modalRef = useRef<ReceiptRefObject>(null);
+  const exportRef = useRef<HM.ModalRefObject>(null);
 
   const getStatusStyle = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -173,6 +175,7 @@ const LocalTransactions = () => {
         <Space>
           <Button
             type="primary"
+            onClick={() => exportRef.current?.openModal()}
             icon={<UploadIcon className="h-4 w-4 text-grey-500" />}
             className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200">
             Export
@@ -207,6 +210,7 @@ const LocalTransactions = () => {
         />
       </div>
       <ReceiptModal ref={modalRef} />
+      <ExportModalRef ref={exportRef} />
     </section>
   );
 };

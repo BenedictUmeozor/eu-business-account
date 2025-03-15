@@ -13,7 +13,8 @@ import {
   UploadIcon,
   XIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import ExportModalRef from "./ExportModalRef";
 
 const Conversions = () => {
   const [show, setShow] = useState(false);
@@ -26,6 +27,8 @@ const Conversions = () => {
     url: ENDPOINTS.GET_CONVERSIONS(tableState?.pagination?.current),
     key: ["conversions", tableState?.pagination?.current],
   });
+
+  const exportRef = useRef<HM.ModalRefObject>(null);
 
   const getStatusStyle = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -159,6 +162,7 @@ const Conversions = () => {
         <Space>
           <Button
             type="primary"
+            onClick={() => exportRef.current?.openModal()}
             icon={<UploadIcon className="h-4 w-4 text-grey-500" />}
             className="text-sm font-medium text-grey-500 bg-gray-50 border-grey-200">
             Export
@@ -191,6 +195,7 @@ const Conversions = () => {
           }}
         />
       </div>
+      <ExportModalRef ref={exportRef} />
     </section>
   );
 };
