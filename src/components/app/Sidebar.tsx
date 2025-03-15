@@ -10,6 +10,7 @@ import {
   XIcon,
   FileTextIcon,
   RotateCcwSquareIcon,
+  BriefcaseIcon,
 } from "lucide-react";
 import { Button } from "antd";
 import useLogout from "@/hooks/use-logout";
@@ -164,7 +165,7 @@ const Sidebar = () => {
                     !pathname.startsWith("/virtual-office") && "text-primary-300",
                     pathname.startsWith("/virtual-office") && "text-white"
                   )}>
-                  <UserIcon className="h-4 w-4" />
+                  <BriefcaseIcon className="h-4 w-4" />
                   <span>Virtual Office</span>
                 </Link>
               )}
