@@ -7,9 +7,11 @@ import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
 import { CURRENCIES } from "@/constants/currencies";
 import Beneficiary from "@/components/global/Beneficiary";
+import { useAppSelector } from "@/hooks";
 
 const SendToBeneficiary = () => {
   const params = useParams() as { beneficiary: string };
+  const balances = useAppSelector(state => state.accounts.balances);
   const [beneficiary, setBeneficiary] = useState<HM.Beneficiary>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -29,6 +31,10 @@ const SendToBeneficiary = () => {
       c => c.currencyCode === searchParams.get("currency")
     );
   }, [searchParams]);
+
+  const currBalance = useMemo(() => {
+    return balances?.find(b => b.ccy === searchParams.get("currency"));
+  }, [balances, searchParams]);
 
   const benMutation = useSharedMutationAction<{ beneficiary: HM.Beneficiary }>({
     url: ENDPOINTS.FETCH_SINGLE_BENEFICIARY,
@@ -100,7 +106,8 @@ const SendToBeneficiary = () => {
         <div className="space-y-8">
           <div className="flex items-center justify-between bg-secondary-400 rounded-lg py-3 px-4">
             <span className="font-nunito text-white text-sm font-medium">
-              {currency?.currencyCode} Bal: {currency?.currencySymbol}6,000,000
+              {currency?.currencyCode} Bal: {currency?.currencySymbol}
+              {currBalance?.amount}
             </span>
             <div className="flex items-center justify-center gap-1 p-1 rounded-md bg-primary-500/40">
               <img
@@ -108,7 +115,7 @@ const SendToBeneficiary = () => {
                   currency?.countryCode.toLowerCase() || ""
                 )}
                 alt="flag"
-                className="w-7 h-7 rounded-full"
+                className="w-7 h-7 rounded-full object-cover"
               />
               <span className="text-white text-base font-medium">
                 {currency?.currencyCode}
