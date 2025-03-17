@@ -9,8 +9,8 @@ export const TRANSACTIONS_TABLE_FILTER = {
       value: "last-30-days",
     },
     {
-      label: "Last 90 days",
-      value: "last-90-days",
+      label: "Last 60 days",
+      value: "last-60-days",
     },
   ],
   currency: [

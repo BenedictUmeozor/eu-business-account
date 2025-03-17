@@ -1,7 +1,6 @@
 import ENDPOINTS from "@/constants/endpoints";
-import { TRANSACTIONS_TABLE_FILTER } from "@/constants/filter";
 import useSharedQueryAction from "@/hooks/use-shared-query-action";
-import { Button, Tag, Table, Select, Space } from "antd";
+import { Button, Tag, Table, Space } from "antd";
 import type { TableProps } from "antd";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
@@ -11,10 +10,10 @@ import {
   ListFilter,
   RefreshCwIcon,
   UploadIcon,
-  XIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
 import ExportModalRef from "./ExportModalRef";
+import TransactionFilter from "./components/TransactionFilter";
 
 const Conversions = () => {
   const [show, setShow] = useState(false);
@@ -126,34 +125,7 @@ const Conversions = () => {
 
   return (
     <section className="space-y-4">
-      {show && (
-        <div className="w-full flex items-center justify-between bg-white shadow-sm rounded-lg p-3">
-          <div className="flex items-center gap-2">
-            <Select
-              placeholder="Select"
-              options={TRANSACTIONS_TABLE_FILTER.days}
-              className="w-36"
-            />
-            <Select
-              placeholder="Select"
-              options={TRANSACTIONS_TABLE_FILTER.currency}
-              className="w-36"
-            />
-            <Select
-              placeholder="Select"
-              options={TRANSACTIONS_TABLE_FILTER.status}
-              className="w-36"
-            />
-          </div>
-          <Button
-            type="primary"
-            icon={<XIcon className="w-4 h-4 text-grey-100" />}
-            className="bg-grey-400 text-grey-100"
-            onClick={() => setShow(false)}>
-            Close
-          </Button>
-        </div>
-      )}
+      {show && <TransactionFilter onClose={() => setShow(false)} />}
 
       <div className="w-full flex items-center justify-between bg-white shadow-sm rounded-lg p-3">
         <h5 className="text-grey-600 font-medium text-base">
