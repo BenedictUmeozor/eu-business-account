@@ -90,6 +90,8 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
 
   const handleConvert = async () => {
     if (fromAmount && formCurrency && toCurrency) {
+      changeMutation.reset();
+      
       await changeMutation.mutateAsync({
         amount: fromAmount,
         source_currency: formCurrency,
@@ -102,6 +104,8 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
 
   const handleConversionRate = async () => {
     if (fromAmount && formCurrency && toCurrency) {
+      rateMutation.reset();
+
       await rateMutation.mutateAsync({
         amount: fromAmount,
         source_currency: formCurrency,
@@ -114,6 +118,8 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
 
   useEffect(() => {
     if (fromAmount && formCurrency && toCurrency) {
+      rateMutation.reset();
+
       rateMutation.mutate({
         amount: fromAmount,
         source_currency: formCurrency,

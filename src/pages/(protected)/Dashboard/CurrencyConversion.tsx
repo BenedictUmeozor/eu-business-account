@@ -98,6 +98,8 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
 
     const handleConvert = async () => {
       if (fromAmount && formCurrency && toCurrency) {
+        changeMutation.reset();
+
         await changeMutation.mutateAsync({
           amount: fromAmount,
           source_currency: formCurrency,
@@ -109,6 +111,8 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
     };
 
     const handleConversionRate = async () => {
+      rateMutation.reset();
+
       if (fromAmount && formCurrency && toCurrency) {
         await rateMutation.mutateAsync({
           amount: fromAmount,
@@ -122,6 +126,8 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
 
     useEffect(() => {
       if (fromAmount && formCurrency && toCurrency) {
+        rateMutation.reset();
+
         rateMutation.mutate({
           amount: fromAmount,
           source_currency: formCurrency,
