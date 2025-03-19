@@ -40,6 +40,34 @@ interface FormValues {
   partners_outgoing: string;
   economic_activity: string;
   business_license: number;
+  balance_sheet_exceed: string;
+  company_website: string;
+  bearer_shares: string;
+  tax_residence: string;
+  vat_number: string;
+  giin_number: string;
+  is_financial_institution: number;
+  security_market: string;
+  regulatory_entity: string;
+  core_revenue_source: string;
+  fatca_tax_liability: string;
+  sepa_incoming_count: string;
+  sepa_incoming_value: string;
+  uk_incoming_count: string;
+  uk_incoming_value: string;
+  cross_border_incoming_count: string;
+  cross_border_incoming_value: string;
+  sepa_outgoing_count: string;
+  sepa_outgoing_value: string;
+  uk_outgoing_count: string;
+  uk_outgoing_value: string;
+  cross_border_outgoing_count: string;
+  cross_border_outgoing_value: string;
+  source_funds: string;
+  source_wealth: string;
+  ubo_count: string;
+  main_currency: string;
+  is_licensed_by_regulatory_body: number;
 }
 
 const BusinessInformation = ({
@@ -453,6 +481,220 @@ const BusinessInformation = ({
                   </Radio>
                 </div>
               </Radio.Group>
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Does you annual balance sheet exceed €2 million?"
+              name="balance_sheet_exceed">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item label="Company website" name="company_website">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Does the company documents e.g (M&A's) allow for the issuance of bearer shares"
+              name="bearer_shares">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item label="Tax residence country" name="tax_residence">
+              <Select
+                className="w-full"
+                placeholder="Select country"
+                showSearch
+                allowClear
+                options={countries.map(v => ({
+                  label: v.countryName,
+                  value: v.countryCode,
+                }))}
+              />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item label="VAT Number" name="vat_number">
+              <Input className="w-full" placeholder="Enter VAT Number" />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Global Intermediary Identification Number (GIIN)"
+              name="giin_number">
+              <Input className="w-full" placeholder="Enter Details" />
+            </Form.Item>
+            <Form.Item
+              label="Is the company licensed by a regulatory body (Where applicable)"
+              name="is_licensed_by_regulatory_body">
+              <Radio.Group className="w-full">
+                <div className="grid grid-cols-2 gap-2">
+                  <Radio
+                    value={1}
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                    Yes
+                  </Radio>
+                  <Radio
+                    value={0}
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                    No
+                  </Radio>
+                </div>
+              </Radio.Group>
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Is your business a financial institution"
+              name="is_financial_institution">
+              <Radio.Group className="w-full">
+                <div className="grid grid-cols-2 gap-2">
+                  <Radio
+                    value={1}
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                    Yes
+                  </Radio>
+                  <Radio
+                    value={0}
+                    className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                    No
+                  </Radio>
+                </div>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item
+              label="Established security market where corporation is traded regularly"
+              name="security_market">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Regulatory entity (regularly traded entity/corporation)"
+              name="regulatory_entity">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item
+              label="Core source of company revenue"
+              name="core_revenue_source">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="FATCA - USA Tax liability US Indica (For US Businesses)"
+              name="fatca_tax_liability">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item
+              label="Expected currencies usage"
+              name="expected_currencies">
+              <Select
+                className="w-full"
+                placeholder="Select currencies"
+                mode="multiple"
+              />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Number of incoming SEPA Transactions"
+              name="sepa_incoming_count">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item
+              label="Average incoming SEPA transactions (€)"
+              name="sepa_incoming_value">
+              <Select className="w-full" placeholder="Select" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Number of incoming UK Transactions"
+              name="uk_incoming_count">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item
+              label="Average incoming UK transaction value (€)"
+              name="uk_incoming_value">
+              <Select className="w-full" placeholder="Select" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Number of incoming cross-border transactions"
+              name="cross_border_incoming_count">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item
+              label="Average incoming cross-border transactions"
+              name="cross_border_incoming_value">
+              <Select className="w-full" placeholder="Select" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Number of outgoing SEPA Transaction"
+              name="sepa_outgoing_count">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item
+              label="Average outgoing SEPA Transaction value (€)"
+              name="sepa_outgoing_value">
+              <Select className="w-full" placeholder="Select" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Number of outgoing UK Transaction"
+              name="uk_outgoing_count">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item
+              label="Average outgoing UK Transaction value (€)"
+              name="uk_outgoing_value">
+              <Select className="w-full" placeholder="Select countries" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item
+              label="Number of outgoing cross-border transactions"
+              name="cross_border_outgoing_count">
+              <Input className="w-full" placeholder="Enter details" />
+            </Form.Item>
+            <Form.Item
+              label="Average outgoing cross-border transactions (€)"
+              name="cross_border_outgoing_value">
+              <Select className="w-full" placeholder="Select" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item label="Source of funds" name="source_funds">
+              <Input className="w-full" placeholder="Enter source of funds" />
+            </Form.Item>
+            <Form.Item label="Source of wealth" name="source_wealth">
+              <Input className="w-full" placeholder="Enter source of wealth" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Form.Item label="Number of UBOs" name="ubo_count">
+              <Select className="w-full" placeholder="Select" />
+            </Form.Item>
+            <Form.Item label="Main currency" name="main_currency">
+              <Select className="w-full" placeholder="Select currency" />
             </Form.Item>
           </div>
           <Button
