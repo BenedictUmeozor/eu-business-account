@@ -349,6 +349,13 @@ declare global {
       };
     }
 
+    interface TransactionFilterDate {
+      row_per_page: number;
+      page: number;
+      from: string;
+      to: string;
+    }
+
     interface SingleReceipt {
       status: string;
       type: string;

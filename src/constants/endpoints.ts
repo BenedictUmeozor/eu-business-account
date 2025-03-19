@@ -1,3 +1,5 @@
+import qs from "qs";
+
 const ENDPOINTS = {
   // FLAG_URL: (code: string) => `https://flagsapi.com/${code}/flat/64.png`,
   FLAG_URL: (code: string) => `https://flagcdn.com/w160/${code}.png`,
@@ -47,6 +49,8 @@ const ENDPOINTS = {
     `/payment-services/transaction_international?row_per_page=${row_per_page}&page=${page}`,
   GET_RECEIPT: (id: string) =>
     `/payment-services/get_transaction?request_id=${id}`,
+  FILTER_TRANSACTIONS_BY_DATE: (params: HM.TransactionFilterDate) =>
+    `/payment-services/search_trans_date?${qs.stringify(params)}`,
 
   // Beneficiaries
   SAVE_BENEFICIARY: "/account-services/save_beneficiary",
@@ -66,6 +70,7 @@ const ENDPOINTS = {
   GET_ACCOUNT_CURRENCIES: "/account-services/client_currency",
   REQUEST_ACCOUNT_CUURENCY: "/account-services/request_account_currency",
   GET_BALANCE: "/account-services/get_balances",
+  FETCH_IBAN: "/account-services/fetch_iban",
 
   // Others
   PARTNER_CURRENCY: "/payment-services/partner_currency",

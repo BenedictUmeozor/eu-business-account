@@ -28,7 +28,7 @@ const Dashboard = () => {
       return [
         {
           key: "1",
-          label: "No accounts",
+          label: "Pending Account",
           children: <NoAccountTab />,
         },
       ];

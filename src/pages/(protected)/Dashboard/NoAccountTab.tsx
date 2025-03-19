@@ -74,7 +74,7 @@ const NoAccountTab = () => {
             <div className="h-11 w-11 rounded-full overflow-hidden grid place-items-center bg-gray-300">
               {/* Grey circle instead of flag */}
             </div>
-            <p className="font-medium text-grey-500">Total Balance</p>
+            <p className="font-medium text-grey-500">Balance</p>
             <p className="text-3xl text-grey-600 font-semibold font-nunito">
               £0.00
             </p>
@@ -82,7 +82,7 @@ const NoAccountTab = () => {
           <Tag
             className="bg-pending-50 !text-pending flex items-center gap-0.5 text-sm p-1 px-1.5 rounded-md"
             icon={<InfoIcon className="w-4 h-4 text-pending" />}>
-            No Account
+            Pending
           </Tag>
         </header>
         <div className="flex items-end justify-between">
@@ -102,7 +102,7 @@ const NoAccountTab = () => {
                 role="button">
                 <SendIcon className="w-4 h-4 text-gray-400" />
               </div>
-              <span className="text-base">Send</span>
+              <span className="text-base text-primary">Send</span>
             </div>
             <div className="flex flex-col items-center justify-center gap-1 text-gray-400">
               <div
@@ -110,7 +110,7 @@ const NoAccountTab = () => {
                 role="button">
                 <PlusIcon className="w-4 h-4 text-gray-400" />
               </div>
-              <span className="text-base">Fund</span>
+              <span className="text-base text-primary">Fund</span>
             </div>
             <div className="flex flex-col items-center justify-center gap-1 text-gray-400">
               <div
@@ -118,7 +118,7 @@ const NoAccountTab = () => {
                 role="button">
                 <RotateCwSquareIcon className="w-4 h-4 text-gray-400" />
               </div>
-              <span className="text-base">Convert</span>
+              <span className="text-base text-primary">Convert</span>
             </div>
             <div className="flex flex-col items-center justify-center gap-1 text-gray-400">
               <div
@@ -126,7 +126,7 @@ const NoAccountTab = () => {
                 role="button">
                 <EllipsisVerticalIcon className="w-4 h-4 text-gray-400" />
               </div>
-              <span className="text-base">More</span>
+              <span className="text-base text-primary">More</span>
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@ import { Link } from "react-router";
 import ENDPOINTS from "@/constants/endpoints";
 import { CURRENCIES } from "@/constants/currencies";
 import { useAppSelector } from "@/hooks";
+import AccountDetails, { AccountDetailsRef } from "./AccountDetails";
 
 const data = [
   { name: "Total money in", value: 0, color: Colors.positive },
@@ -84,6 +85,7 @@ const AccountTab = ({ currency }: { currency: string }) => {
 
   const conversionRef = useRef<HM.ModalRefObject>(null);
   const optionsRef = useRef<HM.ModalRefObject>(null);
+  const detailsRef = useRef<AccountDetailsRef>(null);
 
   return (
     <section className="grid grid-cols-[1.9fr_1.1fr] gap-4">
@@ -119,6 +121,7 @@ const AccountTab = ({ currency }: { currency: string }) => {
             shape="round"
             className="bg-grey-50 text-grey"
             icon={<ArrowUpRightIcon className="w-4 h-4 text-grey" />}
+            disabled={!fullInfo}
             iconPosition="end">
             View Account Details
           </Button>
@@ -179,6 +182,7 @@ const AccountTab = ({ currency }: { currency: string }) => {
         symbol={fullInfo?.currencySymbol}
       />
       <MoreActions ref={optionsRef} />
+      <AccountDetails ref={detailsRef} />
     </section>
   );
 };

@@ -1,12 +1,13 @@
 import { Button, Input, message, Select, Spin } from "antd";
 import { ArrowDownIcon, Loader2Icon } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { NumericFormat } from "react-number-format";
 import ENDPOINTS from "@/constants/endpoints";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
 import useAccountBalances from "@/hooks/use-account-balances";
 import usePartnerCurrency from "@/hooks/use-partner-currency";
+import { useAppSelector } from "@/hooks";
 
 interface ConversionFormProps {
   onClose: () => void;
@@ -20,6 +21,7 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
   const [toCurrency, setToCurrency] = useState("USD");
   const [toAmount, setToAmount] = useState<number>();
   const [indication, setIndication] = useState("");
+  const balances = useAppSelector(state => state.accounts.balances);
 
   const { fetchBalance } = useAccountBalances();
   const { currencies, loading } = usePartnerCurrency();
@@ -88,10 +90,14 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
     },
   });
 
+  const currentCurrencyBalance = useMemo(() => {
+    return balances?.find(b => b.ccy === formCurrency)?.amount;
+  }, [balances, formCurrency]);
+
   const handleConvert = async () => {
     if (fromAmount && formCurrency && toCurrency) {
       changeMutation.reset();
-      
+
       await changeMutation.mutateAsync({
         amount: fromAmount,
         source_currency: formCurrency,
@@ -161,7 +167,8 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
               <div className="flex items-center justify-between text-sm text-white">
                 <span>From</span>
                 <span className="font-nunito font-medium">
-                  GBP Bal: £6,000,000
+                  {formCurrency} Bal: {currencySymbol}
+                  {currentCurrencyBalance}
                 </span>
               </div>
               <div className="flex items-center justify-between">
