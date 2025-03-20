@@ -72,6 +72,9 @@ const ENDPOINTS = {
   // Others
   PARTNER_CURRENCY: "/payment-services/partner_currency",
   SEPA_COUNTRIES: "/account-services/sepa_countries",
+
+  // Profile
+  CHANGE_PASSWORD: "/profile/change_password",
 };
 
 export default ENDPOINTS;

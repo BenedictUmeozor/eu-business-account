@@ -16,25 +16,46 @@ const AccountsProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     fetchCurrencies();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!currencies?.length || !onboardingStatus?.completed) return;
 
-    const currenciesToFetch = currencies.filter(
-      currency => !balances?.some(balance => balance.ccy === currency)
-    );
+    const shouldFetchAll = !balances || balances.length === 0;
+    
+    const currenciesToFetch = shouldFetchAll 
+      ? currencies 
+      : currencies.filter(
+          currency => !balances.some(balance => balance.ccy === currency)
+        );
 
     if (currenciesToFetch.length > 0) {
       Promise.all(
         currenciesToFetch.map(currency => fetchBalance(currency))
       ).catch(error => console.error("Failed to fetch balances:", error));
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencies, balances, onboardingStatus?.completed]);
+
+  useEffect(() => {
+    const handlePageRefresh = () => {
+      if (currencies?.length && onboardingStatus?.completed) {
+        currencies.forEach(currency => fetchBalance(currency));
+      }
+    };
+
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        handlePageRefresh();
+      }
+    });
+
+    return () => {
+      window.removeEventListener('pageshow', handlePageRefresh);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currencies, onboardingStatus?.completed]);
 
   return (
     <AccountContext.Provider

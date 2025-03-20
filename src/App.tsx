@@ -78,6 +78,9 @@ const Transactions = () => import("./pages/(protected)/Transactions");
 // Conversions
 const Conversions = () => import("./pages/(protected)/Conversions");
 
+// Profile
+const Profile = () => import("./pages/(protected)/Profile");
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -146,6 +149,11 @@ const App = () => {
 
           {/* Conversions */}
           <Route path="conversions" lazy={Conversions} />
+
+          {/* Profile */}
+          <Route path="profile" lazy={Profile} />
+          <Route path="business-profile" lazy={Profile} />
+          
         </Route>
         <Route path="*" lazy={NotFound} />
       </Route>
