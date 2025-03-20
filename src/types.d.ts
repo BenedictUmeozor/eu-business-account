@@ -349,11 +349,23 @@ declare global {
       };
     }
 
-    interface TransactionFilterDate {
-      row_per_page: number;
-      page: number;
+    type TransactionStatus =
+      | "Completed"
+      | "Declined"
+      | "Accepted"
+      | "CompletedWithErrors"
+      | "Processing";
+
+    type TransactionCurr = "EUR" | "GBP" | "USD" | "NGN" | "DKK";
+
+    interface TransactionFilter {
+      row_per_page?: number;
+      page: string | number;
       from: string;
       to: string;
+      transaction_status: TransactionStatus;
+      category: "LocalPayment" | "InternationalPayment" | "Conversion";
+      currency: TransactionCurr;
     }
 
     interface SingleReceipt {

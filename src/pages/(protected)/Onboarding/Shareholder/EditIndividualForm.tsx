@@ -28,6 +28,12 @@ interface FormValues {
   authorized_signatory: string;
   document_type: string;
   shareholder_token: string;
+  is_pep: string;
+  pep_position: string;
+  pep_country: string;
+  pep_name: string;
+  has_pep_family: string;
+  pep_relationship: string;
 }
 
 const EditIndividualForm = ({
@@ -119,6 +125,12 @@ const EditIndividualForm = ({
       authorized_signatory: shareholder.authorized_signatory,
       business_role: "Shareholder",
     });
+    // is_pep: shareholder.is_pep || "NO",
+    //   pep_position: shareholder.pep_position || "",
+    //   pep_country: shareholder.pep_country || "",
+    //   pep_name: shareholder.pep_name || "",
+    //   has_pep_family: shareholder.has_pep_family || "NO",
+    //   pep_relationship: shareholder.pep_relationship || "",
 
     // Initialize document type and name only if documents exist
     if (shareholder.documents?.data?.length > 0) {
@@ -245,6 +257,74 @@ const EditIndividualForm = ({
                 </Radio>
               </div>
             </Radio.Group>
+          </Form.Item>
+        </div>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Form.Item
+            label="Is this a politically exposed person (PEP)?"
+            name="is_pep"
+            rules={[{ required: true, message: "This field is required" }]}>
+            <Radio.Group className="w-full">
+              <div className="grid grid-cols-2 gap-2">
+                <Radio
+                  value="YES"
+                  className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                  Yes
+                </Radio>
+                <Radio
+                  value="NO"
+                  className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                  No
+                </Radio>
+              </div>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            label="Political Exposure - Position Held"
+            name="pep_position"
+            rules={[{ required: true, message: "This field is required" }]}>
+            <Input className="w-full" placeholder="Enter Position" />
+          </Form.Item>
+        </div>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Form.Item
+            label="Country of political exposure"
+            name="pep_country"
+            rules={[{ required: true, message: "This field is required" }]}>
+            <Input className="w-full" placeholder="Select country" />
+          </Form.Item>
+          <Form.Item
+            label="Name of politically exposed person (PEP)"
+            name="pep_name"
+            rules={[{ required: true, message: "This field is required" }]}>
+            <Input className="w-full" placeholder="Enter name" />
+          </Form.Item>
+        </div>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Form.Item
+            label="Is any family member or a close associate of this individual a politically exposed person (PEP)"
+            name="has_pep_family"
+            rules={[{ required: true, message: "This field is required" }]}>
+            <Radio.Group className="w-full">
+              <div className="grid grid-cols-2 gap-2">
+                <Radio
+                  value="YES"
+                  className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                  Yes
+                </Radio>
+                <Radio
+                  value="NO"
+                  className="flex items-center justify-between rounded-lg border border-solid border-grey-200 bg-grey-50 p-2">
+                  No
+                </Radio>
+              </div>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            label="PEP Relationship with involved party"
+            name="pep_relationship"
+            rules={[{ required: true, message: "This field is required" }]}>
+            <Input className="w-full" placeholder="Enter Position" />
           </Form.Item>
         </div>
         <Divider>

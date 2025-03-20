@@ -14,28 +14,14 @@ import { Link } from "react-router";
 import { useTransactionData } from "@/hooks/use-transaction-data";
 import { TablePaginationConfig } from "antd/es/table";
 import ReceiptModal, { ReceiptRefObject } from "../Transactions/ReceiptModal";
+import useStatusStyle from "@/hooks/use-status-style";
 
 const Transactions = () => {
   const [selected, setSelected] = useState("Local");
   const modalRef = useRef<ReceiptRefObject>(null);
+  const { getStatusStyle } = useStatusStyle();
 
-  const { data, isPending, currentPage, updatePage } =
-    useTransactionData(selected);
-
-  const getStatusStyle = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case "pending":
-        return "text-pending-500 bg-pending-50";
-      case "completed":
-        return "text-positive bg-positive-50";
-      case "declined":
-        return "text-negative bg-negative-50";
-      case "completedwitherrors":
-        return "text-pending-700 bg-pending-50";
-      default:
-        return "text-positive bg-positive-50";
-    }
-  };
+  const { data, isPending, updatePage } = useTransactionData(selected);
 
   const getColumns = (): ColumnsType<any> => {
     const baseColumns: ColumnsType<any> = [
@@ -191,7 +177,7 @@ const Transactions = () => {
           columns={getColumns()}
           rowSelection={rowSelection}
           loading={isPending}
-          pagination={{ current: currentPage }}
+          pagination={false}
           onChange={handleTableChange}
           components={{
             header: {

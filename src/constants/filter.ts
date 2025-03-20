@@ -1,6 +1,10 @@
 export const TRANSACTIONS_TABLE_FILTER = {
   days: [
     {
+      label: "Custom",
+      value: "custom",
+    },
+    {
       label: "Last 7 days",
       value: "last-7-days",
     },
@@ -16,41 +20,45 @@ export const TRANSACTIONS_TABLE_FILTER = {
   currency: [
     {
       label: "USD",
-      value: "usd",
+      value: "USD",
     },
     {
       label: "EUR",
-      value: "eur",
+      value: "EUR",
     },
     {
       label: "GBP",
-      value: "gbp",
+      value: "GBP",
     },
     {
       label: "NGN",
-      value: "ngn",
+      value: "NGN",
     },
     {
       label: "DKK",
-      value: "dkk",
+      value: "DKK",
     },
   ],
   status: [
     {
-      label: "All",
-      value: "all",
+      label: "Completed",
+      value: "Completed",
     },
     {
-      label: "Success",
-      value: "success",
+      label: "Declined",
+      value: "Declined",
     },
     {
-      label: "Pending",
-      value: "pending",
+      label: "Accepted",
+      value: "Accepted",
     },
     {
-      label: "Failed",
-      value: "failed",
+      label: "Processing",
+      value: "Processing",
+    },
+    {
+      label: "Completed with errors",
+      value: "CompletedWithErrors",
     },
   ],
 };

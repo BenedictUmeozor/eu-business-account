@@ -351,9 +351,6 @@ const BusinessForm = ({
           name="phone_number"
           setFieldsValue={setFieldsValue}
           setPhoneValue={setPhoneValue}
-          phoneNumberRules={[
-            { required: true, message: "Phone Number is required" },
-          ]}
           currency={currency}
         />
         <Form.Item

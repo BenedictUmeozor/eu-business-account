@@ -33,6 +33,8 @@ const AccountDetails = forwardRef<AccountDetailsRef>((_props, ref) => {
     },
   });
 
+  console.log(iban)
+
   return (
     <Modal
       open={open}
@@ -71,8 +73,8 @@ const AccountDetails = forwardRef<AccountDetailsRef>((_props, ref) => {
   );
 });
 
-const ClipboardCopy = () => {
-  return <></>;
-};
+// const ClipboardCopy = () => {
+//   return <div className="flex items-center"></div>;
+// };
 
 export default AccountDetails;

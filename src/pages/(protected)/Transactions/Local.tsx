@@ -1,4 +1,4 @@
-import { Button, Tag, Table, TableProps, Space } from "antd";
+import { Button, Tag, Table, TableProps, Space, message } from "antd";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
 import {
@@ -9,41 +9,80 @@ import {
   RefreshCwIcon,
   UploadIcon,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useSharedQueryAction from "@/hooks/use-shared-query-action";
+import useTransactionFilter from "@/hooks/use-transaction-filter";
 import ENDPOINTS from "@/constants/endpoints";
 import ReceiptModal, { ReceiptRefObject } from "./ReceiptModal";
 import ExportModalRef from "./ExportModalRef";
 import TransactionFilter from "./components/TransactionFilter";
+import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
+import { getErrorMessage } from "@/utils";
+import useStatusStyle from "@/hooks/use-status-style";
 
 const LocalTransactions = () => {
   const [show, setShow] = useState(false);
   const [tableState, setTableState] = useState<HM.TableState<HM.Transaction>>();
+  const {
+    fromDate,
+    toDate,
+    currency,
+    status,
+    setFromDate,
+    setToDate,
+    setCurrency,
+    setStatus,
+  } = useTransactionFilter();
+  const { getStatusStyle } = useStatusStyle();
+
+  const mutation = useSharedMutationAction<
+    {
+      transaction: { data: HM.Transaction[] };
+      pagination: HM.Pagination;
+    },
+    HM.TransactionFilter
+  >({
+    url: ENDPOINTS.FILTER_TRANSACTIONS,
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
+  useEffect(() => {
+    if ((fromDate && toDate) || currency || status) {
+      const filterParams: Partial<HM.TransactionFilter> = {
+        category: "LocalPayment",
+        page: tableState?.pagination?.current || 1,
+        row_per_page: 15,
+      };
+
+      if (fromDate) filterParams.from = fromDate;
+      if (toDate) filterParams.to = toDate;
+      if (currency) filterParams.currency = currency;
+      if (status) filterParams.transaction_status = status;
+
+      mutation.mutateAsync(filterParams as HM.TransactionFilter);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromDate, toDate, currency, status, tableState?.pagination?.current]);
 
   const { data, isPending } = useSharedQueryAction<{
     transaction: { data: HM.Transaction[] };
+    pagination: HM.Pagination;
   }>({
     url: ENDPOINTS.GET_LOCAL_TRANSACTIONS(tableState?.pagination?.current),
     key: ["local-transactions", tableState?.pagination?.current],
   });
 
+  const transactions: HM.Transaction[] | undefined = useMemo(() => {
+    if (fromDate || toDate || currency || status) {
+      return mutation?.data?.transaction?.data || [];
+    }
+    return data?.transaction?.data || [];
+  }, [data, mutation.data, fromDate, toDate, currency, status]);
+
   const modalRef = useRef<ReceiptRefObject>(null);
   const exportRef = useRef<HM.ModalRefObject>(null);
-
-  const getStatusStyle = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case "pending":
-        return "text-pending-500 bg-pending-50";
-      case "completed":
-        return "text-positive bg-positive-50";
-      case "declined":
-        return "text-negative bg-negative-50";
-      case "completedwitherrors":
-        return "text-pending-700 bg-pending-50";
-      default:
-        return "text-positive bg-positive-50";
-    }
-  };
 
   const columns: TableProps<HM.Transaction>["columns"] = [
     {
@@ -138,7 +177,20 @@ const LocalTransactions = () => {
 
   return (
     <section className="space-y-4">
-      {show && <TransactionFilter onClose={() => setShow(false)} />}
+      {show && (
+        <TransactionFilter
+          onClose={() => setShow(false)}
+          fromDate={fromDate}
+          toDate={toDate}
+          currency={currency}
+          status={status}
+          setFromDate={setFromDate}
+          setToDate={setToDate}
+          setCurrency={setCurrency}
+          setStatus={setStatus}
+          resetMutation={mutation.reset}
+        />
+      )}
 
       <div className="w-full flex items-center justify-between bg-white shadow-sm rounded-lg p-3">
         <h5 className="text-grey-600 font-medium text-base">
@@ -165,10 +217,19 @@ const LocalTransactions = () => {
 
       <div>
         <Table
-          dataSource={data?.transaction?.data || []}
+          dataSource={transactions}
           columns={columns}
           rowSelection={rowSelection}
-          loading={isPending}
+          loading={isPending || mutation.isPending}
+          pagination={{
+            current: tableState?.pagination?.current || 1,
+            pageSize: 15,
+            total: mutation?.data?.pagination
+              ? mutation?.data?.pagination?.total_record
+              : data?.pagination?.total_record || 0,
+            showSizeChanger: false,
+            showQuickJumper: false,
+          }}
           onChange={(pagination, filters, sorter, extra) => {
             setTableState({ pagination, filters, sorter, extra });
           }}
