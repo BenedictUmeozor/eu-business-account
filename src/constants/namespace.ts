@@ -5,6 +5,7 @@ enum HM_NSP {
   ACCOUNT = "hm_v_4",
   ACCOUNT_BALANCES = "hm_v_5",
   ACCOUNT_CURRENCIES = "hm_v_6",
+  SIGNED_IN = "hm_v_7",
 }
 
 export default HM_NSP;

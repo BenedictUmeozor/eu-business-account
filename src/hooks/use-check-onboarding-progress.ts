@@ -1,10 +1,10 @@
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { message } from "antd";
 import useMutationAction from "./use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
 import { useAppDispatch } from ".";
-import { setOnboardingStatus } from "@/lib/redux/slices/session";
+import { clearSession, setOnboardingStatus } from "@/lib/redux/slices/session";
 
 // ProgressData interface represents the onboarding progress fields returned from the API
 export interface ProgressData {
@@ -12,6 +12,7 @@ export interface ProgressData {
   business_verification: string;
   business_details: string;
   personal_details: string;
+  business_transaction_status: string;
   identity_verification_document: string;
   shareholder: string;
   shareholder_document: string;
@@ -24,7 +25,6 @@ const allIsTruthy = (obj: Record<string, string> | null) =>
 const useCheckOnboardingProgress = (email?: string, path?: string) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { pathname } = useLocation();
 
   const sendOtpMutation = useMutationAction<
     HM.QueryResponse,
@@ -50,6 +50,9 @@ const useCheckOnboardingProgress = (email?: string, path?: string) => {
       const emailVerification = Number(data.email_verification);
       const businessVerification = Number(data.business_verification);
       const businessDetails = Number(data.business_details);
+      const businessTransactionStatus = Number(
+        data.business_transaction_status
+      );
       const personalDetails = Number(data.personal_details);
       const identityVerification = Number(data.identity_verification_document);
       const shareholder = Number(data.shareholder);
@@ -72,7 +75,7 @@ const useCheckOnboardingProgress = (email?: string, path?: string) => {
         return;
       }
 
-      if (businessDetails === 0) {
+      if (businessDetails === 0 || businessTransactionStatus === 0) {
         // Business Information step
         navigate("/onboarding", { state: { current: 1 } });
         return;
@@ -107,10 +110,6 @@ const useCheckOnboardingProgress = (email?: string, path?: string) => {
 
       // If all steps are completed, set onboarding status to true
       dispatch(setOnboardingStatus());
-      if (pathname.includes("/onboarding")) {
-        navigate("/dashboard");
-        return;
-      }
 
       if (path) {
         navigate(path);
@@ -118,6 +117,7 @@ const useCheckOnboardingProgress = (email?: string, path?: string) => {
     },
     onError: error => {
       message.error(getErrorMessage(error));
+      dispatch(clearSession());
     },
   });
 

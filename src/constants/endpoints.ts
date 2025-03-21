@@ -3,21 +3,29 @@ const ENDPOINTS = {
   FLAG_URL: (code: string) => `https://flagcdn.com/w160/${code}.png`,
   APP_BASE_URL: "https://hellomemoney-api.hellomepay.online/api/business",
   APP_SHARED_BASE_URL: "https://hellomemoney-api.hellomepay.online/api",
+  API_SUBSCRIPTION_KEY: "6293e6ec4f1949128067d751774bd709",
+
+  //Enums
+  SOURCE_OF_FUNDS: "/enums/financial_source_of_income",
+  SOURCE_OF_WEALTH: "/enums/financial_source_of_wealth",
 
   // Auth
   CREATE_ACCOUNT: "/create_account",
   SEND_OTP: "/send_otp",
   CONFIRM_OTP: "/confirm_otp",
   LOGIN_USER: "/onboarding/signin",
+  PASSCODE_SIGNIN: "/onboarding/passcode_signin",
 
   // Onboarding
   SEARCH_COMPANY: "/search_company",
   ONBOARDING_PROGRESS: "/onboarding_progress",
   VERIFY_BUSINESS: "/verify_business",
   BUSINESS_DETAILS: "/business_details",
+  BUSINESS_TRANSACTION_DETAILS: "/business_transaction_details",
   PERSONAL_DETAILS: "/personal_details",
   FETCH_PERSONAL_INFORMATION: "/fetch_personal_details",
   FETCH_BUSINESS_DETAILS: "/fetch_business_details",
+  FETCH_BUSINESS_TRANSACTION_DETAILS: "/fetch_business_transaction_details",
   GET_DOCUMENT_TYPES: "/document_type",
   GET_COMPANY_TYPES: "/company_type",
   GET_BUSINESS_DOCUMENT_TYPES: "/business_document_type",
@@ -33,6 +41,7 @@ const ENDPOINTS = {
   SET_SECURITY_QUESTION: "/onboarding/set_security_question",
   FORGOT_PASSWORD_LINK: "/onboarding/reset_password",
   RESET_ACCOUNT_PASSWORD: "/onboarding/reset_account_password",
+  VERIFY_SECURITY_QUESTION: "/onboarding/verify_question",
 
   // Conversions
   CONVERSION_INDICATIVE_RATE: "/payment-services/fx_indicative_rate",
@@ -75,6 +84,9 @@ const ENDPOINTS = {
 
   // Profile
   CHANGE_PASSWORD: "/profile/change_password",
+  CHANGE_PIN: "/profile/change_pin",
+  FETCH_USER_SECURITY_QUESTIONS: "/profile/fetch_security_questions",
+  GET_CUSTOMER_PROFILE: "/profile/customer_profile",
 };
 
 export default ENDPOINTS;

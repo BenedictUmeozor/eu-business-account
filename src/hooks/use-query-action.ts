@@ -10,11 +10,13 @@ interface QueryConfig<TData>
   > {
   url: string;
   params?: Record<string, any>;
+  headers?: Record<string, string>;
 }
 
 function useQueryAction<TData>({
   url,
   params,
+  headers,
   enabled = true,
   retry = 1,
   staleTime = 1000 * 60 * 5, // 5 minutes
@@ -36,7 +38,7 @@ function useQueryAction<TData>({
   return useQuery<TData, AxiosError, TData>({
     queryKey,
     queryFn: async () => {
-      const { data } = await api.get<TData>(url, { params });
+      const { data } = await api.get<TData>(url, { params, headers });
       return data;
     },
     enabled,

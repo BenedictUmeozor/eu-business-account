@@ -16,12 +16,14 @@ interface MutationConfig<TData, TVariables>
   > {
   url: string;
   method?: HttpMethod;
+  headers?: Record<string, string>;
   invalidateQueries?: string[];
 }
 
 function useSharedMutationAction<TData = unknown, TVariables = unknown>({
   url,
   method = "POST",
+  headers,
   invalidateQueries = [],
   onSuccess,
   onError,
@@ -35,6 +37,7 @@ function useSharedMutationAction<TData = unknown, TVariables = unknown>({
         url,
         method,
         data: variables,
+        headers,
       });
 
       if (response.status >= 400) {
@@ -43,7 +46,7 @@ function useSharedMutationAction<TData = unknown, TVariables = unknown>({
 
       return response.data;
     },
-    [url, method]
+    [url, method, headers]
   );
 
   const mutationOptions = useMemo(

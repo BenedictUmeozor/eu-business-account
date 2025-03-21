@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Button, Tag } from "antd";
 import Colors from "@/constants/colors";
@@ -10,6 +10,9 @@ import {
   RotateCwSquareIcon,
   SendIcon,
 } from "lucide-react";
+import { useAppSelector } from "@/hooks";
+import countries from "@/data/codes.json";
+import ENDPOINTS from "@/constants/endpoints";
 
 const data = [
   { name: "Total money in", value: 0, color: Colors.positive },
@@ -66,17 +69,33 @@ const DoughnutChart = () => {
 };
 
 const NoAccountTab = () => {
+  const session = useAppSelector(state => state.session);
+
+  const currency = useMemo(() => {
+    return countries.find(
+      c => c.countryCode.toLowerCase() === session.user?.country?.toLowerCase()
+    );
+  }, [session.user?.country]);
+
   return (
     <section className="grid grid-cols-[1.9fr_1.1fr] gap-4">
       <div className="p-6 shadow rounded-md flex flex-col gap-6 justify-between bg-white">
         <header className="flex items-start justify-between">
           <div className="space-y-2">
-            <div className="h-11 w-11 rounded-full overflow-hidden grid place-items-center bg-gray-300">
-              {/* Grey circle instead of flag */}
+            <div className="h-11 w-11 rounded-full overflow-hidden grid place-items-center">
+              <img
+                src={ENDPOINTS.FLAG_URL(
+                  session.user?.country?.toLowerCase() ?? ""
+                )}
+                alt="gb"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <p className="font-medium text-grey-500">Balance</p>
+            <p className="font-medium text-grey-500">
+              Total {currency?.currencyCode} Balance
+            </p>
             <p className="text-3xl text-grey-600 font-semibold font-nunito">
-              £0.00
+              {currency?.currencySymbol}0.00
             </p>
           </div>
           <Tag

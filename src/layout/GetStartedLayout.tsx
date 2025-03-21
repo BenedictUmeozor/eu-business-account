@@ -67,7 +67,7 @@ const GetStartedLayout = () => {
         </a>
         <div className="relative mx-auto grid grid-cols-1 items-start gap-12 lg:grid-cols-2 justify-between">
           {/* QR code positioned on the dividing line */}
-          <div className="absolute left-0 top-[72.5%] z-10 space-y-2 max-lg:hidden flex flex-col items-center justify-center mb-2">
+          {/* <div className="absolute left-0 top-[72.5%] z-10 space-y-2 max-lg:hidden flex flex-col items-center justify-center mb-2">
             <div className="flex items-center justify-center w-32">
               <img
                 src="/images/qrcode.png"
@@ -78,7 +78,7 @@ const GetStartedLayout = () => {
             <p className="w-40 text-center px-2 text-grey-600 font-medium">
               Scan code to use on your mobile
             </p>
-          </div>
+          </div> */}
 
           <section className="grid h-full grid-rows-[1fr_auto] gap-16 py-8 pb-4 max-lg:hidden">
             <div className="space-y-12 text-white max-w-[400px]">

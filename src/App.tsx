@@ -21,6 +21,7 @@ const EmailVerified = () => import("./pages/(auth)/EmailVerified");
 const Login = () => import("./pages/(auth)/Login");
 const ForgotPassword = () => import("./pages/(auth)/ForgotPassword");
 const ResetPassword = () => import("./pages/(auth)/ResetPassword");
+const ConfirmPasscode = () => import("./pages/(auth)/ConfirmPasscode");
 
 const Onboarding = () => import("./pages/(protected)/Onboarding");
 
@@ -94,6 +95,7 @@ const App = () => {
           <Route path="login" lazy={Login} />
           <Route path="forgot-password" lazy={ForgotPassword} />
           <Route path="forgot-password/reset" lazy={ResetPassword} />
+          <Route path="confirm-passcode" lazy={ConfirmPasscode} />
         </Route>
         <Route
           element={
@@ -153,7 +155,6 @@ const App = () => {
           {/* Profile */}
           <Route path="profile" lazy={Profile} />
           <Route path="business-profile" lazy={Profile} />
-          
         </Route>
         <Route path="*" lazy={NotFound} />
       </Route>

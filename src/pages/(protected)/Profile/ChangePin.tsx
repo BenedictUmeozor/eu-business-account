@@ -17,7 +17,7 @@ const ChangePin = () => {
       </header>
 
       <SecurityQuestions show={showPinForm} next={() => setShowPinForm(true)} />
-      {showPinForm && <ChangePinForm />}
+      {showPinForm && <ChangePinForm reset={() => setShowPinForm(false)} />}
     </div>
   );
 };

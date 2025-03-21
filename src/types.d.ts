@@ -35,6 +35,21 @@ declare global {
       status: number;
     }
 
+    interface CustomerProfile {
+      status: string;
+      fname: string;
+      lname: string;
+      phone_code: string;
+      phone_number: string;
+      occupation: string;
+      gender: string;
+      dob: string;
+      address: string;
+      refcode?: any;
+      country: string;
+      postcode?: any;
+    }
+
     interface LoginResponse {
       status: string;
       message: string;
@@ -43,6 +58,7 @@ declare global {
         fname: string;
         lname: string;
         email: string;
+        country: string;
         account_type: string;
         is_existing?: any;
         existing_onboarding_status?: any;
@@ -225,7 +241,7 @@ declare global {
       incorporation_number: string;
       business_type: string;
       business_industry: string;
-      business_structure: string;
+      business_structure?: any;
       phone_code: string;
       phone_number: string;
       account_purpose: string;
@@ -237,15 +253,49 @@ declare global {
       target_countries: string;
       partners: string;
       business_license: string;
-      is_registered: string;
+      is_registered?: any;
       incorporation_date: string;
-      etag?: any;
+      etag: string;
       business_address: string;
       town: string;
       region: string;
       postcode: string;
       partners_outgoing: string;
       economic_activity: string;
+      annual_balance_sheet_exceed_2m: string;
+      product_services_sold: string;
+      is_publicly_listed: string;
+      allows_for_issuance_share: string;
+      tax_residence_country: string;
+      vat_number: string;
+      is_financial_institution: string;
+      giin: string;
+      established_security_market: string;
+      is_company_licensed_by_regulatory: string;
+      regulatory_entity: string;
+      core_source_of_revenue: string;
+      fatca: string;
+      source_of_funds: string;
+      source_of_wealth: string;
+      number_of_ubo: string;
+      main_currency: string;
+    }
+
+    interface BusinessTransactionDetails {
+      status: string;
+      message: string;
+      incoming_sepa_trans?: string;
+      average_incoming_sepa_trans?: string;
+      incoming_uk_trans?: string;
+      average_incoming_uk_trans?: string;
+      incoming_crossborder_trans?: string;
+      average_incoming_crossborder_trans?: string;
+      outgoing_sepa_trans?: string;
+      average_outgoing_sepa?: string;
+      outgoing_uk_trans?: string;
+      average_outgoing_uk_trans?: string;
+      outgoing_crossborder_trans?: string;
+      average_outgoing_crossborder_trans?: string;
     }
 
     interface Pagination {

@@ -1,5 +1,5 @@
 import useBusinessDetails from "@/hooks/use-business-details";
-import { Form, Input, Select } from "antd";
+import { Form, Input, Select, Spin } from "antd";
 import moment, { Moment } from "moment";
 import { useCallback, useEffect } from "react";
 import { DatePicker } from "antd";
@@ -67,132 +67,144 @@ const Business = () => {
         </h3>
         <p className="text-grey-500">View your business information</p>
       </header>
-      <div className="max-w-3xl">
-        <Form
-          layout="horizontal"
-          autoComplete="off"
-          form={form}
-          wrapperCol={{ span: 14 }}
-          labelCol={{ span: 10 }}
-          labelAlign="left">
-          <Form.Item
-            name="business_name"
-            label={
-              <span className="text-grey-500 font-medium">Business name</span>
-            }>
-            <Input placeholder="Business Name" className="w-full" disabled />
-          </Form.Item>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-36">
+          <Spin />
+        </div>
+      ) : (
+        <div className="max-w-3xl">
+          <Form
+            layout="horizontal"
+            autoComplete="off"
+            form={form}
+            wrapperCol={{ span: 14 }}
+            labelCol={{ span: 10 }}
+            labelAlign="left">
+            <Form.Item
+              name="business_name"
+              label={
+                <span className="text-grey-500 font-medium">Business name</span>
+              }>
+              <Input placeholder="Business Name" className="w-full" disabled />
+            </Form.Item>
 
-          <Form.Item
-            name="business_type"
-            label={
-              <span className="text-grey-500 font-medium">Business type</span>
-            }>
-            <Select
-              placeholder="Select Business Type"
-              className="w-full"
+            <Form.Item
+              name="business_type"
+              label={
+                <span className="text-grey-500 font-medium">Business type</span>
+              }>
+              <Select
+                placeholder="Select Business Type"
+                className="w-full"
+                disabled
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="incorporation_number"
+              label={
+                <span className="text-grey-500 font-medium">
+                  Incorporation number
+                </span>
+              }>
+              <Input
+                placeholder="Incorporation Number"
+                className="w-full"
+                disabled
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="business_industry"
+              label={
+                <span className="text-grey-500 font-medium">Industry</span>
+              }>
+              <Input
+                placeholder="Business Industry"
+                className="w-full"
+                disabled
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="business_structure"
+              label={
+                <span className="text-grey-500 font-medium">
+                  Business structure
+                </span>
+              }>
+              <Select
+                placeholder="Select Business Structure"
+                className="w-full"
+                disabled
+              />
+            </Form.Item>
+
+            <PhoneNumberInput
+              dialCodeName="phone_code"
+              label={
+                <span className="text-grey-500 font-medium">Phone number</span>
+              }
+              name="phone_number"
+              setFieldsValue={setFieldsValue}
+              setPhoneValue={setPhoneValue}
               disabled
             />
-          </Form.Item>
 
-          <Form.Item
-            name="incorporation_number"
-            label={
-              <span className="text-grey-500 font-medium">
-                Incorporation number
-              </span>
-            }>
-            <Input
-              placeholder="Incorporation Number"
-              className="w-full"
-              disabled
-            />
-          </Form.Item>
+            <Form.Item
+              name="website"
+              label={
+                <span className="text-grey-500 font-medium">Website</span>
+              }>
+              <Input placeholder="Website URL" className="w-full" disabled />
+            </Form.Item>
 
-          <Form.Item
-            name="business_industry"
-            label={<span className="text-grey-500 font-medium">Industry</span>}>
-            <Input
-              placeholder="Business Industry"
-              className="w-full"
-              disabled
-            />
-          </Form.Item>
+            <Form.Item
+              name="incorporation_date"
+              label={
+                <span className="text-grey-500 font-medium">
+                  Incorporation date
+                </span>
+              }>
+              <DatePicker className="w-full" disabled />
+            </Form.Item>
 
-          <Form.Item
-            name="business_structure"
-            label={
-              <span className="text-grey-500 font-medium">
-                Business structure
-              </span>
-            }>
-            <Select
-              placeholder="Select Business Structure"
-              className="w-full"
-              disabled
-            />
-          </Form.Item>
+            <Form.Item
+              name="business_address"
+              label={
+                <span className="text-grey-500 font-medium">
+                  Business address
+                </span>
+              }>
+              <Input placeholder="Business Address" disabled />
+            </Form.Item>
 
-          <PhoneNumberInput
-            dialCodeName="phone_code"
-            label={
-              <span className="text-grey-500 font-medium">Phone number</span>
-            }
-            name="phone_number"
-            setFieldsValue={setFieldsValue}
-            setPhoneValue={setPhoneValue}
-            disabled
-          />
+            <Form.Item
+              name="town"
+              label={
+                <span className="text-grey-500 font-medium">Town/City</span>
+              }>
+              <Input placeholder="Town" className="w-full" disabled />
+            </Form.Item>
 
-          <Form.Item
-            name="website"
-            label={<span className="text-grey-500 font-medium">Website</span>}>
-            <Input placeholder="Website URL" className="w-full" disabled />
-          </Form.Item>
+            <Form.Item
+              name="region"
+              label={
+                <span className="text-grey-500 font-medium">Region/State</span>
+              }>
+              <Input placeholder="Region" className="w-full" disabled />
+            </Form.Item>
 
-          <Form.Item
-            name="incorporation_date"
-            label={
-              <span className="text-grey-500 font-medium">
-                Incorporation date
-              </span>
-            }>
-            <DatePicker className="w-full" disabled />
-          </Form.Item>
-
-          <Form.Item
-            name="business_address"
-            label={
-              <span className="text-grey-500 font-medium">
-                Business address
-              </span>
-            }>
-            <Input placeholder="Business Address" disabled />
-          </Form.Item>
-
-          <Form.Item
-            name="town"
-            label={
-              <span className="text-grey-500 font-medium">Town/City</span>
-            }>
-            <Input placeholder="Town" className="w-full" disabled />
-          </Form.Item>
-
-          <Form.Item
-            name="region"
-            label={
-              <span className="text-grey-500 font-medium">Region/State</span>
-            }>
-            <Input placeholder="Region" className="w-full" disabled />
-          </Form.Item>
-
-          <Form.Item
-            name="postcode"
-            label={<span className="text-grey-500 font-medium">Postcode</span>}>
-            <Input placeholder="Postcode" className="w-full" disabled />
-          </Form.Item>
-        </Form>
-      </div>
+            <Form.Item
+              name="postcode"
+              label={
+                <span className="text-grey-500 font-medium">Postcode</span>
+              }>
+              <Input placeholder="Postcode" className="w-full" disabled />
+            </Form.Item>
+          </Form>
+        </div>
+      )}
     </div>
   );
 };
