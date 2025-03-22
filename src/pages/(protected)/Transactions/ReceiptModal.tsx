@@ -1,6 +1,6 @@
 import { useDelay } from "@/hooks";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
-import { Button, Modal } from "antd";
+import { Button, Modal, Alert } from "antd";
 import {
   forwardRef,
   useCallback,
@@ -138,6 +138,25 @@ const ReceiptModal = forwardRef<ReceiptRefObject>((_props, ref) => {
                       {receiptData.transaction_status}
                     </span>
                   </div>
+                  {receiptData.transaction_status?.toLowerCase() ===
+                    "completedwitherrors" &&
+                    receiptData.errors?.length > 0 && (
+                      <div className="mt-2">
+                        <Alert
+                          message={
+                            <span>
+                              {receiptData.errors.substring(
+                                2,
+                                receiptData.errors.length - 2
+                              )}
+                            </span>
+                          }
+                          type="warning"
+                          showIcon
+                          className="text-xs"
+                        />
+                      </div>
+                    )}
                 </div>
               </header>
               <div className="border-0 border-solid border-grey-200 border-b py-3 space-y-2">

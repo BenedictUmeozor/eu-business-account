@@ -460,7 +460,7 @@ declare global {
       narration: string;
       request_status: string;
       exchange_rate: number | null;
-      errors: string[];
+      errors: string;
     }
 
     interface ShareholderResponse {
