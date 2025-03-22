@@ -85,7 +85,7 @@ const TransferSummary = () => {
     url: ENDPOINTS.REGISTER_DEVICE,
     onSuccess: data => {
       console.log(data);
-      // scaApproved.current = true;
+      scaApproved.current = true; // Updated to enable SCA approval
     },
     onError: error => {
       message.error(getErrorMessage(error));

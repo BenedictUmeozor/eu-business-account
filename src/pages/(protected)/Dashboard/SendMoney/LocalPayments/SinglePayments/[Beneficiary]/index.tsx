@@ -1,5 +1,5 @@
 import ENDPOINTS from "@/constants/endpoints";
-import { Button, Input, message, Result } from "antd";
+import { Button, Input, message, Result, Alert } from "antd";
 import { NumericFormat } from "react-number-format";
 import { useParams, useNavigate, useSearchParams } from "react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -20,10 +20,11 @@ const SendToBeneficiary = () => {
     description: "",
     sortCode: "",
   });
+  const [amountError, setAmountError] = useState<string>("");
 
   const isFormValid = useMemo(
-    () => formData.amount && formData.description && formData.sortCode,
-    [formData]
+    () => formData.amount && formData.description && formData.sortCode && !amountError,
+    [formData, amountError]
   );
 
   const currency = useMemo(() => {
@@ -35,6 +36,20 @@ const SendToBeneficiary = () => {
   const currBalance = useMemo(() => {
     return balances?.find(b => b.ccy === searchParams.get("currency"));
   }, [balances, searchParams]);
+
+  // Validate amount doesn't exceed balance
+  const validateAmount = (value: string) => {
+    if (!value || !currBalance) return;
+    
+    const numAmount = parseFloat(value);
+    const numBalance = currBalance.amount;
+    
+    if (numAmount > numBalance) {
+      setAmountError(`Amount exceeds your available balance of ${currency?.currencySymbol}${currBalance.amount}`);
+    } else {
+      setAmountError("");
+    }
+  };
 
   const benMutation = useSharedMutationAction<{ beneficiary: HM.Beneficiary }>({
     url: ENDPOINTS.FETCH_SINGLE_BENEFICIARY,
@@ -134,9 +149,13 @@ const SendToBeneficiary = () => {
               allowNegative={false}
               value={formData.amount}
               onValueChange={values => {
-                setFormData(prev => ({ ...prev, amount: values.value }));
+                const newAmount = values.value;
+                setFormData(prev => ({ ...prev, amount: newAmount }));
+                validateAmount(newAmount);
               }}
+              status={amountError ? "error" : ""}
             />
+            {amountError && <Alert message={amountError} type="error" showIcon />}
           </div>
         </div>
 
