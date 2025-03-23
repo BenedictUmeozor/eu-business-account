@@ -28,7 +28,7 @@ const Login = () => {
     onSuccess: response => {
       dispatch(setBusiness(response.business_data));
       dispatch(setUser(response.data));
-      message.success(response.message);
+      message.success("Successful");
 
       navigate("", { state: { from: "/login" }, replace: true });
       form.resetFields();
