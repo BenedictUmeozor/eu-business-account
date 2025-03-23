@@ -89,11 +89,12 @@ const AddShareholders = ({
     return true;
   }, [personalDetails, shareholders]);
 
-  const checkShareholderProgress = async () => {
+  const checkShareholderProgress = useCallback(async () => {
     const progress = await getShareholderProgress();
     setShareholderDocumentComplete(progress.shareholderDocumentComplete);
     setProgressChecked(true);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     (async () => {

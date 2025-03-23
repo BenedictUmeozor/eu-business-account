@@ -3,6 +3,7 @@ import useMutationAction from "./use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
 import { useAppSelector } from ".";
+import { useCallback } from "react";
 
 // ProgressData interface for shareholder document progress
 export interface ShareholderProgressData {
@@ -24,7 +25,7 @@ const useShareholderProgress = (email?: string) => {
     },
   });
 
-  const getShareholderProgress = async () => {
+  const getShareholderProgress = useCallback(async () => {
     try {
       const response = await checkShareholderProgress.mutateAsync({
         business_token: session.business?.business_token,
@@ -40,14 +41,14 @@ const useShareholderProgress = (email?: string) => {
         shareholderCreated: false,
         shareholderDocumentComplete: false,
       };
-    } catch (error) {
-      console.error("Failed to check shareholder progress:", error);
+    } catch {
       return {
         shareholderCreated: false,
         shareholderDocumentComplete: false,
       };
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session.business?.business_token]);
 
   return {
     getShareholderProgress,
