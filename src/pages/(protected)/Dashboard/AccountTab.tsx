@@ -17,13 +17,42 @@ import ENDPOINTS from "@/constants/endpoints";
 import { CURRENCIES } from "@/constants/currencies";
 import { useAppSelector } from "@/hooks";
 import AccountDetails, { AccountDetailsRef } from "./AccountDetails";
+import useTransactionAnalytics from "@/hooks/use-transaction-analytics";
 
-const data = [
-  { name: "Total money in", value: 0, color: Colors.positive },
-  { name: "Total money out", value: 0, color: Colors.pending },
-];
+const DoughnutChart = ({ currency }: { currency: HM.TransactionCurr }) => {
+  const { data, isPending } = useTransactionAnalytics(currency);
+  const currencySymbol = useMemo(
+    () => CURRENCIES.find(c => c.currencyCode === currency)?.currencySymbol,
+    [currency]
+  );
 
-const DoughnutChart = () => {
+  const transactonData = useMemo(() => {
+    if (!data || isPending) {
+      return [
+        { name: "Total money in", value: 0, color: Colors.positive },
+        { name: "Total money out", value: 0, color: Colors.pending },
+      ];
+    }
+
+    const moneyIn = data
+      .filter(transaction => transaction.type.toUpperCase() === "CREDIT")
+      .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+    const moneyOut = data
+      .filter(transaction => transaction.type.toUpperCase() === "DEBIT")
+      .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+    return [
+      { name: "Total money in", value: moneyIn, color: Colors.positive },
+      { name: "Total money out", value: moneyOut, color: Colors.pending },
+    ];
+  }, [data, isPending]);
+
+  const hasNoTrans = useMemo(
+    () => transactonData.every(val => val.value === 0),
+    [transactonData]
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -39,21 +68,31 @@ const DoughnutChart = () => {
         <ResponsiveContainer width={200} height={200}>
           <PieChart>
             <Pie
-              data={[{ value: 1 }]}
+              data={!hasNoTrans ? transactonData : [{ value: 1 }]}
               cx="50%"
               cy="50%"
               innerRadius={60}
               outerRadius={80}
               dataKey="value"
               startAngle={90}
-              endAngle={450}>
-              <Cell fill="#E5F1FF" />
+              endAngle={450}
+              paddingAngle={2}
+              animationDuration={1000}
+              animationBegin={0}
+              animationEasing="ease-out">
+              {!hasNoTrans ? (
+                transactonData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))
+              ) : (
+                <Cell fill="#E5F1FF" />
+              )}
             </Pie>
           </PieChart>
         </ResponsiveContainer>
 
         <div className="space-y-3">
-          {data.map((entry, index) => (
+          {transactonData?.map((entry, index) => (
             <div key={index} className="flex items-start gap-2">
               <div
                 className="w-3 h-3 rounded-full mt-1"
@@ -61,7 +100,10 @@ const DoughnutChart = () => {
               />
               <div className="space-y-0.5">
                 <p className="text-sm text-grey-500">{entry.name}</p>
-                <p className="font-medium">£{entry.value.toFixed(2)}</p>
+                <p className="font-medium">
+                  {currencySymbol}
+                  {entry.value.toFixed(2)}
+                </p>
               </div>
             </div>
           ))}
@@ -173,7 +215,7 @@ const AccountTab = ({ currency }: { currency: string }) => {
         </div>
       </div>
       <div className="p-6 shadow rounded-md bg-white">
-        <DoughnutChart />
+        <DoughnutChart currency={currency as HM.TransactionCurr} />
       </div>
       <CurrencyConversion
         ref={conversionRef}
