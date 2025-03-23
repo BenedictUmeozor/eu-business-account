@@ -414,7 +414,7 @@ declare global {
       from: string;
       to: string;
       transaction_status: TransactionStatus;
-      category: "LocalPayment" | "InternationalPayment" | "Conversion";
+      category: "LocalPayment" | "InternationalPayment" | "Conversion" | "ALL";
       currency: TransactionCurr;
     }
 

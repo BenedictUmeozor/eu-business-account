@@ -1,7 +1,6 @@
-import { memo, useMemo, useRef } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Button, Tag } from "antd";
-import Colors from "@/constants/colors";
 import CurrencyConversion from "./CurrencyConversion";
 import MoreActions from "./MoreActions";
 import {
@@ -18,9 +17,10 @@ import { CURRENCIES } from "@/constants/currencies";
 import { useAppSelector } from "@/hooks";
 import AccountDetails, { AccountDetailsRef } from "./AccountDetails";
 import useTransactionAnalytics from "@/hooks/use-transaction-analytics";
+import Colors from "@/constants/colors";
 
 const DoughnutChart = ({ currency }: { currency: HM.TransactionCurr }) => {
-  const { data, isPending } = useTransactionAnalytics(currency);
+  const { data, isPending, fetchData } = useTransactionAnalytics();
   const currencySymbol = useMemo(
     () => CURRENCIES.find(c => c.currencyCode === currency)?.currencySymbol,
     [currency]
@@ -30,7 +30,7 @@ const DoughnutChart = ({ currency }: { currency: HM.TransactionCurr }) => {
     if (!data || isPending) {
       return [
         { name: "Total money in", value: 0, color: Colors.positive },
-        { name: "Total money out", value: 0, color: Colors.pending },
+        { name: "Total money out", value: 0, color: Colors.negative },
       ];
     }
 
@@ -44,7 +44,7 @@ const DoughnutChart = ({ currency }: { currency: HM.TransactionCurr }) => {
 
     return [
       { name: "Total money in", value: moneyIn, color: Colors.positive },
-      { name: "Total money out", value: moneyOut, color: Colors.pending },
+      { name: "Total money out", value: moneyOut, color: Colors.negative },
     ];
   }, [data, isPending]);
 
@@ -52,6 +52,12 @@ const DoughnutChart = ({ currency }: { currency: HM.TransactionCurr }) => {
     () => transactonData.every(val => val.value === 0),
     [transactonData]
   );
+
+  useEffect(() => {
+    fetchData(currency);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency]);
 
   return (
     <div className="space-y-4">
@@ -65,37 +71,47 @@ const DoughnutChart = ({ currency }: { currency: HM.TransactionCurr }) => {
         </Button>
       </div>
       <div className="flex items-center gap-4">
-        <ResponsiveContainer width={200} height={200}>
-          <PieChart>
-            <Pie
-              data={!hasNoTrans ? transactonData : [{ value: 1 }]}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              dataKey="value"
-              startAngle={90}
-              endAngle={450}
-              paddingAngle={2}
-              animationDuration={1000}
-              animationBegin={0}
-              animationEasing="ease-out">
-              {!hasNoTrans ? (
-                transactonData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))
-              ) : (
-                <Cell fill="#E5F1FF" />
-              )}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
+        <div className="relative" style={{ width: 200, height: 200 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={!hasNoTrans ? transactonData : [{ value: 1 }]}
+                cx="50%"
+                cy="50%"
+                innerRadius={70}
+                outerRadius={90}
+                dataKey="value"
+                startAngle={90}
+                endAngle={-270}
+                paddingAngle={0}
+                animationDuration={1000}
+                animationBegin={0}
+                cornerRadius={0}
+                animationEasing="ease-out">
+                {!hasNoTrans ? (
+                  transactonData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.color}
+                      stroke="none"
+                    />
+                  ))
+                ) : (
+                  <Cell fill="#E5F1FF" stroke="none" />
+                )}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-[120px] h-[120px] rounded-full bg-white"></div>
+          </div>
+        </div>
 
         <div className="space-y-3">
           {transactonData?.map((entry, index) => (
             <div key={index} className="flex items-start gap-2">
               <div
-                className="w-3 h-3 rounded-full mt-1"
+                className="w-3 h-3 rounded-sm mt-1"
                 style={{ backgroundColor: entry.color }}
               />
               <div className="space-y-0.5">

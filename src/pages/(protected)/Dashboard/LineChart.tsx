@@ -1,5 +1,10 @@
-import { Button, Space, Tag } from "antd";
-import { FC } from "react";
+import { CURRENCIES } from "@/constants/currencies";
+import { useAppSelector } from "@/hooks";
+import useTransactionAnalytics from "@/hooks/use-transaction-analytics";
+import { Button, Empty, Select, Space, Spin, Tag } from "antd";
+import clsx from "clsx";
+import dayjs from "dayjs";
+import { FC, useEffect, useMemo, useState } from "react";
 import {
   LineChart,
   Line,
@@ -11,20 +16,6 @@ import {
   Area,
 } from "recharts";
 
-interface ChartData {
-  date: string;
-  amount: number;
-  change?: number;
-}
-
-const data: ChartData[] = [
-  { date: "21 Jan", amount: 0, change: 1.3 },
-  { date: "27 Jan", amount: 1000, change: 0.5 },
-  { date: "3 Feb", amount: 1399, change: 2.1 },
-  { date: "9 Feb", amount: 1200, change: 1.0 },
-  { date: "15 Feb", amount: 2000, change: 3.5 },
-];
-
 const CustomTooltip: FC<{ active?: boolean; payload?: any[] }> = ({
   active,
   payload,
@@ -35,9 +26,16 @@ const CustomTooltip: FC<{ active?: boolean; payload?: any[] }> = ({
       <div className="bg-white p-2 shadow-md rounded-lg border space-y-1">
         <p className="font-nunito text-sm text-grey-500">{date}</p>
         <Space>
-          <span className="text-xl text-grey-600 font-semibold">£{amount}</span>
-          {change && (
-            <Tag className="rounded-lg bg-positive-50 text-positive-600">
+          <span className="text-xl text-grey-600 font-semibold">
+            {Math.abs(amount).toFixed(2)}
+          </span>
+          {change !== undefined && (
+            <Tag
+              className={clsx("rounded-lg", {
+                "bg-positive-50 text-positive-600": change >= 0,
+                "bg-negative-50 text-negative-600": change < 0,
+              })}>
+              {change >= 0 ? "+" : ""}
               {change.toFixed(1)}%
             </Tag>
           )}
@@ -48,33 +46,208 @@ const CustomTooltip: FC<{ active?: boolean; payload?: any[] }> = ({
   return null;
 };
 
-const AssetLineChart: FC = () => {
-  return (
-    <div className="w-full bg-white p-4 rounded-lg shadow-md space-y-4">
-      <header className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h6 className="text-grey-400 text-sm font-medium">
-            GBP TOTAL ASSETS
-          </h6>
-          <h5 className="text-2xl text-grey-700 font-bold">£340,550</h5>
+const AssetLineChart = () => {
+  const currencies = useAppSelector(state => state.accounts.currencies);
+  const [selected, setSelected] = useState<string>();
+  const { data, fetchData, timeRange, setTimeRange, isPending } =
+    useTransactionAnalytics();
+
+  const balances = useAppSelector(state => state.accounts.balances);
+
+  const fullInfo = useMemo(
+    () => CURRENCIES.find(c => c.currencyCode === selected),
+    [selected]
+  );
+
+  const balance = useMemo(() => {
+    return balances?.find(bal => bal.ccy === selected);
+  }, [balances, selected]);
+
+  const chartData = useMemo(() => {
+    if (!data?.length) return [];
+
+    const allTransactions = [...data].sort(
+      (a, b) => dayjs(a.date).unix() - dayjs(b.date).unix()
+    );
+
+    const earliestTransaction = allTransactions[0];
+    const startBalanceAfter = earliestTransaction.balance_after || 0;
+
+    const dateGroups: Record<string, any[]> = {};
+
+    if (timeRange === "7d") {
+      for (let i = 0; i < 7; i++) {
+        const date = dayjs()
+          .subtract(6 - i, "day")
+          .format("DD MMM");
+        dateGroups[date] = [];
+      }
+    } else {
+      for (let i = 0; i < 8; i++) {
+        const startDay = dayjs().subtract(30, "day");
+        const groupLabel = startDay.add(i * 4, "day").format("DD MMM");
+        dateGroups[groupLabel] = [];
+      }
+    }
+
+    data.forEach(transaction => {
+      const transactionDate = dayjs(transaction.date);
+
+      if (timeRange === "7d") {
+        const dateKey = transactionDate.format("DD MMM");
+        if (dateGroups[dateKey]) {
+          dateGroups[dateKey].push(transaction);
+        } else {
+          const nearestDate = Object.keys(dateGroups).reduce(
+            (nearest, current) => {
+              const currentDiff = Math.abs(
+                dayjs(current, "DD MMM").diff(transactionDate, "day")
+              );
+              const nearestDiff = Math.abs(
+                dayjs(nearest, "DD MMM").diff(transactionDate, "day")
+              );
+              return currentDiff < nearestDiff ? current : nearest;
+            },
+            Object.keys(dateGroups)[0]
+          );
+
+          dateGroups[nearestDate].push(transaction);
+        }
+      } else {
+        const startDay = dayjs().subtract(30, "day");
+        const daysDiff = transactionDate.diff(startDay, "day");
+
+        if (daysDiff >= 0 && daysDiff <= 30) {
+          const groupIndex = Math.min(Math.floor(daysDiff / 4), 7);
+          const groupLabel = startDay
+            .add(groupIndex * 4, "day")
+            .format("DD MMM");
+
+          if (dateGroups[groupLabel]) {
+            dateGroups[groupLabel].push(transaction);
+          }
+        }
+      }
+    });
+
+    const result = Object.entries(dateGroups).map(([date, transactions]) => {
+      let currentBalance = 0;
+
+      if (transactions.length > 0) {
+        const sortedTransactions = [...transactions].sort(
+          (a, b) => dayjs(b.date).unix() - dayjs(a.date).unix()
+        );
+        currentBalance = sortedTransactions[0].balance_after || 0;
+      } else {
+        const datesWithTransactions = Object.entries(dateGroups)
+          .filter(([, trans]) => trans.length > 0)
+          .map(([d]) => d);
+
+        if (datesWithTransactions.length > 0) {
+          const previousDates = datesWithTransactions
+            .filter(
+              d => dayjs(d, "DD MMM").unix() < dayjs(date, "DD MMM").unix()
+            )
+            .sort(
+              (a, b) => dayjs(b, "DD MMM").unix() - dayjs(a, "DD MMM").unix()
+            );
+
+          if (previousDates.length > 0) {
+            const latestPrevDate = previousDates[0];
+            const prevTransactions = dateGroups[latestPrevDate];
+            const sortedPrevTrans = [...prevTransactions].sort(
+              (a, b) => dayjs(b.date).unix() - dayjs(a.date).unix()
+            );
+            currentBalance = sortedPrevTrans[0].balance_after || 0;
+          } else {
+            const laterDates = datesWithTransactions
+              .filter(
+                d => dayjs(d, "DD MMM").unix() > dayjs(date, "DD MMM").unix()
+              )
+              .sort(
+                (a, b) => dayjs(a, "DD MMM").unix() - dayjs(b, "DD MMM").unix()
+              );
+
+            if (laterDates.length > 0) {
+              const earliestLaterDate = laterDates[0];
+              const laterTransactions = dateGroups[earliestLaterDate];
+              const sortedLaterTrans = [...laterTransactions].sort(
+                (a, b) => dayjs(a.date).unix() - dayjs(b.date).unix()
+              );
+              currentBalance = sortedLaterTrans[0].balance_before || 0;
+            }
+          }
+        }
+      }
+
+      const change =
+        startBalanceAfter !== 0
+          ? ((currentBalance - startBalanceAfter) /
+              Math.abs(startBalanceAfter)) *
+            100
+          : 0;
+
+      return {
+        date,
+        amount: currentBalance,
+        change,
+      };
+    });
+
+    const today = dayjs().format("DD MMM");
+    const currentDateItem = result.find(item => item.date === today);
+
+    if (currentDateItem && balance?.amount) {
+      currentDateItem.amount = balance.amount;
+      currentDateItem.change =
+        startBalanceAfter !== 0
+          ? ((balance.amount - startBalanceAfter) /
+              Math.abs(startBalanceAfter)) *
+            100
+          : 0;
+    }
+
+    return result.sort(
+      (a, b) => dayjs(a.date, "DD MMM").unix() - dayjs(b.date, "DD MMM").unix()
+    );
+  }, [data, timeRange, balance?.amount]);
+
+  useEffect(() => {
+    if (!selected && currencies?.length) {
+      setSelected(currencies[0]);
+    }
+  }, [currencies, selected]);
+
+  useEffect(() => {
+    if (selected) {
+      fetchData(selected as HM.TransactionCurr, timeRange);
+    }
+  }, [selected, timeRange, fetchData]);
+
+  const renderChart = () => {
+    if (!data?.length) {
+      return (
+        <div className="h-[300px] flex items-center justify-center">
+          <Empty
+            description="No transaction data available"
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+          />
         </div>
-        <Space>
-          <Button shape="round" className="text-grey-500 !text-sm font-medium">
-            Last 7 Days
-          </Button>
-          <Button
-            shape="round"
-            type="primary"
-            className="text-primary bg-primary-50 !text-sm font-medium">
-            Last 30 Days
-          </Button>
-        </Space>
-      </header>
+      );
+    }
 
+    const amounts = chartData.map(item => item.amount);
+    const minAmount = Math.min(...amounts);
+    const maxAmount = Math.max(...amounts);
+
+    const yDomain = [minAmount < 0 ? minAmount * 1.1 : 0, maxAmount * 1.1];
+
+    return (
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-
+        <LineChart
+          data={chartData}
+          margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <defs>
             <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#1D4ED8" stopOpacity={0.3} />
@@ -82,16 +255,37 @@ const AssetLineChart: FC = () => {
             </linearGradient>
           </defs>
 
-          <XAxis dataKey="date" tick={{ fill: "#94A3B8" }} />
-          <YAxis tick={{ fill: "#94A3B8" }} />
+          <XAxis
+            dataKey="date"
+            tick={{ fill: "#94A3B8" }}
+            axisLine={false}
+            tickLine={false}
+            interval="preserveStartEnd"
+          />
 
-          <Tooltip content={<CustomTooltip />} />
+          <YAxis
+            tick={{ fill: "#94A3B8" }}
+            tickFormatter={value =>
+              `${fullInfo?.currencySymbol}${Math.abs(value).toFixed(0)}`
+            }
+            axisLine={false}
+            tickLine={false}
+            domain={yDomain}
+            orientation="left"
+            reversed={false}
+          />
+
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{ stroke: "#94A3B8", strokeDasharray: "3 3" }}
+          />
 
           <Area
             type="monotone"
             dataKey="amount"
             stroke="none"
             fill="url(#areaGradient)"
+            fillOpacity={1}
           />
 
           <Line
@@ -99,11 +293,74 @@ const AssetLineChart: FC = () => {
             dataKey="amount"
             stroke="#1D4ED8"
             strokeWidth={2}
-            dot={{ stroke: "#1D4ED8", r: 4 }}
-            activeDot={{ r: 6 }}
+            dot={false}
+            activeDot={{
+              r: 6,
+              stroke: "#1D4ED8",
+              strokeWidth: 2,
+              fill: "white",
+            }}
           />
         </LineChart>
       </ResponsiveContainer>
+    );
+  };
+
+  return (
+    <div className="w-full bg-white p-4 rounded-lg shadow-md space-y-4">
+      <header className="flex items-center justify-between">
+        <div className="space-y-1">
+          <h6 className="text-grey-400 text-sm font-medium">
+            {selected} TOTAL ASSETS
+          </h6>
+          <div className="flex items-center gap-2">
+            <h5 className="text-2xl text-grey-700 font-bold">
+              {fullInfo?.currencySymbol}
+              {balance?.amount || "12,444.00"}
+            </h5>
+            <Select
+              value={selected}
+              size="small"
+              onChange={setSelected}
+              options={currencies?.map(v => ({ label: v, value: v }))}
+            />
+          </div>
+        </div>
+
+        <Space>
+          <Button
+            shape="round"
+            type={timeRange === "7d" ? "primary" : "default"}
+            onClick={() => setTimeRange("7d")}
+            className={
+              timeRange === "7d"
+                ? "text-primary bg-primary-50"
+                : "text-grey-500"
+            }>
+            Last 7 days
+          </Button>
+          <Button
+            shape="round"
+            type={timeRange === "30d" ? "primary" : "default"}
+            onClick={() => setTimeRange("30d")}
+            className={
+              timeRange === "30d"
+                ? "text-primary bg-primary-50"
+                : "text-grey-500"
+            }>
+            Last 30 Days
+          </Button>
+        </Space>
+      </header>
+
+      <div className="relative">
+        {isPending && (
+          <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center">
+            <Spin />
+          </div>
+        )}
+        {renderChart()}
+      </div>
     </div>
   );
 };
