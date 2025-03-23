@@ -23,7 +23,6 @@ import { getErrorMessage } from "@/utils";
 import _ from "lodash";
 import moment, { Moment } from "moment";
 import usePersonalDetails from "@/hooks/use-personal-details";
-import useShareholders from "@/hooks/use-shareholders";
 
 interface FormValues {
   fname: string;
@@ -63,7 +62,7 @@ const PersonalInfo = ({
   const { personalDetails, isLoading, refetch } = usePersonalDetails(
     session?.user?.email
   );
-  const { shareholders, getShareholders } = useShareholders();
+  // const { shareholders, getShareholders } = useShareholders();
 
   const addMutation = useMutationAction<unknown>({
     url: ENDPOINTS.ADD_SHAREHOLDER,
@@ -101,30 +100,30 @@ const PersonalInfo = ({
     };
 
     const payload = _.omit(formattedValues, ["fname", "lname"]);
-    if (
-      !isReview &&
-      shareholders.length === 0 &&
-      payload.business_stake === "YES"
-    ) {
-      await addMutation.mutateAsync({
-        fname: session?.user?.fname,
-        lname: session?.user?.lname,
-        email: session?.user?.email || "",
-        type: "Individual",
-        residential_address: payload.residential_address || "",
-        region: payload.town || "",
-        postcode: payload.postcode || "",
-        business_stake: "YES",
-        business_role: "Shareholder",
-        authorized_signatory: payload.authorized_signatory || "YES",
-      });
-    }
+    // if (
+    //   !isReview &&
+    //   shareholders.length === 0 &&
+    //   payload.business_stake === "YES"
+    // ) {
+    //   await addMutation.mutateAsync({
+    //     fname: session?.user?.fname,
+    //     lname: session?.user?.lname,
+    //     email: session?.user?.email || "",
+    //     type: "Individual",
+    //     residential_address: payload.residential_address || "",
+    //     region: payload.town || "",
+    //     postcode: payload.postcode || "",
+    //     business_stake: "YES",
+    //     business_role: "Shareholder",
+    //     authorized_signatory: payload.authorized_signatory || "YES",
+    //   });
+    // }
     await mutation.mutateAsync(payload);
     next();
   };
 
   useEffect(() => {
-    getShareholders();
+    // getShareholders();
     if (personalDetails && !isLoading) {
       form.setFieldsValue({
         fname: personalDetails.fname,

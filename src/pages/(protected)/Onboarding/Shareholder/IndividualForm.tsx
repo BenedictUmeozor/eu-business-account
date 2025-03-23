@@ -12,9 +12,11 @@ import {
   Input,
   message,
   Radio,
+  Select,
   Skeleton,
 } from "antd";
 import { useState, useEffect, useRef } from "react";
+import countries from "@/data/codes.json";
 import { omit } from "lodash";
 
 interface FormValues {
@@ -32,12 +34,14 @@ interface FormValues {
   business_role: string;
   authorized_signatory: string;
   document_type: string;
-  is_pep: string;
-  pep_position: string;
-  pep_country: string;
-  pep_name: string;
-  has_pep_family: string;
-  pep_relationship: string;
+  political_exposed_person: string;
+  position_held?: string;
+  country_of_pep?: string;
+  related_pep: string;
+  name_of_pep?: string;
+  relationship_with_pep?: string;
+  political_position?: string;
+  country_position_held?: string;
 }
 
 const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
@@ -50,6 +54,8 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
   );
   const [showImageError, setShowImageError] = useState<boolean>(false);
   const formRef = useRef<HTMLDivElement>(null);
+  const [isPep, setIsPep] = useState(false);
+  const [isRelatedPep, setIsRelatedPep] = useState(false);
 
   const { documentTypes, loading } = useDocumentTypes();
 
@@ -123,10 +129,6 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
       return;
     }
 
-    // Log images for debugging
-    console.log("Front image to be uploaded:", frontImage);
-    console.log("Back image to be uploaded:", backImage);
-
     // Reset any previous error state
     setShowImageError(false);
 
@@ -156,6 +158,16 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
     setSelectedDocumentType(e.target.value);
     // Also update form value
     form.setFieldValue("document_type", e.target.value);
+  };
+
+  // Handle PEP status change
+  const handlePepChange = (e: any) => {
+    setIsPep(e.target.value === "YES");
+  };
+
+  // Handle Related PEP status change
+  const handleRelatedPepChange = (e: any) => {
+    setIsRelatedPep(e.target.value === "YES");
   };
 
   // Reset error state when either image is uploaded
@@ -197,8 +209,7 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
             rules={[{ required: true, message: "This field is required" }]}>
             <Input className="w-full" placeholder="Enter Last Name" />
           </Form.Item>
-        </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
           <Form.Item
             label="Email Address"
             name="email"
@@ -215,8 +226,7 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
             rules={[{ required: true, message: "This field is required" }]}>
             <Input className="w-full" placeholder="Enter Post Code" />
           </Form.Item>
-        </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
           <Form.Item
             label="Residential Address"
             name="residential_address"
@@ -233,8 +243,7 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
             rules={[{ required: true, message: "This field is required" }]}>
             <Input className="w-full" placeholder="Enter State" />
           </Form.Item>
-        </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
           <Form.Item
             label="Add as a shareholder (owns over 25% of the business)?"
             name="business_stake"
@@ -273,13 +282,12 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
               </div>
             </Radio.Group>
           </Form.Item>
-        </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
           <Form.Item
             label="Is this a politically exposed person (PEP)?"
-            name="is_pep"
+            name="political_exposed_person"
             rules={[{ required: true, message: "This field is required" }]}>
-            <Radio.Group className="w-full">
+            <Radio.Group className="w-full" onChange={handlePepChange}>
               <div className="grid grid-cols-2 gap-2">
                 <Radio
                   value="YES"
@@ -296,31 +304,41 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
           </Form.Item>
           <Form.Item
             label="Political Exposure - Position Held"
-            name="pep_position"
-            rules={[{ required: true, message: "This field is required" }]}>
+            name="position_held"
+            rules={[{ required: isPep, message: "This field is required when PEP is Yes" }]}>
             <Input className="w-full" placeholder="Enter Position" />
           </Form.Item>
-        </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
           <Form.Item
             label="Country of political exposure"
-            name="pep_country"
-            rules={[{ required: true, message: "This field is required" }]}>
-            <Input className="w-full" placeholder="Select country" />
+            name="country_of_pep"
+            rules={[{ required: isPep, message: "This field is required when PEP is Yes" }]}>
+            <Select
+              showSearch
+              className="w-full"
+              placeholder="Select country"
+              dropdownStyle={{ minWidth: "200px" }}
+              options={countries.map(c => ({
+                label: (
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={c.flag}
+                      alt={c.countryCode}
+                      className="h-6 w-6 rounded-full object-cover"
+                    />
+                    <span className="text-grey-700">{c.countryName}</span>
+                  </div>
+                ),
+                value: c.countryCode,
+              }))}
+            />
           </Form.Item>
-          <Form.Item
-            label="Name of politically exposed person (PEP)"
-            name="pep_name"
-            rules={[{ required: true, message: "This field is required" }]}>
-            <Input className="w-full" placeholder="Enter name" />
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
           <Form.Item
             label="Is any family member or a close associate of this individual a politically exposed person (PEP)"
-            name="has_pep_family"
+            name="related_pep"
             rules={[{ required: true, message: "This field is required" }]}>
-            <Radio.Group className="w-full">
+            <Radio.Group className="w-full" onChange={handleRelatedPepChange}>
               <div className="grid grid-cols-2 gap-2">
                 <Radio
                   value="YES"
@@ -335,11 +353,46 @@ const IndividualForm = ({ removeForm }: { removeForm: () => void }) => {
               </div>
             </Radio.Group>
           </Form.Item>
+
+          <Form.Item
+            label="Name of politically exposed person (PEP)"
+            name="name_of_pep"
+            rules={[{ required: isRelatedPep, message: "This field is required when related to a PEP" }]}>
+            <Input className="w-full" placeholder="Enter name" />
+          </Form.Item>
           <Form.Item
             label="PEP Relationship with involved party"
-            name="pep_relationship"
-            rules={[{ required: true, message: "This field is required" }]}>
+            name="relationship_with_pep"
+            rules={[{ required: isRelatedPep, message: "This field is required when related to a PEP" }]}>
+            <Input className="w-full" placeholder="Enter Relationship" />
+          </Form.Item>
+          <Form.Item
+            label="Political Exposure - Position Held"
+            name="political_position">
             <Input className="w-full" placeholder="Enter Position" />
+          </Form.Item>
+          <Form.Item
+            label="Country of political exposure"
+            name="country_position_held">
+            <Select
+              showSearch
+              className="w-full"
+              placeholder="Select country"
+              dropdownStyle={{ minWidth: "200px" }}
+              options={countries.map(c => ({
+                label: (
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={c.flag}
+                      alt={c.countryCode}
+                      className="h-6 w-6 rounded-full object-cover"
+                    />
+                    <span className="text-grey-700">{c.countryName}</span>
+                  </div>
+                ),
+                value: c.countryCode,
+              }))}
+            />
           </Form.Item>
         </div>
         <Divider>

@@ -4,15 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import EditIndividualForm from "./EditIndividualForm";
 import EditBusinessForm from "./EditBusinessForm";
 
-const EditShareholderForm = ({ 
+const EditShareholderForm = ({
   shareholder,
-  onClose 
-}: { 
+  onClose,
+}: {
   shareholder: HM.Shareholder;
   onClose: () => void;
 }) => {
   const [segment, setSegment] = useState<"Individual" | "Business">(
-    shareholder.type as "Individual" | "Business"
+    (shareholder.type as "Individual" | "Business") || "Individual"
   );
   const ref = useRef<HTMLDivElement>(null);
 

@@ -74,10 +74,20 @@ const AddShareholders = ({
     setEditingShareholder(shareholder);
   }, []);
 
-  const canAddShareholders = useCallback(
-    () => Number(personalDetails?.percentage_stake) < 100,
-    [personalDetails]
-  );
+  const canAddShareholders = useMemo(() => {
+    // Don't allow adding shareholders if user has 100% stake
+    if (
+      Number(personalDetails?.percentage_stake) === 100 &&
+      shareholders?.length === 1
+    ) {
+      return false;
+    }
+    // Don't allow more than 4 shareholders
+    if (shareholders?.length >= 4) {
+      return false;
+    }
+    return true;
+  }, [personalDetails, shareholders]);
 
   const checkShareholderProgress = async () => {
     const progress = await getShareholderProgress();
@@ -142,21 +152,27 @@ const AddShareholders = ({
         <AddButton
           shareholder={shareholders[0] || null}
           key={1}
-          canAddShareholder={canAddShareholders()}
+          canAddShareholder={canAddShareholders}
           showForm={showForm}
           onEdit={handleEdit}
         />
 
         <AddButton
           shareholder={shareholders[1] || null}
-          canAddShareholder={canAddShareholders()}
+          canAddShareholder={
+            canAddShareholders &&
+            Number(personalDetails?.percentage_stake) < 100
+          }
           key={2}
           showForm={showForm}
           onEdit={handleEdit}
         />
         <AddButton
           shareholder={shareholders[2] || null}
-          canAddShareholder={canAddShareholders()}
+          canAddShareholder={
+            canAddShareholders &&
+            Number(personalDetails?.percentage_stake) < 100
+          }
           key={3}
           showForm={showForm}
           onEdit={handleEdit}
@@ -164,7 +180,10 @@ const AddShareholders = ({
         <AddButton
           shareholder={shareholders[3] || null}
           key={4}
-          canAddShareholder={canAddShareholders()}
+          canAddShareholder={
+            canAddShareholders &&
+            Number(personalDetails?.percentage_stake) < 100
+          }
           showForm={showForm}
           onEdit={handleEdit}
         />

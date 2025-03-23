@@ -376,6 +376,14 @@ declare global {
       region: string;
       shareholding_percentage: string;
       authorized_signatory: string;
+      political_exposed_person: string | undefined;
+      position_held: string | undefined;
+      country_of_pep: string | undefined;
+      related_pep: string | undefined;
+      name_of_pep: string | undefined;
+      relationship_with_pep: string | undefined;
+      political_position: string | undefined;
+      country_position_held: string | undefined;
       documents: {
         data: {
           document_type: string;
