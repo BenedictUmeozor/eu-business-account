@@ -6,7 +6,7 @@ const TermsAndConditions = () => {
           Terms & Conditions
         </h3>
         <p className="text-grey-500">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+          Please read these terms and conditions carefully before using our services.
         </p>
       </header>
       <div className="space-y-1">

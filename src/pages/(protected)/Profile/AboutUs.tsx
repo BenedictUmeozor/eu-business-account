@@ -4,7 +4,7 @@ const AboutUs = () => {
       <header className="space-y-1">
         <h3 className="text-lg font-semibold text-grey-700">About Us</h3>
         <p className="text-grey-500">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+          Learn more about HelloMe Money and our mission to simplify global financial services.
         </p>
       </header>
       <div className="space-y-1">

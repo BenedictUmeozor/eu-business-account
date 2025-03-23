@@ -316,7 +316,7 @@ const AssetLineChart = () => {
           <div className="flex items-center gap-2">
             <h5 className="text-2xl text-grey-700 font-bold">
               {fullInfo?.currencySymbol}
-              {balance?.amount || "12,444.00"}
+              {balance?.amount || "0.00"}
             </h5>
             <Select
               value={selected}

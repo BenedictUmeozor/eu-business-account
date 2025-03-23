@@ -4,7 +4,7 @@ const PrivacyPolicy = () => {
       <header className="space-y-1">
         <h3 className="text-lg font-semibold text-grey-700">Privacy Policy</h3>
         <p className="text-grey-500">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+          Information about how we collect, use, and protect your personal data.
         </p>
       </header>
       <div className="space-y-1">

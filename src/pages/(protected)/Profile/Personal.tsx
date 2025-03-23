@@ -65,7 +65,7 @@ const Personal = () => {
           Personal Details
         </h3>
         <p className="text-grey-500">
-          Lorem ipsum dolor text will appear here for now
+          View and manage your personal information details
         </p>
       </header>
       {isPending || isLoading ? (
