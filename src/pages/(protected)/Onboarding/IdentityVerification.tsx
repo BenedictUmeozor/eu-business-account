@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "antd";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import { CheckCircleIcon, IdCardIcon } from "lucide-react";
@@ -8,10 +8,16 @@ const IdentityVerfication = ({ next }: { next: () => void }) => {
   const [hasUploaded, setHasUploaded] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
+  const ref = useRef<HTMLDivElement>(null);
+
   const nextAction = useCallback(() => {
     setHasUploaded(true);
     setShowForm(false);
   }, []);
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [showForm]);
 
   if (showForm)
     return (
@@ -19,7 +25,7 @@ const IdentityVerfication = ({ next }: { next: () => void }) => {
     );
 
   return (
-    <section className="h-full w-full space-y-8 p-8 ">
+    <div ref={ref} className="h-full w-full space-y-8 p-8 ">
       <div className="space-y-8">
         <HeaderTitle
           headerDescription="Select one preferred means of identification"
@@ -34,7 +40,8 @@ const IdentityVerfication = ({ next }: { next: () => void }) => {
         <section className="grid grid-cols-2 gap-4">
           <div
             className="border border-solid border-grey-200 rounded-lg cursor-pointer p-3 flex items-center gap-1"
-            role="button" onClick={() => setShowForm(true)}>
+            role="button"
+            onClick={() => setShowForm(true)}>
             <div className="flex items-center gap-2">
               <div className="bg-primary-50 w-9 aspect-square rounded-full grid place-items-center">
                 <IdCardIcon className="w-5 h-5 text-primary" />
@@ -85,7 +92,7 @@ const IdentityVerfication = ({ next }: { next: () => void }) => {
           <img src="/images/sumsub.png" alt="sumsub" className="w-32" />
         </div>
       </footer> */}
-    </section>
+    </div>
   );
 };
 export default memo(IdentityVerfication);

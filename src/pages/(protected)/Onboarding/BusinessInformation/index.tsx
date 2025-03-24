@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import HeaderTitle from "@/components/ui/HeaderTitle";
 import clsx from "clsx";
 import SecondForm from "./SecondForm";
@@ -13,8 +13,14 @@ const BusinessInformation = ({
 }) => {
   const [showSecondForm, setShowSecondForm] = useState(false);
 
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [showSecondForm]);
+
   return (
-    <div className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
+    <div ref={ref} className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
       <header className="flex items-center justify-between">
         <HeaderTitle
           headerDescription="Tell us more about your business"
