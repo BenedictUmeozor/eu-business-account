@@ -16,7 +16,7 @@ const AuthorizationPin = ({ next }: { next: () => void }) => {
       next();
     },
     onError: error => {
-      getErrorMessage(error);
+      message.error(getErrorMessage(error));
     },
   });
 
