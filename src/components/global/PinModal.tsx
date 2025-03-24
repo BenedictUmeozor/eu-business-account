@@ -38,7 +38,7 @@ const PinModal = forwardRef<PinRefObject, Props>(
           <header className="space-y-1">
             <h2 className="text-grey-700 text-xl font-semibold">{title}</h2>
             <p className="text-sm text-grey-600">
-              Enter your four digit passcode to continue
+              Enter your six digit passcode to continue
             </p>
           </header>
           <Form form={form} onFinish={onFinish} className="space-y-10">
@@ -46,7 +46,7 @@ const PinModal = forwardRef<PinRefObject, Props>(
               name="pin"
               className="w-56 mx-auto"
               rules={[{ required: true, message: "Passcode is required" }]}>
-              <Input.OTP length={4} style={{ width: "100%" }} />
+              <Input.OTP length={6} size="large" />
             </Form.Item>
             <div className="flex flex-col items-center justify-center gap-6">
               <Button

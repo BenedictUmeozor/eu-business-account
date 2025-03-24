@@ -7,8 +7,6 @@ import PersonalInfo from "./PersonalInfo";
 import ProofOfIdentity from "./ProofOfIdentity";
 import { Link } from "react-router";
 import AddShareholders from "./Shareholder";
-import { useAppDispatch } from "@/hooks";
-import { setOnboardingStatus } from "@/lib/redux/slices/session";
 
 const PAGES = [
   {
@@ -34,7 +32,6 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
   const [showLastPage, setShowLastPage] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [form] = Form.useForm();
-  const dispatch = useAppDispatch();
 
   const next = useCallback(() => {
     if (selectedPage === 3) {
@@ -52,7 +49,6 @@ const Review = ({ nextAction }: { nextAction: () => void }) => {
   }, [selectedPage]);
 
   const onFinish = () => {
-    dispatch(setOnboardingStatus());
     nextAction();
   };
 

@@ -46,7 +46,7 @@ const AuthorizationPin = ({ next }: { next: () => void }) => {
             <p className="text-grey-600">Kindly enter your preferred pin</p>
           }
           rules={[{ required: true, message: "Please enter your passcode" }]}>
-          <Input.OTP length={4} style={{ width: "100%" }} />
+          <Input.OTP length={6} style={{ width: "100%" }} />
         </Form.Item>
         <Button
           type="primary"

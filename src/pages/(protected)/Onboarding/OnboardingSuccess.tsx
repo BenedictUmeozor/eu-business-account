@@ -1,9 +1,17 @@
+import { useAppDispatch } from "@/hooks";
+import { setOnboardingStatus } from "@/lib/redux/slices/session";
 import { Button } from "antd";
 import { memo } from "react";
 import { useNavigate } from "react-router";
 
 const OnboardSuccess = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch()
+
+  const handleClick = () => {
+    dispatch(setOnboardingStatus());
+    navigate("/dashboard")
+  }
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-8">
@@ -28,7 +36,7 @@ const OnboardSuccess = () => {
             className="w-48 text-base"
             shape="round"
             size="large"
-            onClick={() => navigate("/dashboard")}>
+            onClick={handleClick}>
             Go to Dashboard
           </Button>
         </div>
