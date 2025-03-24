@@ -63,6 +63,11 @@ const sessionSlice = createSlice({
   },
 });
 
-export const { setUser, setBusiness, clearSession, setOnboardingStatus } =
-  sessionSlice.actions;
+export const {
+  setUser,
+  setBusiness,
+  clearSession,
+  setOnboardingStatus,
+  setSignIn,
+} = sessionSlice.actions;
 export default sessionSlice.reducer;

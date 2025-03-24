@@ -30,7 +30,7 @@ const DoughnutChart = ({ currency }: { currency: HM.TransactionCurr }) => {
     if (!data || isPending) {
       return [
         { name: "Total money in", value: 0, color: Colors.positive },
-        { name: "Total money out", value: 0, color: Colors.negative },
+        { name: "Total money out", value: 0, color: Colors.pending },
       ];
     }
 
@@ -44,7 +44,7 @@ const DoughnutChart = ({ currency }: { currency: HM.TransactionCurr }) => {
 
     return [
       { name: "Total money in", value: moneyIn, color: Colors.positive },
-      { name: "Total money out", value: moneyOut, color: Colors.negative },
+      { name: "Total money out", value: moneyOut, color: Colors.pending },
     ];
   }, [data, isPending]);
 

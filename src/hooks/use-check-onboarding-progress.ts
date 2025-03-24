@@ -1,9 +1,9 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { message } from "antd";
 import useMutationAction from "./use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { getErrorMessage } from "@/utils";
-import { useAppDispatch } from ".";
+import { useAppDispatch, useAppSelector } from ".";
 import { clearSession, setOnboardingStatus } from "@/lib/redux/slices/session";
 
 // ProgressData interface represents the onboarding progress fields returned from the API
@@ -25,6 +25,8 @@ const allIsTruthy = (obj: Record<string, string> | null) =>
 const useCheckOnboardingProgress = (email?: string, path?: string) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const session = useAppSelector(state => state.session);
+  const { pathname } = useLocation();
 
   const sendOtpMutation = useMutationAction<
     HM.QueryResponse,
@@ -106,10 +108,15 @@ const useCheckOnboardingProgress = (email?: string, path?: string) => {
         return;
       }
 
-      console.log("final step");
-
       // If all steps are completed, set onboarding status to true
       dispatch(setOnboardingStatus());
+
+      if (pathname.includes("/login")) {
+        navigate("/confirm-passcode", {
+          state: { email: session?.user?.email },
+        });
+        return
+      }
 
       if (path) {
         navigate(path);

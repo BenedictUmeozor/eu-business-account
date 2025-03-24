@@ -29,13 +29,13 @@ const InternationalPayment = () => {
         <section className="space-y-4">
           {PAYMENT_TYPES_INTERNATIONAL.map(option => (
             <div
-              className="flex items-center gap-6 rounded-xl shadow p-5 bg-white cursor-pointer border-2 transition-all duration-200 ease-linear border-solid border-transparent hover:border-primary"
+              className="flex items-center gap-3 rounded-xl shadow p-5 bg-white cursor-pointer border-2 transition-all duration-200 ease-linear border-solid border-transparent hover:border-primary"
               key={option.title}
               onClick={() => handleNavigate(option.to, option?.comingSoon)}>
               <img
                 src={option.image}
                 alt={option.title}
-                className="w-20 aspect-square"
+                className="w-11 aspect-square"
               />
 
               <div className="space-y-1 flex-grow">

@@ -16,7 +16,6 @@ import Loader from "@/components/app/Loader";
 const RootLayout = () => {
   const { state } = useNavigation();
   const navigate = useNavigate();
-  // const dispatch = useAppDispatch();
   const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const session = useAppSelector(state => state.session);
@@ -29,7 +28,7 @@ const RootLayout = () => {
   const { checkProgress, isChecking: isCheckingProgress } =
     useCheckOnboardingProgress(session?.user?.email);
   const fromLogin = useMemo(
-    () => location.state?.fromLogin === "/login",
+    () => location.state?.from === "/login",
     [location.state]
   );
 
@@ -38,6 +37,17 @@ const RootLayout = () => {
       try {
         if (!session?.user) {
           navigate("/login", { replace: true });
+          return;
+        }
+
+        if (
+          !session?.signedIn?.signedIn &&
+          session?.user &&
+          onboardingStatus?.completed
+        ) {
+          navigate("/confirm-passcode", {
+            state: { email: session?.user?.email },
+          });
           return;
         }
 
@@ -62,18 +72,11 @@ const RootLayout = () => {
 
     checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user, fromLogin, onboardingStatus?.completed]);
+  }, [session?.user, fromLogin, onboardingStatus?.completed, session.signedIn]);
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [navigation.state, navigation.location?.pathname, params]);
-
-  // useEffect(() => {
-  //   if (!session?.signedIn?.signedIn && onboardingStatus?.completed) {
-  //     // dispatch(clearSession());
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [session.signedIn, onboardingStatus?.completed]);
 
   if (isChecking || isCheckingProgress || !session?.user) {
     return <Loader />;

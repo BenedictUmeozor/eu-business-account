@@ -7,13 +7,15 @@ interface Beneficiary {
 }
 
 interface SendMoneyOption {
-  title: string;
+  title: string | ((currency?: string) => string);
   description: string;
   image: string;
   to: string;
+  tag?: string;
 }
 
-interface PaymentType extends SendMoneyOption {
+interface PaymentType extends Omit<SendMoneyOption, "title"> {
+  title: string;
   comingSoon?: boolean;
 }
 
@@ -22,14 +24,14 @@ export const PAYMENT_TYPES: PaymentType[] = [
     title: "Single Payments",
     description:
       "Send money to a beneficiary globally with the click of a button. Zero hassles",
-    image: "/images/local-payment.png",
+    image: "/images/single.png",
     to: "/dashboard/send-money/local-payments/single",
   },
   {
     title: "Bulk Payments",
     description:
       "Your smart way to pay. Set up bulk transfers to family, teams or vendors globally. ",
-    image: "/images/international-payment.png",
+    image: "/images/bulk.png",
     to: "/dashboard/send-money/local-payments/bulk",
     comingSoon: true,
   },
@@ -40,14 +42,14 @@ export const PAYMENT_TYPES_INTERNATIONAL: PaymentType[] = [
     title: "Single Payments",
     description:
       "Send money to a beneficiary globally with the click of a button. Zero hassles",
-    image: "/images/local-payment.png",
+    image: "/images/single.png",
     to: "/dashboard/send-money/international-payments/single",
   },
   {
     title: "Bulk Payments",
     description:
       "Your smart way to pay. Set up bulk transfers to family, teams or vendors globally. ",
-    image: "/images/international-payment.png",
+    image: "/images/bulk.png",
     to: "/dashboard/send-money/international-payments/bulk",
     comingSoon: true,
   },
@@ -55,14 +57,15 @@ export const PAYMENT_TYPES_INTERNATIONAL: PaymentType[] = [
 
 export const SEND_MONEY_OPTIONS: SendMoneyOption[] = [
   {
-    title: "Local Payments",
+    title: (currency?: string) => `Local (${currency} - ${currency})`,
     description:
       "Need to make a local payment UK/EU/USA? Select this option for fast, secure transfers within your country!",
     image: "/images/local-payment.png",
     to: "/dashboard/send-money/local-payments",
+    tag: "Fast Payment",
   },
   {
-    title: "International Transfers",
+    title: "International",
     description:
       "Send money to your friends or family overseas effortlessly! Choose this option for quick and reliable international transfers.",
     image: "/images/international-payment.png",

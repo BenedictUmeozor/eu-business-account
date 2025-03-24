@@ -85,7 +85,7 @@ const GetStartedLayout = () => {
               <div className="space-y-6">
                 {APP_FEATURES.map((feature, index) => (
                   <div key={index} className="flex items-center gap-4">
-                    <img src="/images/steps.png" alt="image" className="w-10" />
+                    <img src={feature.image} alt="image" className="w-8" />
                     <div className="space-y-3 flex-grow">
                       <h5 className="text-base font-semibold">
                         {feature.title}

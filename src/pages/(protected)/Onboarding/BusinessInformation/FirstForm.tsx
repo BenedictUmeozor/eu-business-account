@@ -385,8 +385,8 @@ const FirstForm = ({
               label: (
                 <Space>
                   <img
-                    src={v.flag}
-                    alt={v.countryName}
+                    src={v?.flag}
+                    alt={v?.countryName}
                     className="w-6 h-6 rounded-full"
                   />
                   {v.countryName}
@@ -407,11 +407,11 @@ const FirstForm = ({
                   closeIcon={<XMarkIcon className="text-primary w-4" />}>
                   <Space>
                     <img
-                      src={country.flag}
-                      alt={country.countryCode}
+                      src={country?.flag}
+                      alt={country?.countryCode}
                       className="h-3 w-3 rounded-full"
                     />
-                    {country.countryCode}
+                    {country?.countryCode}
                   </Space>
                 </Tag>
               );
@@ -439,8 +439,8 @@ const FirstForm = ({
               label: (
                 <Space>
                   <img
-                    src={v.flag}
-                    alt={v.countryName}
+                    src={v?.flag}
+                    alt={v?.countryName}
                     className="w-6 h-6 rounded-full"
                   />
                   {v.countryName}
@@ -461,11 +461,11 @@ const FirstForm = ({
                   closeIcon={<XMarkIcon className="text-primary w-4" />}>
                   <Space>
                     <img
-                      src={country.flag}
-                      alt={country.countryCode}
+                      src={country?.flag}
+                      alt={country?.countryCode}
                       className="h-3 w-3 rounded-full"
                     />
-                    {country.countryCode}
+                    {country?.countryCode}
                   </Space>
                 </Tag>
               );

@@ -1,5 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router";
 import { SEND_MONEY_OPTIONS } from "./constants";
+import { Space, Tag } from "antd";
 
 const SendMoney = () => {
   const navigate = useNavigate();
@@ -22,21 +23,34 @@ const SendMoney = () => {
           </p>
         </header>
         <section className="space-y-4">
-          {SEND_MONEY_OPTIONS.map(option => (
+          {SEND_MONEY_OPTIONS.map((option, index) => (
             <div
               className="flex items-center gap-6 rounded-xl shadow p-5 bg-white cursor-pointer border-2 transition-all duration-200 ease-linear border-solid border-transparent hover:border-primary"
-              key={option.title}
+              key={
+                typeof option.title === "string"
+                  ? option.title
+                  : `option-${index}`
+              }
               onClick={() => handleNavigate(option.to)}>
               <img
                 src={option.image}
-                alt={option.title}
+                alt={"option"}
                 className="w-20 aspect-square"
               />
 
               <div className="space-y-1 flex-grow">
-                <h5 className="text-base text-grey-700 font-medium">
-                  {option.title}
-                </h5>
+                <Space size="large">
+                  <h5 className="text-base text-grey-700 font-medium">
+                    {typeof option.title === "function"
+                      ? option.title(searchParams.get("currency") || undefined)
+                      : option.title}
+                  </h5>
+                  {option?.tag && (
+                    <Tag className="rounded-md bg-primary-50 text-primary">
+                      {option.tag}
+                    </Tag>
+                  )}
+                </Space>
                 <p className="text-sm text-grey-600">{option.description}</p>
               </div>
             </div>

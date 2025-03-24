@@ -1,8 +1,7 @@
-import Loader from "@/components/app/Loader";
 import ENDPOINTS from "@/constants/endpoints";
-import { useAppSelector } from "@/hooks";
-import useCheckOnboardingProgress from "@/hooks/use-check-onboarding-progress";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
+import { setSignIn, setUser } from "@/lib/redux/slices/session";
 import { getErrorMessage } from "@/utils";
 import { Input, message, Segmented, Form, Button } from "antd";
 import { useEffect } from "react";
@@ -12,22 +11,17 @@ const ConfirmPasscode = () => {
   const [form] = Form.useForm();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const session = useAppSelector(state => state.session);
   const email = location.state?.email as string;
 
-  const { checkProgress, isChecking } = useCheckOnboardingProgress(
-    email,
-    "/dashboard"
-  );
-
-  const mutation = useSharedMutationAction<HM.QueryResponse>({
+  const mutation = useSharedMutationAction<HM.LoginResponse>({
     url: ENDPOINTS.PASSCODE_SIGNIN,
-    onSuccess: data => {
-      message.success(data.message);
-      navigate("", { state: { from: "/login" }, replace: true });
-      checkProgress.mutate({
-        business_token: session.business?.business_token,
-      });
+    onSuccess: response => {
+      message.success("Successful");
+      dispatch(setUser(response.data));
+      dispatch(setSignIn());
+      navigate("/dashboard", { state: { from: "/login" }, replace: true });
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -43,12 +37,11 @@ const ConfirmPasscode = () => {
       navigate("/login", { replace: true });
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user, email]);
 
   return (
     <section className="ml-auto space-y-6 rounded-xl bg-white p-6 shadow-lg lg:max-w-[466px]">
-      {isChecking && <Loader />}
       <Segmented
         options={[
           { label: "Personal", value: "Personal", disabled: true },
