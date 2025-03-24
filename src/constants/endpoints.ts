@@ -77,6 +77,7 @@ const ENDPOINTS = {
   REQUEST_ACCOUNT_CUURENCY: "/account-services/request_account_currency",
   GET_BALANCE: "/account-services/get_balances",
   FETCH_IBAN: "/account-services/fetch_iban",
+  GET_ACCOUNT_DETAILS: "/account-services/fetch_iban",
 
   // Others
   PARTNER_CURRENCY: "/payment-services/partner_currency",
