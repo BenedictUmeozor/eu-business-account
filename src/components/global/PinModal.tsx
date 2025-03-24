@@ -46,7 +46,7 @@ const PinModal = forwardRef<PinRefObject, Props>(
               name="pin"
               className="w-56 mx-auto"
               rules={[{ required: true, message: "Passcode is required" }]}>
-              <Input.OTP length={6} size="large" />
+              <Input.OTP length={4} style={{ width: "100%" }} />
             </Form.Item>
             <div className="flex flex-col items-center justify-center gap-6">
               <Button
