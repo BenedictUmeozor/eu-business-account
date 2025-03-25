@@ -123,7 +123,7 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
   };
 
   useEffect(() => {
-    if (fromAmount && formCurrency && toCurrency) {
+    if (fromAmount && formCurrency && toCurrency && Number(fromAmount) > 4) {
       rateMutation.reset();
 
       rateMutation.mutate({

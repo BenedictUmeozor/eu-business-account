@@ -1,6 +1,6 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { Button, Tag } from "antd";
+import { Button, Tag, Modal } from "antd";
 import Colors from "@/constants/colors";
 import {
   ArrowUpRightIcon,
@@ -70,6 +70,15 @@ const DoughnutChart = () => {
 
 const NoAccountTab = () => {
   const session = useAppSelector(state => state.session);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleViewAccountDetails = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+  };
 
   const currency = useMemo(() => {
     return countries.find(
@@ -111,7 +120,7 @@ const NoAccountTab = () => {
             className="bg-grey-50 text-grey"
             icon={<ArrowUpRightIcon className="w-4 h-4 text-grey" />}
             iconPosition="end"
-            disabled>
+            onClick={handleViewAccountDetails}>
             View Account Details
           </Button>
           <div className="flex items-center gap-4">
@@ -153,6 +162,13 @@ const NoAccountTab = () => {
       <div className="p-6 shadow rounded-md bg-white">
         <DoughnutChart />
       </div>
+      <Modal
+        title="Account Pending"
+        open={isModalVisible}
+        onCancel={handleModalClose}
+        footer={null}>
+        <p>Your account is currently pending.</p>
+      </Modal>
     </section>
   );
 };

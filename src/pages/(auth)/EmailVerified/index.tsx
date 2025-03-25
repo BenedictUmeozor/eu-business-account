@@ -33,7 +33,10 @@ const EmailVerified = () => {
       dispatch(setBusiness(response.business_data));
       dispatch(setUser(response.data));
 
-      navigate("", { state: { from: "/login" }, replace: true });
+      navigate("", {
+        state: { from: "/login", email: response.data.email },
+        replace: true,
+      });
       checkProgress.mutate({
         business_token: response.business_data.business_token,
       });
@@ -75,8 +78,6 @@ const EmailVerified = () => {
   if (isChecking) {
     return <Loader />;
   }
-
-  if (!email) return null;
 
   return (
     <section className="ml-auto space-y-6 rounded-xl bg-white p-6 pb-16 shadow-lg lg:max-w-[466px]">

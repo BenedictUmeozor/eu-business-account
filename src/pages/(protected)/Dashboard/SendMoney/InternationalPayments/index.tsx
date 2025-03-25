@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { PAYMENT_TYPES_INTERNATIONAL } from "../constants";
 import { message, Space, Tag } from "antd";
 
 const InternationalPayment = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const handleNavigate = (to: string, comingSoon?: boolean) => {
     if (comingSoon) {
@@ -31,7 +32,12 @@ const InternationalPayment = () => {
             <div
               className="flex items-center gap-3 rounded-xl shadow p-5 bg-white cursor-pointer border-2 transition-all duration-200 ease-linear border-solid border-transparent hover:border-primary"
               key={option.title}
-              onClick={() => handleNavigate(option.to, option?.comingSoon)}>
+              onClick={() =>
+                handleNavigate(
+                  `${option.to}?currency=${searchParams.get("currency")}`,
+                  option?.comingSoon
+                )
+              }>
               <img
                 src={option.image}
                 alt={option.title}

@@ -125,7 +125,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
     };
 
     useEffect(() => {
-      if (fromAmount && formCurrency && toCurrency) {
+      if (fromAmount && formCurrency && toCurrency && Number(fromAmount) > 4) {
         rateMutation.reset();
 
         rateMutation.mutate({

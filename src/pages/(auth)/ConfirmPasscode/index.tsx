@@ -19,7 +19,19 @@ const ConfirmPasscode = () => {
     url: ENDPOINTS.PASSCODE_SIGNIN,
     onSuccess: response => {
       message.success("Successful");
-      dispatch(setUser(response.data));
+      dispatch(
+        setUser({
+          user_token: session.user?.user_token ?? "",
+          fname: session.user?.fname ?? "",
+          lname: session.user?.lname ?? "",
+          email: session.user?.email ?? "",
+          country: session.user?.country ?? "",
+          account_type: session.user?.account_type ?? "",
+          is_existing: session.user?.is_existing,
+          existing_onboarding_status: session.user?.existing_onboarding_status,
+          jwt: response.data.jwt,
+        })
+      );
       dispatch(setSignIn());
       navigate("/dashboard", { state: { from: "/login" }, replace: true });
     },

@@ -1,25 +1,119 @@
-import { ArrowDownIcon } from "lucide-react";
+import { ArrowDownIcon, Loader2Icon } from "lucide-react";
 import { NumericFormat } from "react-number-format";
-import countries from "@/data/codes.json";
-import { Button, Input, Segmented, Select } from "antd";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Button, Input, Segmented, Select, message } from "antd";
+import { useEffect, useState, useMemo } from "react";
+import { useNavigate, useSearchParams } from "react-router";
+import ENDPOINTS from "@/constants/endpoints";
+import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
+import { getErrorMessage } from "@/utils";
+import usePartnerCurrency from "@/hooks/use-partner-currency";
+import { useAppSelector } from "@/hooks";
 
 const InternationalSinglePayments = () => {
+  const [searchParams] = useSearchParams();
+
   const [segment, setSegment] = useState(0);
   const [formAmount, setFormAmount] = useState("");
-  const [formCurrency, setFormCurrency] = useState("GBP");
-  const [toCurrency, setToCurrency] = useState("NGN");
+  const [toCurrency, setToCurrency] = useState<string>("GBP");
+  const [toAmount, setToAmount] = useState<number>();
+  const [indication, setIndication] = useState("");
+  const [showPromoInput, setShowPromoInput] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [currencySymbol, setCurrencySymbol] = useState<string>("");
+  const [toCurrencySymbol, setToCurrencySymbol] = useState<string>("");
+
   const navigate = useNavigate();
+  const balances = useAppSelector(state => state.accounts.balances);
+  const { currencies, loading } = usePartnerCurrency();
+
+  const currentBalance = useMemo(() => {
+    const balanceObj = balances?.find(
+      b => b.ccy === searchParams.get("currency")
+    );
+    return balanceObj?.amount || 0;
+  }, [balances, searchParams]);
 
   const handleClick = () => {
-    navigate("/dashboard/send-money/international-payments/single/select-beneficiary");
+    navigate(
+      "/dashboard/send-money/international-payments/single/select-beneficiary"
+    );
   };
 
+  const rateMutation = useSharedMutationAction({
+    url: ENDPOINTS.CONVERSION_INDICATIVE_RATE,
+    method: "POST",
+    invalidateQueries: ["conversions"],
+    onSuccess: (data: HM.IndicativeRate) => {
+      setIndication(data.indication);
+      setToAmount(data.target_amount);
+    },
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
+  const handleConversionRate = async () => {
+    rateMutation.reset();
+
+    if (formAmount && searchParams.get("currency") && toCurrency) {
+      await rateMutation.mutateAsync({
+        amount: formAmount,
+        source_currency: searchParams.get("currency"),
+        target_currency: toCurrency,
+      });
+    } else {
+      message.error("Please fill in all fields");
+    }
+  };
+
+  const togglePromoInput = () => {
+    setShowPromoInput(!showPromoInput);
+  };
+
+  const applyPromoCode = () => {
+    if (promoCode) {
+      message.success(`Promo code "${promoCode}" applied successfully!`);
+      setShowPromoInput(false);
+    } else {
+      message.error("Please enter a valid promo code");
+    }
+  };
+
+  useEffect(() => {
+    if (
+      formAmount &&
+      searchParams.get("currency") &&
+      toCurrency &&
+      Number(formAmount) > 4
+    ) {
+      rateMutation.reset();
+      rateMutation.mutate({
+        amount: formAmount,
+        source_currency: searchParams.get("currency"),
+        target_currency: toCurrency,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formAmount, searchParams, toCurrency]);
+
+  useEffect(() => {
+    const selectedFromCountry = currencies.find(
+      c => c.currencyCode === searchParams.get("currency")
+    );
+    const selectedToCountry = currencies.find(
+      c => c.currencyCode === toCurrency
+    );
+
+    if (selectedFromCountry) {
+      setCurrencySymbol(selectedFromCountry.currencySymbol);
+    }
+    if (selectedToCountry) {
+      setToCurrencySymbol(selectedToCountry.currencySymbol);
+    }
+  }, [searchParams, toCurrency, currencies]);
+
   return (
-    <div
-      className="flex items-center justify-center py-16
-  ">
+    <div className="flex items-center justify-center py-16">
       <div className="bg-white w-full shadow rounded-2xl py-5 px-4 max-w-[520px] space-y-8">
         <h3 className="text-xl text-grey-700 font-semibold">Send Money</h3>
         <section className="space-y-6">
@@ -29,7 +123,8 @@ const InternationalSinglePayments = () => {
                 <div className="flex items-center justify-between text-sm text-white">
                   <span>You send</span>
                   <span className="font-nunito font-medium">
-                    GBP Bal: £6,000,000
+                    {searchParams.get("currency")} Bal: {currencySymbol}
+                    {currentBalance.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -39,7 +134,7 @@ const InternationalSinglePayments = () => {
                       thousandSeparator={true}
                       decimalScale={2}
                       allowNegative={false}
-                      prefix="£"
+                      prefix={`${currencySymbol} `}
                       placeholder="Enter amount"
                       className="bg-transparent border-0 !text-lg text-white font-nunito placeholder:text-gray-400"
                       value={formAmount}
@@ -50,9 +145,9 @@ const InternationalSinglePayments = () => {
                     <Select
                       className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
                       style={{ backgroundColor: "#0B3E81", color: "white" }}
-                      value={formCurrency}
-                      onChange={value => setFormCurrency(value)}
-                      options={countries.map(c => ({
+                      value={searchParams.get("currency")}
+                      disabled
+                      options={currencies.map(c => ({
                         label: (
                           <div className="flex items-center gap-2 bg-transparent">
                             <img
@@ -61,12 +156,13 @@ const InternationalSinglePayments = () => {
                               className="h-6 w-6 rounded-full object-cover"
                             />
                             <span
-                              className={`${formCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
+                              className={`${searchParams.get("currency") === c.currencyCode ? "text-white" : "text-grey-700"}`}>
                               {c.currencyCode}
                             </span>
                           </div>
                         ),
                         value: c.currencyCode,
+                        disabled: c.currencyCode === toCurrency,
                       }))}
                     />
                   </div>
@@ -78,15 +174,21 @@ const InternationalSinglePayments = () => {
                 <span className="text-sm">Recipient gets</span>
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-medium font-nunito">
-                    ₦227,073
+                    {toAmount
+                      ? `${toCurrencySymbol}${toAmount.toLocaleString()}`
+                      : rateMutation.isPending
+                        ? "Calculating..."
+                        : `${toCurrencySymbol}0.00`}
                   </span>
                   <div className="w-28">
                     <Select
-                      className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
+                      className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg placeholder:!text-white"
                       style={{ backgroundColor: "#0B3E81", color: "white" }}
                       value={toCurrency}
                       onChange={value => setToCurrency(value)}
-                      options={countries.map(c => ({
+                      loading={loading}
+                      placeholder="Select One"
+                      options={currencies.map(c => ({
                         label: (
                           <div className="flex items-center gap-2 bg-transparent">
                             <img
@@ -101,17 +203,25 @@ const InternationalSinglePayments = () => {
                           </div>
                         ),
                         value: c.currencyCode,
+                        disabled:
+                          c.currencyCode === searchParams.get("currency"),
                       }))}
                     />
                   </div>
                 </div>
               </div>
             </div>
-            <div
+            <button
               className="cursor-pointer flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-400 transform hover:bg-secondary-500"
-              role="button">
-              <ArrowDownIcon className="w-5 h-5 text-white" />
-            </div>
+              role="button"
+              disabled={rateMutation.isPending}
+              onClick={handleConversionRate}>
+              {rateMutation.isPending ? (
+                <Loader2Icon className="w-5 h-5 text-white animate-spin" />
+              ) : (
+                <ArrowDownIcon className="w-5 h-5 text-white" />
+              )}
+            </button>
           </div>
 
           <div className="space-y-4">
@@ -149,7 +259,7 @@ const InternationalSinglePayments = () => {
                       Rate
                     </th>
                     <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
-                      £1 = ₦2,270.73
+                      {indication || `N/A`}
                     </td>
                   </tr>
                   <tr className="[&:not(:last-child)]:mb-3">
@@ -157,30 +267,55 @@ const InternationalSinglePayments = () => {
                       Payable Amount
                     </th>
                     <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
-                      £1,000
+                      {formAmount
+                        ? `${currencySymbol}${parseFloat(formAmount).toLocaleString()}`
+                        : `${currencySymbol}0`}
                     </td>
                   </tr>
-                  <tr className="[&:not(:last-child)]:mb-3">
-                    <th className="font-normal text-grey-500 text-base text-left w-2/3">
-                      Got a valid promo code?{" "}
-                      <Link to="#" className="text-primary underline">
-                        Enter here
-                      </Link>
-                    </th>
-                  </tr>
+                  {showPromoInput ? (
+                    <tr className="[&:not(:last-child)]:mb-3">
+                      <td colSpan={2}>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            placeholder="Enter promo code"
+                            value={promoCode}
+                            onChange={e => setPromoCode(e.target.value)}
+                            className="flex-grow"
+                          />
+                          <Button
+                            type="primary"
+                            size="middle"
+                            onClick={applyPromoCode}
+                            disabled={!promoCode}>
+                            Apply
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr className="[&:not(:last-child)]:mb-3">
+                      <th className="font-normal text-grey-500 text-base text-left w-2/3">
+                        Got a valid promo code?{" "}
+                        <button
+                          onClick={togglePromoInput}
+                          className="text-primary underline bg-transparent border-none p-0 cursor-pointer">
+                          Enter here
+                        </button>
+                      </th>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </section>
           </div>
         </section>
         <div className="flex items-center justify-center">
-          {" "}
           <Button
             type="primary"
             className="w-48 mx-auto"
             size="large"
             shape="round"
-            disabled={!formAmount}
+            disabled={!formAmount || rateMutation.isPending}
             onClick={handleClick}
             block>
             Next
