@@ -5,7 +5,6 @@ import { CURRENCIES } from "@/constants/currencies";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { formatPhoneNumber, getErrorMessage } from "@/utils";
-import { US_BANKS } from "@/constants";
 import useNgBanks from "@/hooks/use-ng-banks";
 import useResolveBankDetails from "@/hooks/use-resolve-bank-details";
 import useSepaCountries from "@/hooks/use-sepa-countries";
@@ -238,7 +237,10 @@ const IndividualForm = ({
           <></>
         )}
 
-        {(currency === "EUR" || currency === "USD") && (
+        {(currency === "EUR" ||
+          currency === "USD" ||
+          currency === "CAD" ||
+          currency === "AED") && (
           <Form.Item
             name="bic"
             label={
@@ -259,7 +261,10 @@ const IndividualForm = ({
           </Form.Item>
         )}
 
-        {(currency === "EUR" || currency === "USD") && (
+        {(currency === "EUR" ||
+          currency === "USD" ||
+          currency === "CAD" ||
+          currency === "AED") && (
           <Form.Item
             name="iban"
             label={
@@ -337,44 +342,42 @@ const IndividualForm = ({
           </>
         )}
 
-        {currency === "USD" && (
-          <>
-            <Form.Item
-              name="bank_name"
-              label={
-                <span className="text-sm text-grey-500 font-medium">
-                  Bank Name
-                </span>
-              }
-              rules={[{ required: true, message: "Bank name is required" }]}>
-              <Select
-                placeholder="Select Bank"
-                className="w-full"
-                options={US_BANKS}
-                showSearch
-                optionFilterProp="label"
-              />
-            </Form.Item>
-            <Form.Item
-              name="ben_city"
-              label={
-                <span className="text-sm text-grey-500 font-medium">City</span>
-              }
-              rules={[{ required: true, message: "City is required" }]}>
-              <Input placeholder="Enter City" className="w-full" />
-            </Form.Item>
-            <Form.Item
-              name="ben_address"
-              label={
-                <span className="text-sm text-grey-500 font-medium">
-                  Address
-                </span>
-              }
-              rules={[{ required: true, message: "Address is required" }]}>
-              <Input placeholder="Enter Address" className="w-full" />
-            </Form.Item>
-          </>
-        )}
+        {currency === "USD" ||
+          currency === "CAD" ||
+          (currency === "AED" && (
+            <>
+              <Form.Item
+                name="bank_name"
+                label={
+                  <span className="text-sm text-grey-500 font-medium">
+                    Bank Name
+                  </span>
+                }
+                rules={[{ required: true, message: "Bank name is required" }]}>
+                <Input placeholder="Enter Bank" className="w-full" />
+              </Form.Item>
+              <Form.Item
+                name="ben_city"
+                label={
+                  <span className="text-sm text-grey-500 font-medium">
+                    City
+                  </span>
+                }
+                rules={[{ required: true, message: "City is required" }]}>
+                <Input placeholder="Enter City" className="w-full" />
+              </Form.Item>
+              <Form.Item
+                name="ben_address"
+                label={
+                  <span className="text-sm text-grey-500 font-medium">
+                    Address
+                  </span>
+                }
+                rules={[{ required: true, message: "Address is required" }]}>
+                <Input placeholder="Enter Address" className="w-full" />
+              </Form.Item>
+            </>
+          ))}
 
         <PhoneNumberInput
           dialCodeName="phone_code"

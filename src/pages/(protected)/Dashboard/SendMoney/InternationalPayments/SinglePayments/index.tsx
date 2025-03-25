@@ -251,7 +251,7 @@ const InternationalSinglePayments = () => {
                     ) : quoteMutation.isPending ? (
                       <Loader2Icon className="h-4 w-4 animate-spin" />
                     ) : (
-                      `${toCurrencySymbol}0.00`
+                      `N/A`
                     )}
                   </span>
                   <div className="w-28">
