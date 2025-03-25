@@ -156,7 +156,8 @@ const InternationalSinglePayments = () => {
 
   const handleQuoteFn = async () => {
     if (Object.values(formData).every(val => Boolean(val))) {
-      runQuoteFunction();
+      quoteMutation.reset();
+      await quoteMutation.mutateAsync(formData);
     }
   };
 
