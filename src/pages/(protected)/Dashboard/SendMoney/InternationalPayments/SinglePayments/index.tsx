@@ -154,6 +154,12 @@ const InternationalSinglePayments = () => {
     await quoteMutation.mutateAsync(formData);
   };
 
+  const handleQuoteFn = async () => {
+    if (Object.values(formData).every(val => Boolean(val))) {
+      runQuoteFunction();
+    }
+  };
+
   useEffect(() => {
     if (Object.values(formData).every(val => Boolean(val))) {
       runQuoteFunction();
@@ -289,6 +295,7 @@ const InternationalSinglePayments = () => {
             <button
               className="cursor-pointer flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-400 transform hover:bg-secondary-500"
               role="button"
+              onClick={handleQuoteFn}
               disabled={quoteMutation.isPending}>
               {quoteMutation.isPending ? (
                 <Loader2Icon className="w-5 h-5 text-white animate-spin" />
