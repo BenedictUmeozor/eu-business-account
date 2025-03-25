@@ -118,7 +118,7 @@ const ConversionsPage = () => {
       dataIndex: "reference",
       key: "reference",
       className: "text-grey-500 text-sm",
-      render: () => "HLM33140001",
+      render: (_, record) => record.reference,
     },
     {
       title: "Currency pair",
