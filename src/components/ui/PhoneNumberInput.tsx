@@ -94,6 +94,7 @@ const PhoneNumberInput = ({
               dropdownStyle={{ minWidth: "200px" }}
               onChange={handleCodeChange}
               value={dialCode}
+              virtual={false}
               options={countries.map(c => ({
                 label: (
                   <div className="flex items-center gap-2">

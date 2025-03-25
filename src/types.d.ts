@@ -362,6 +362,42 @@ declare global {
       };
     }
 
+    interface GeneratedQuote {
+      status: string;
+      message: string;
+      reference: string;
+      type: string;
+      source: {
+        currency: string;
+        amount: number;
+      };
+      target: {
+        currency: string;
+        amount: number;
+      };
+      rates: {
+        rate: number;
+        human_readable_rate: number;
+        default_rate: number;
+        mark_up: number;
+        definition: string;
+      };
+      commission: {
+        amount: number;
+        currency: string;
+      };
+      payable: {
+        amount_payable: number;
+        currency: string;
+      };
+      country: {
+        source: string;
+        target: string;
+      };
+      store_date: string;
+      expiry: string;
+    }
+
     interface Shareholder {
       shareholder_token: string;
       type: string;
@@ -392,6 +428,12 @@ declare global {
           filepath: string;
         }[];
       };
+    }
+
+    interface Country {
+      country: string;
+      iso: string;
+      currency: string;
     }
 
     interface UploadedDocuments {

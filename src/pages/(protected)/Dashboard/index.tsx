@@ -1,5 +1,4 @@
 import { Button, Card, Skeleton, Tabs, TabsProps } from "antd";
-import BalanceInfo from "./BalanceInfo";
 import { useMemo, useRef } from "react";
 import Transactions from "./Transactions";
 import AssetLineChart from "./LineChart";
@@ -39,7 +38,6 @@ const Dashboard = () => {
 
   return (
     <section className="space-y-6">
-      <BalanceInfo />
       {currencyLoading ? (
         <Skeleton active />
       ) : (

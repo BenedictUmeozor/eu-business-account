@@ -88,6 +88,17 @@ const ENDPOINTS = {
   CHANGE_PIN: "/profile/change_pin",
   FETCH_USER_SECURITY_QUESTIONS: "/profile/fetch_security_questions",
   GET_CUSTOMER_PROFILE: "/profile/customer_profile",
+
+  // International Payments
+  REMITTER_SOURCE: "/remitter/remittance_source",
+  REMITTER_DESTINATION: "/remitter/remittance_destinations",
+  REMITTER_PAYMENT_METHODS: "/remitter/payment_method",
+  REMITTER_DELIVERY_METHODS: "/remitter/delivery_method",
+  REMITTER_SOURCE_OF_FUNDS: "/remitter/source_of_funds",
+  REMITTER_TRANSFER_PURPOSE: "/remitter/transfer_purpose",
+
+  GENERATE_QUOTE: "/payment-services/fx_qoute",
+  LOCK_QUOTE: "/payment-services/lock_qoute", // Returns the reference
 };
 
 export default ENDPOINTS;
