@@ -141,7 +141,10 @@ const App = () => {
                   path="hellome-money-payment/complete"
                   lazy={CompletePayment}
                 />
-                <Route path="transaction-progress" lazy={TransactionProgress} />
+                <Route
+                  path="transaction-progress/:reference"
+                  lazy={TransactionProgress}
+                />
               </Route>
             </Route>
           </Route>

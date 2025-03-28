@@ -64,6 +64,7 @@ const ENDPOINTS = {
   FETCH_BENEFICIARY_BY_CURRENCY: "/account-services/beneficiary_by_currency",
   BANK_LIST: "/account-services/bank_list",
   RESOLVE_BANK_DETAILS: "/account-services/resolve_bank_details",
+  FETCH_BENEFICIARY: "/account-services/fetch_beneficiary",
 
   // Payments
   REGISTER_DEVICE: "/customer-services/register_device_web",
@@ -78,6 +79,7 @@ const ENDPOINTS = {
   GET_BALANCE: "/account-services/get_balances",
   FETCH_IBAN: "/account-services/fetch_iban",
   GET_ACCOUNT_DETAILS: "/account-services/fetch_iban",
+  GET_ALL_ACCOUNT_CURRENCIES: "/account-services/client_currency_international",
 
   // Others
   PARTNER_CURRENCY: "/payment-services/partner_currency",
@@ -92,10 +94,13 @@ const ENDPOINTS = {
   // International Payments
   REMITTER_SOURCE: "/remitter/remittance_source",
   REMITTER_DESTINATION: "/remitter/remittance_destinations",
-  REMITTER_PAYMENT_METHODS: "/remitter/payment_method",
+  REMITTER_PAYMENT_METHODS: "/remitter/payment_method_international",
   REMITTER_DELIVERY_METHODS: "/remitter/delivery_method",
   REMITTER_SOURCE_OF_FUNDS: "/remitter/source_of_funds",
   REMITTER_TRANSFER_PURPOSE: "/remitter/transfer_purpose",
+  PROCESS_REMITTANCE: "/remitter/process_request",
+  SELECT_PAYMENT_ACCOUNT: "/remitter/select_account_payment",
+  REMITTER_INITIATE_HELLOMEMONEY_PAYMENT: "/remitter/initiate_hellome_payment",
 
   GENERATE_QUOTE: "/payment-services/fx_qoute",
   LOCK_QUOTE: "/payment-services/lock_qoute", // Returns the reference

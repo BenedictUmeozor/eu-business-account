@@ -52,16 +52,16 @@ const AssetLineChart = () => {
   const { data, fetchData, timeRange, setTimeRange, isPending } =
     useTransactionAnalytics();
 
-  const balances = useAppSelector(state => state.accounts.balances);
+  const accounts = useAppSelector(state => state.accounts.accounts);
 
   const fullInfo = useMemo(
     () => CURRENCIES.find(c => c.currencyCode === selected),
     [selected]
   );
 
-  const balance = useMemo(() => {
-    return balances?.find(bal => bal.ccy === selected);
-  }, [balances, selected]);
+  const account = useMemo(() => {
+    return accounts?.find(b => b.currency === selected);
+  }, [accounts, selected]);
 
   const chartData = useMemo(() => {
     if (!data?.length) return [];
@@ -197,11 +197,11 @@ const AssetLineChart = () => {
     const today = dayjs().format("DD MMM");
     const currentDateItem = result.find(item => item.date === today);
 
-    if (currentDateItem && balance?.amount) {
-      currentDateItem.amount = balance.amount;
+    if (currentDateItem && account?.balance?.amount) {
+      currentDateItem.amount = account.balance.amount;
       currentDateItem.change =
         startBalanceAfter !== 0
-          ? ((balance.amount - startBalanceAfter) /
+          ? ((account.balance.amount - startBalanceAfter) /
               Math.abs(startBalanceAfter)) *
             100
           : 0;
@@ -210,7 +210,7 @@ const AssetLineChart = () => {
     return result.sort(
       (a, b) => dayjs(a.date, "DD MMM").unix() - dayjs(b.date, "DD MMM").unix()
     );
-  }, [data, timeRange, balance?.amount]);
+  }, [data, timeRange, account?.balance?.amount]);
 
   useEffect(() => {
     if (!selected && currencies?.length) {
@@ -316,7 +316,7 @@ const AssetLineChart = () => {
           <div className="flex items-center gap-2">
             <h5 className="text-2xl text-grey-700 font-bold">
               {fullInfo?.currencySymbol}
-              {balance?.amount || "0.00"}
+              {account?.balance?.amount || "0.00"}
             </h5>
             <Select
               value={selected}

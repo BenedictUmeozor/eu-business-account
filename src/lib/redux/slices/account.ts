@@ -7,7 +7,7 @@ const balanceState = sessionStorage.getItem(HM_NSP.ACCOUNT_BALANCES);
 const currencyState = sessionStorage.getItem(HM_NSP.ACCOUNT_CURRENCIES);
 
 interface AccountState {
-  accounts: HM.AccountDetails | null;
+  accounts: HM.AccountsBalances[] | null;
   balances: HM.BalanceInfo[] | null;
   currencies: string[] | null;
 }
@@ -22,7 +22,7 @@ const accountSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
-    setAccounts: (state, action: PayloadAction<HM.AccountDetails>) => {
+    setAccounts: (state, action: PayloadAction<HM.AccountsBalances[]>) => {
       state.accounts = action.payload;
       sessionStorage.setItem(HM_NSP.ACCOUNT, JSON.stringify(action.payload));
     },

@@ -1,20 +1,58 @@
-import { Alert, Button } from "antd";
+import ENDPOINTS from "@/constants/endpoints";
+import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
+import { getErrorMessage } from "@/utils";
+import { Alert, Button, message } from "antd";
 import { CopyIcon } from "lucide-react";
+import { useEffect } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+
+interface LocationState
+  extends Omit<HM.ProcessRemitterResponse, "status" | "message"> {
+  trans_ref: string;
+}
 
 const CompletePayment = () => {
   const navigate = useNavigate();
+  const { state } = useLocation() as { state: LocationState };
 
   const handleCancel = () => {
-    navigate("/dashboard");
+    navigate("/dashboard", { state: null });
   };
 
-  const handleConfirm = () => {
-    navigate(
-      "/dashboard/send-money/international-payments/single/transaction-progress"
-    );
+  const handleConfirm = async () => {
+    await mutation.mutateAsync({});
   };
+
+  const mutation = useSharedMutationAction<any>({
+    url: ENDPOINTS.REMITTER_INITIATE_HELLOMEMONEY_PAYMENT,
+    onSuccess: () => {
+      navigate(
+        `/dashboard/send-money/international-payments/single/transaction-progress/${state.transaction_reference}`
+      );
+    },
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
+  useEffect(() => {
+    if (state) {
+      mutation.mutateAsync({
+        transaction_reference: state.transaction_reference,
+        payment_method: state.payment_method,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
+  useEffect(() => {
+    if (!state) {
+      navigate("/dashboard");
+      return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   return (
     <div className="flex items-center justify-center py-16">
@@ -102,6 +140,7 @@ const CompletePayment = () => {
             onClick={handleCancel}
             className="bg-primary-50 text-primary"
             size="large"
+            disabled={mutation.isPending}
             shape="round">
             Cancel Transfer
           </Button>
@@ -109,7 +148,8 @@ const CompletePayment = () => {
             type="primary"
             size="large"
             shape="round"
-            onClick={handleConfirm}>
+            onClick={handleConfirm}
+            loading={mutation.isPending}>
             Continue
           </Button>
         </div>

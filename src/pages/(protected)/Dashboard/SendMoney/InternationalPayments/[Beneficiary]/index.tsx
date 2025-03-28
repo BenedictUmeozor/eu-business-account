@@ -1,40 +1,125 @@
-import { useNavigate, useParams } from "react-router";
-import { BENEFICIARIES } from "../../constants";
-import { Button, Form, FormProps, Result, Select } from "antd";
-import { DotIcon } from "lucide-react";
+import { useLocation, useNavigate, useParams } from "react-router";
+import { Button, Form, FormProps, message, Result, Select } from "antd";
+
 import ENDPOINTS from "@/constants/endpoints";
-import { sentenceCase } from "change-case";
+import countries from "@/data/codes.json";
+import useRemitterPaymentMethods from "@/hooks/use-remitter-payment-methods";
+import { getErrorMessage } from "@/utils";
+import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
+import Beneficiary from "@/components/global/Beneficiary";
+import { useEffect, useMemo } from "react";
+import useRemitterDeliveryMethods from "@/hooks/use-remitter-delivery-methods";
+import useRemitterSourceOfFunds from "@/hooks/use-remitter-source-of-funds";
+import useRemitterTransferPurpose from "@/hooks/use-remitter-transfer-purpose";
 
 interface FormValues {
   payment_method: string;
   delivery_method: string;
   transfer_purpose: string;
+  source_of_funds: string;
 }
 
-const PAYMENT_METHODS = ["online_payment", "hellome_money_payment"];
+interface TransferPayload {
+  beneficiary_id: string;
+  qoute_reference: string; // reference from Lock quote
+  payment_method: string;
+  payment_country_code: string; // alpha 2 country code of country payment is coming from
+  delivery_method: string;
+  source_of_funds: string;
+  transfer_purpose: string;
+  promo_code?: string; // promotion code optional
+}
+
+interface NextLocationState
+  extends Omit<HM.ProcessRemitterResponse, "status" | "message"> {
+  trans_ref: string;
+}
+
+interface LocationState extends HM.GeneratedQuote {
+  promo_code: string;
+}
 
 const SendToInternationalBeneficiary = () => {
   const params = useParams() as { beneficiary: string };
   const navigate = useNavigate();
   const [form] = Form.useForm<FormValues>();
+  const { state } = useLocation() as { state: LocationState };
+
+  const { paymentMethods, paymentMethodsPending } = useRemitterPaymentMethods();
+  const { deliveryMethods, deliveryMethodsPending } =
+    useRemitterDeliveryMethods();
+  const { sourceOfFunds, sourceOfFundsPending } = useRemitterSourceOfFunds();
+  const { transferPurpose, transferPurposePending } =
+    useRemitterTransferPurpose();
+
+  const sourceCurrencySymbol = useMemo(() => {
+    return countries.find(
+      country => country.currencyCode === state.source.currency
+    )?.currencySymbol;
+  }, [state.source.currency]);
+
+  const targetCurrencySymbol = useMemo(() => {
+    return countries.find(
+      country => country.currencyCode === state.target.currency
+    )?.currencySymbol;
+  }, [state.target.currency]);
+
+  const benMutation = useSharedMutationAction<{ beneficiary: HM.Beneficiary }>({
+    url: ENDPOINTS.FETCH_SINGLE_BENEFICIARY,
+
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
+  const mutation = useSharedMutationAction<
+    HM.ProcessRemitterResponse,
+    TransferPayload
+  >({
+    url: ENDPOINTS.PROCESS_REMITTANCE,
+    onSuccess: data => {
+      const stateData: NextLocationState = {
+        payment_method: data.payment_method,
+        transaction_reference: data.transaction_reference,
+        trans_ref: state.reference,
+      };
+      navigate(
+        "/dashboard/send-money/international-payments/single/hellome-money-payment",
+        { state: stateData }
+      );
+    },
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
 
   const onFinish: FormProps<FormValues>["onFinish"] = values => {
-    if (values.payment_method === "online_payment") {
-      navigate(
-        "/dashboard/send-money/international-payments/single/online-payment"
-      );
-    } else {
-      navigate(
-        "/dashboard/send-money/international-payments/single/hellome-money-payment"
-      );
-    }
+    mutation.mutateAsync({
+      beneficiary_id: params.beneficiary,
+      qoute_reference: state.reference,
+      payment_method: values.payment_method,
+      payment_country_code: state.country.source,
+      delivery_method: values.delivery_method,
+      source_of_funds: values.source_of_funds,
+      transfer_purpose: values.transfer_purpose,
+      promo_code: state.promo_code,
+    });
   };
 
-  const beneficiary = BENEFICIARIES.find(
-    b => b.account_number === params.beneficiary
-  );
+  useEffect(() => {
+    if (!benMutation.data?.beneficiary) {
+      benMutation.mutateAsync({ beneficiary_id: params.beneficiary });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [benMutation.data?.beneficiary]);
 
-  if (!beneficiary) {
+  useEffect(() => {
+    if (!state) {
+      navigate("/dashboard");
+    }
+  }, [state, navigate]);
+
+  if (!benMutation.data?.beneficiary && !benMutation.isPending) {
     return (
       <div className="flex items-center justify-center py-16">
         <Result
@@ -69,7 +154,8 @@ const SendToInternationalBeneficiary = () => {
                   You send
                 </th>
                 <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
-                  £4.00
+                  {sourceCurrencySymbol}
+                  {state?.source.amount}
                 </td>
               </tr>
               <tr className="[&:not(:last-child)]:mb-3">
@@ -77,7 +163,8 @@ const SendToInternationalBeneficiary = () => {
                   Commission
                 </th>
                 <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
-                  £4.00
+                  {sourceCurrencySymbol}
+                  {state.commission.amount}
                 </td>
               </tr>
               <tr className="[&:not(:last-child)]:mb-3">
@@ -85,7 +172,8 @@ const SendToInternationalBeneficiary = () => {
                   Recipient gets
                 </th>
                 <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
-                  ₦227,073
+                  {targetCurrencySymbol}
+                  {state.target.amount}
                 </td>
               </tr>
               <tr className="[&:not(:last-child)]:mb-3">
@@ -93,7 +181,8 @@ const SendToInternationalBeneficiary = () => {
                   Payable Amount
                 </th>
                 <td className="font-nunito text-primary font-medium text-right w-1/2">
-                  £1,000
+                  {sourceCurrencySymbol}
+                  {state.source.amount}
                 </td>
               </tr>
             </tbody>
@@ -104,40 +193,13 @@ const SendToInternationalBeneficiary = () => {
           <p className="text-sm text-grey-600 font-medium">
             Beneficiary Details
           </p>
-          <div className="bg-primary-50/30 hover:bg-gray-50 px-3 py-3 rounded-xl cursor-pointer flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative flex items-center justify-center h-9 w-9 bg-primary-300 rounded-full uppercase text-white">
-                <span className="text-lg font-medium">
-                  {(beneficiary?.first_name?.[0] ?? "") +
-                    (beneficiary?.last_name?.[0] ?? "")}
-                </span>
-                <div className="flex items-center justify-center w-4 h-4 rounded-full border-2 border-solid border-white absolute bottom-0 right-0">
-                  <img
-                    src={ENDPOINTS.FLAG_URL(beneficiary?.country ?? "gb")}
-                    alt="flag"
-                    className="w-full h-full rounded-full"
-                  />
-                </div>
-              </div>
-              <div>
-                <p className="text-sm text-grey-600 font-medium">
-                  {beneficiary?.first_name} {beneficiary?.last_name}
-                </p>
-                <p className="text-sm text-grey-500 flex items-center gap-0.5">
-                  {beneficiary?.bank_name}
-                  <DotIcon className="w-5 h-5 text-grey-500" />
-                  {beneficiary?.account_number}
-                </p>
-              </div>
-            </div>
-          </div>
+          <Beneficiary beneficiary={benMutation.data?.beneficiary} />
         </div>
 
         <Form
           form={form}
           layout="vertical"
           autoComplete="off"
-          initialValues={{ delivery_method: "Account Deposit - Nigeria" }}
           onFinish={onFinish}
           labelCol={{ className: "text-sm text-grey-600 font-medium " }}>
           <Form.Item
@@ -152,9 +214,10 @@ const SendToInternationalBeneficiary = () => {
             ]}>
             <Select
               placeholder="Select payment method"
-              options={PAYMENT_METHODS.map(v => ({
-                label: sentenceCase(v),
-                value: v,
+              loading={paymentMethodsPending}
+              options={paymentMethods?.map(v => ({
+                label: v.name,
+                value: v.code,
               }))}
             />
           </Form.Item>
@@ -164,14 +227,17 @@ const SendToInternationalBeneficiary = () => {
               <p className="text-sm text-grey-600 font-medium">
                 Receipient Delivery Method
               </p>
-            }>
+            }
+            rules={[
+              { required: true, message: "Please select delivery method" },
+            ]}>
             <Select
               placeholder="Select recipient delivery method"
-              options={["Account Deposit - Nigeria"].map(v => ({
-                label: v,
-                value: v,
+              loading={deliveryMethodsPending}
+              options={deliveryMethods?.map(v => ({
+                label: v.name,
+                value: v.code,
               }))}
-              disabled
             />
           </Form.Item>
           <Form.Item
@@ -180,10 +246,36 @@ const SendToInternationalBeneficiary = () => {
               <p className="text-sm text-grey-600 font-medium">
                 Purpose of Transfer
               </p>
-            }>
+            }
+            rules={[
+              { required: true, message: "Please select transfer purpose" },
+            ]}>
             <Select
               placeholder="Select transfer purpose"
-              options={["Select"].map(v => ({ label: v, value: v }))}
+              loading={transferPurposePending}
+              options={transferPurpose?.map(v => ({
+                label: v.name,
+                value: v.code,
+              }))}
+            />
+          </Form.Item>
+          <Form.Item
+            name="source_of_funds"
+            label={
+              <p className="text-sm text-grey-600 font-medium">
+                Source of Funds
+              </p>
+            }
+            rules={[
+              { required: true, message: "Please select source of funds" },
+            ]}>
+            <Select
+              loading={sourceOfFundsPending}
+              placeholder="Select source of funds"
+              options={sourceOfFunds?.map(v => ({
+                label: v.name,
+                value: v.code,
+              }))}
             />
           </Form.Item>
           <Form.Item className="flex items-center justify-center">
@@ -191,6 +283,7 @@ const SendToInternationalBeneficiary = () => {
               type="primary"
               htmlType="submit"
               shape="round"
+              loading={mutation.isPending}
               size="large"
               className="w-48">
               Continue

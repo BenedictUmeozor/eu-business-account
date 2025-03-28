@@ -136,6 +136,15 @@ declare global {
       ibans: Record<string, string>;
     }
 
+    interface AccountsBalances {
+      currency: string;
+      balance: {
+        type: string;
+        amount: number;
+        ccy: string;
+      } | null;
+    }
+
     interface BalanceInfo {
       type: string;
       amount: number;
@@ -153,6 +162,13 @@ declare global {
     interface SepaCountry {
       country: string;
       iso: string;
+    }
+
+     interface ProcessRemitterResponse {
+      status: string;
+      message: string;
+      transaction_reference: string;
+      payment_method: string;
     }
 
     interface PartnerCurrency {

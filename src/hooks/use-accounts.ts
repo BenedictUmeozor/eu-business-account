@@ -12,15 +12,11 @@ function useAccounts() {
   );
 
   const mutation = useSharedMutationAction<{
-    account_details: HM.AccountDetails;
+    details: { currencies: HM.AccountsBalances[] };
   }>({
-    url: ENDPOINTS.GET_ACCOUNTS,
+    url: ENDPOINTS.GET_ALL_ACCOUNT_CURRENCIES,
     onSuccess: data => {
-      if (!Object.values(data.account_details).every(value => Boolean(value))) {
-        return;
-      } else {
-        dispatch(setAccounts(data.account_details));
-      }
+      dispatch(setAccounts(data.details.currencies));
     },
     // onError: error => {
     //   message.error(getErrorMessage(error));

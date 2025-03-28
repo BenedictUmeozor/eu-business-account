@@ -1,7 +1,7 @@
 import { Button, Form, FormProps, Input, message, Select, Spin } from "antd";
 import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CURRENCIES } from "@/constants/currencies";
+import nations from "@/data/codes.json";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { formatPhoneNumber, getErrorMessage } from "@/utils";
@@ -30,10 +30,14 @@ const IndividualForm = ({
   setOpen,
   currency,
   action,
+  isRemitter = false,
+  targetCountry,
 }: {
   setOpen: () => void;
   currency?: string;
   action?: () => Promise<void>;
+  isRemitter?: boolean;
+  targetCountry?: string;
 }) => {
   const [benName, setBenName] = useState<string>();
   const [form] = Form.useForm<FormValues>();
@@ -48,7 +52,7 @@ const IndividualForm = ({
   } = useResolveBankDetails();
 
   const mainCurrency = useMemo(() => {
-    return CURRENCIES.find(c => c.currencyCode === currency);
+    return nations.find(c => c.currencyCode === currency);
   }, [currency]);
 
   const { countries, loading: sepaLoading } = useSepaCountries();
@@ -86,7 +90,7 @@ const IndividualForm = ({
     mutation.mutate({
       ...values,
       type: "Personal",
-      category: "Banking",
+      category: isRemitter ? "Remitter" : "Banking",
       currency,
       bank_country: values.ben_country,
       phone_number: formatPhoneNumber(values.phone_number, values.phone_code),
@@ -94,8 +98,39 @@ const IndividualForm = ({
   };
 
   useEffect(() => {
-    const c = CURRENCIES.find(
-      currencyItem => currencyItem.currencyCode === currency
+    if (targetCountry) {
+      const country = nations.find(c => c.countryCode === targetCountry);
+      if (country) {
+        form.setFieldsValue({
+          ben_country: country.countryCode,
+          phone_code: country.callingCode,
+        });
+      }
+      return;
+    }
+
+    if (currency === "USD") {
+      form.setFieldsValue({ ben_country: "US" });
+      return;
+    }
+    if (currency === "GBP") {
+      form.setFieldsValue({ ben_country: "GB" });
+      return;
+    }
+    if (currency === "CAD") {
+      form.setFieldsValue({ ben_country: "CA" });
+      return;
+    }
+    if (currency === "AED") {
+      form.setFieldsValue({ ben_country: "AE" });
+      return;
+    }
+    if (currency === "EUR") {
+      form.setFieldsValue({ ben_country: "" });
+      return;
+    }
+    const c = nations.find(
+      countryItem => countryItem.currencyCode === currency
     );
     if (c && currency !== "EUR") {
       form.setFieldsValue({ ben_country: c.countryCode });
@@ -157,7 +192,7 @@ const IndividualForm = ({
           loading={sepaLoading && currency === "EUR"}
           options={
             currency !== "EUR"
-              ? CURRENCIES.map(c => ({
+              ? nations.map(c => ({
                   label: (
                     <div className="flex items-center gap-2">
                       <img
@@ -188,8 +223,9 @@ const IndividualForm = ({
                   value: c.iso,
                 }))
           }
-          disabled={currency !== "EUR"}
+          disabled={currency !== "EUR" || isRemitter}
           showSearch
+          virtual={false}
           allowClear
         />
       </Form.Item>

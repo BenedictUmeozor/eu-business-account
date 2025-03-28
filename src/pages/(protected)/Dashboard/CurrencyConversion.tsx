@@ -1,12 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Input, message, Modal, Select, Spin } from "antd";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { NumericFormat } from "react-number-format";
 import { ArrowDownIcon, Loader2Icon } from "lucide-react";
 import ENDPOINTS from "@/constants/endpoints";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
-import useAccountBalances from "@/hooks/use-account-balances";
 import usePartnerCurrency from "@/hooks/use-partner-currency";
+import useAccounts from "@/hooks/use-accounts";
 
 interface Props {
   currency: string;
@@ -17,15 +24,17 @@ interface Props {
 const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
   (props, ref) => {
     const [open, setOpen] = useState(false);
-    const [currencySymbol, setCurrencySymbol] = useState("£");
-    const [toCurrencySymbol, setToCurrencySymbol] = useState("$");
-    const [fromAmount, setFromAmount] = useState("");
-    const [formCurrency, setFormCurrency] = useState(props.currency.trim());
-    const [toCurrency, setToCurrency] = useState<string>("");
-    const [toAmount, setToAmount] = useState<number>();
+    const [formData, setFormData] = useState({
+      currencySymbol: "",
+      toCurrencySymbol: "",
+      fromAmount: "",
+      fromCurrency: props.currency.trim(),
+      toCurrency: "",
+      toAmount: undefined as number | undefined,
+    });
     const [indication, setIndication] = useState("");
 
-    const { fetchBalance } = useAccountBalances();
+    const { fetchAccounts } = useAccounts();
     const { currencies, loading } = usePartnerCurrency();
 
     useImperativeHandle(ref, () => ({
@@ -34,28 +43,32 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
 
     const handleCloseForm = () => {
       setOpen(false);
-      setFromAmount("");
-      setFormCurrency(props.currency.trim());
-      setToCurrency("");
-      setToAmount(undefined);
+      setFormData({
+        currencySymbol: "",
+        toCurrencySymbol: "",
+        fromAmount: "",
+        fromCurrency: props.currency.trim(),
+        toCurrency: "",
+        toAmount: undefined,
+      });
       setIndication("");
     };
 
     const handleFromCurrencyChange = (value: string) => {
-      setFormCurrency(value);
-      if (value === toCurrency) {
+      setFormData(prev => ({ ...prev, fromCurrency: value }));
+      if (value === formData.toCurrency) {
         const alternativeCurrency =
           currencies.find(c => c.currencyCode !== value)?.currencyCode || "USD";
-        setToCurrency(alternativeCurrency);
+        setFormData(prev => ({ ...prev, toCurrency: alternativeCurrency }));
       }
     };
 
     const handleToCurrencyChange = (value: string) => {
-      setToCurrency(value);
-      if (value === formCurrency) {
+      setFormData(prev => ({ ...prev, toCurrency: value }));
+      if (value === formData.fromCurrency) {
         const alternativeCurrency =
           currencies.find(c => c.currencyCode !== value)?.currencyCode || "GBP";
-        setFormCurrency(alternativeCurrency);
+        setFormData(prev => ({ ...prev, fromCurrency: alternativeCurrency }));
       }
     };
 
@@ -65,7 +78,8 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
       invalidateQueries: ["conversions"],
       onSuccess: (data: HM.IndicativeRate) => {
         setIndication(data.indication);
-        setToAmount(data.target_amount);
+
+        setFormData(prev => ({ ...prev, toAmount: data.target_amount }));
       },
       onError: error => {
         message.error(getErrorMessage(error));
@@ -83,41 +97,42 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
       url: ENDPOINTS.CONVERSION_RATE,
       method: "POST",
       invalidateQueries: ["conversions"],
-      onSuccess: async (data, variables) => {
+      onSuccess: async data => {
         message.success(data.message);
         handleCloseForm();
-        await Promise.all([
-          fetchBalance(variables.source_currency),
-          fetchBalance(variables.target_currency),
-        ]);
+        await fetchAccounts();
+        // await Promise.all([
+        //   fetchBalance(variables.source_currency),
+        //   fetchBalance(variables.target_currency),
+        // ]);
       },
       onError: error => {
         message.error(getErrorMessage(error));
       },
     });
 
-    const handleConvert = async () => {
-      if (fromAmount && formCurrency && toCurrency) {
+    const handleConvert = useCallback(async () => {
+      if (formData.fromAmount && formData.fromCurrency && formData.toCurrency) {
         changeMutation.reset();
 
         await changeMutation.mutateAsync({
-          amount: fromAmount,
-          source_currency: formCurrency,
-          target_currency: toCurrency,
+          amount: formData.fromAmount,
+          source_currency: formData.fromCurrency,
+          target_currency: formData.toCurrency,
         });
       } else {
         message.error("Please fill in all fields");
       }
-    };
+    }, [formData.fromAmount, formData.fromCurrency, formData.toCurrency]);
 
     const handleConversionRate = async () => {
       rateMutation.reset();
 
-      if (fromAmount && formCurrency && toCurrency) {
+      if (formData.fromAmount && formData.fromCurrency && formData.toCurrency) {
         await rateMutation.mutateAsync({
-          amount: fromAmount,
-          source_currency: formCurrency,
-          target_currency: toCurrency,
+          amount: formData.fromAmount,
+          source_currency: formData.fromCurrency,
+          target_currency: formData.toCurrency,
         });
       } else {
         message.error("Please fill in all fields");
@@ -125,41 +140,48 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
     };
 
     useEffect(() => {
-      if (fromAmount && formCurrency && toCurrency && Number(fromAmount) > 4) {
+      if (
+        formData.fromAmount &&
+        formData.fromCurrency &&
+        formData.toCurrency &&
+        Number(formData.fromAmount) > 4
+      ) {
         rateMutation.reset();
 
         rateMutation.mutate({
-          amount: fromAmount,
-          source_currency: formCurrency,
-          target_currency: toCurrency,
+          amount: formData.fromAmount,
+          source_currency: formData.fromCurrency,
+          target_currency: formData.toCurrency,
         });
       }
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fromAmount, formCurrency, toCurrency]);
+    }, [formData.fromAmount, formData.fromCurrency, formData.toCurrency]);
 
     useEffect(() => {
       const selectedFromCountry = currencies.find(
-        c => c.currencyCode === formCurrency
+        c => c.currencyCode === formData.fromCurrency
       );
       const selectedToCountry = currencies.find(
-        c => c.currencyCode === toCurrency
+        c => c.currencyCode === formData.toCurrency
       );
 
       if (selectedFromCountry) {
-        setCurrencySymbol(selectedFromCountry.currencySymbol);
+        setFormData(prev => ({
+          ...prev,
+          currencySymbol: selectedFromCountry.currencySymbol,
+        }));
       }
       if (selectedToCountry) {
-        setToCurrencySymbol(selectedToCountry.currencySymbol);
+        setFormData(prev => ({
+          ...prev,
+          toCurrencySymbol: selectedToCountry.currencySymbol,
+        }));
       }
-    }, [formCurrency, toCurrency, currencies]);
+    }, [formData.fromCurrency, formData.toCurrency, currencies]);
 
     useEffect(() => {
       if (open) {
         handleToCurrencyChange("USD");
       }
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
 
     return (
@@ -191,18 +213,23 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
                       thousandSeparator={true}
                       decimalScale={2}
                       allowNegative={false}
-                      prefix={`${currencySymbol} `}
+                      prefix={`${formData.currencySymbol} `}
                       placeholder="Enter amount"
                       className="bg-transparent border-0 !text-lg text-white font-nunito placeholder:text-gray-400"
-                      value={fromAmount}
-                      onValueChange={values => setFromAmount(values.value)}
+                      value={formData.fromAmount}
+                      onValueChange={values =>
+                        setFormData(prev => ({
+                          ...prev,
+                          fromAmount: values.value,
+                        }))
+                      }
                     />
                   </div>
                   <div className="w-28">
                     <Select
                       className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
                       style={{ backgroundColor: "#0B3E81", color: "white" }}
-                      value={formCurrency}
+                      value={formData.fromCurrency}
                       onChange={handleFromCurrencyChange}
                       loading={loading}
                       options={currencies.map(c => ({
@@ -214,13 +241,13 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
                               className="h-6 w-6 rounded-full object-cover"
                             />
                             <span
-                              className={`${formCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
+                              className={`${formData.fromCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
                               {c.currencyCode}
                             </span>
                           </div>
                         ),
                         value: c.currencyCode,
-                        disabled: c.currencyCode === toCurrency,
+                        disabled: c.currencyCode === formData.toCurrency,
                       }))}
                     />
                   </div>
@@ -232,14 +259,14 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
                 <span className="text-sm">Recipient gets</span>
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-medium font-nunito">
-                    {toAmount &&
-                      `${toCurrencySymbol} ${toAmount.toLocaleString()}`}
+                    {formData.toAmount &&
+                      `${formData.toCurrencySymbol} ${formData.toAmount.toLocaleString()}`}
                   </span>
                   <div className="w-28">
                     <Select
                       className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
                       style={{ backgroundColor: "#0B3E81", color: "white" }}
-                      value={toCurrency}
+                      value={formData.toCurrency}
                       onChange={handleToCurrencyChange}
                       loading={loading}
                       options={currencies.map(c => ({
@@ -251,13 +278,13 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
                               className="h-6 w-6 rounded-full object-cover"
                             />
                             <span
-                              className={`${toCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
+                              className={`${formData.toCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
                               {c.currencyCode}
                             </span>
                           </div>
                         ),
                         value: c.currencyCode,
-                        disabled: c.currencyCode === formCurrency,
+                        disabled: c.currencyCode === formData.fromCurrency,
                       }))}
                     />
                   </div>
@@ -291,7 +318,7 @@ const CurrencyConversion = forwardRef<HM.ModalRefObject, Props>(
               type="primary"
               shape="round"
               className="w-48"
-              disabled={!toAmount || rateMutation.isPending}
+              disabled={!formData.toAmount || rateMutation.isPending}
               loading={changeMutation.isPending}
               onClick={handleConvert}>
               Deposit

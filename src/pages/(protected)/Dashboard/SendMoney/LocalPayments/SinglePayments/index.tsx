@@ -17,7 +17,7 @@ import {
 import { useNavigate, useSearchParams } from "react-router";
 import VirtualList from "rc-virtual-list";
 import ENDPOINTS from "@/constants/endpoints";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AddBeneficiaryModal from "../../AddBeneficiaryModal";
 import { CURRENCIES } from "@/constants/currencies";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
@@ -75,7 +75,7 @@ const LocalSinglePayments = () => {
     }
   }, [searchParams, navigate]);
 
-  const getBeneficiaries = async () => {
+  const getBeneficiaries = useCallback(async () => {
     await beneMutation.mutateAsync({
       type: "Business",
       category: "Banking",
@@ -86,7 +86,8 @@ const LocalSinglePayments = () => {
       category: "Banking",
       currency: searchParams.get("currency"),
     });
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   useEffect(() => {
     (async () => {

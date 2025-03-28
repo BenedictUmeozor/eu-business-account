@@ -4,7 +4,6 @@ import { Button, Input, Segmented, Select, message } from "antd";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useAppSelector } from "@/hooks";
-import useRemitterSource from "@/hooks/use-remitter-source";
 import useRemitterDestinations from "@/hooks/use-remitter-destinations";
 import countries from "@/data/codes.json";
 import ENDPOINTS from "@/constants/endpoints";
@@ -30,8 +29,14 @@ interface GeneratedQuote {
   target_country: string;
 }
 
+interface LocationState extends HM.GeneratedQuote {
+  promo_code: string;
+}
+
 const InternationalSinglePayments = () => {
   const [searchParams] = useSearchParams();
+  const [showPromoCode, setShowPromoCode] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
   const [formData, setFormData] = useState({
     commission_type: "Commission",
     source_currency: "",
@@ -42,13 +47,39 @@ const InternationalSinglePayments = () => {
   });
 
   const navigate = useNavigate();
-  const balances = useAppSelector(state => state.accounts.balances);
-  const { sourceCountries, sourceCountriesPending } = useRemitterSource();
+  const accounts = useAppSelector(state => state.accounts.accounts);
   const {
     destinationCountries,
     destinationCountriesPending,
     getDestionationCurrencies,
   } = useRemitterDestinations();
+
+  const getSourceCountry = useCallback((currency: string) => {
+    if (currency === "EUR") {
+      return "EU";
+    }
+    if (currency === "USD") {
+      return "US";
+    }
+    if (currency === "GBP") {
+      return "GB";
+    }
+    if (currency === "NGN") {
+      return "NG";
+    }
+    if (currency === "DKK") {
+      return "DK";
+    }
+    return countries.find(c => c.currencyCode === currency)?.countryCode || "";
+  }, []);
+
+  const sourceCountries = useMemo(() => {
+    if (!accounts) return [];
+    return accounts.map(account => ({
+      currency: account.currency,
+      iso: getSourceCountry(account.currency),
+    }));
+  }, [accounts, getSourceCountry]);
 
   const delay = useDelayTimer();
 
@@ -65,10 +96,17 @@ const InternationalSinglePayments = () => {
   >({
     url: ENDPOINTS.LOCK_QUOTE,
     onSuccess: () => {
-      navigate(
-        "/dashboard/send-money/international-payments/single/select-beneficiary",
-        { state: { paymentData: quoteMutation.data } }
-      );
+      if (quoteMutation.data) {
+        navigate(
+          "/dashboard/send-money/international-payments/single/select-beneficiary",
+          {
+            state: {
+              ...quoteMutation.data,
+              promo_code: promoCode,
+            } as LocationState,
+          }
+        );
+      }
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -97,19 +135,11 @@ const InternationalSinglePayments = () => {
   }, [formData.target_currency]);
 
   const currentBalance = useMemo(() => {
-    const balanceObj = balances?.find(
-      b => b.ccy === searchParams.get("currency")
+    const balanceObj = accounts?.find(
+      b => b.currency === searchParams.get("currency")
     );
-    return balanceObj?.amount || 0;
-  }, [balances, searchParams]);
-
-  const getSourceCountry = useCallback(
-    (currency: string) => {
-      const country = sourceCountries.find(c => c.currency === currency);
-      return country ? country.iso || "" : "";
-    },
-    [sourceCountries]
-  );
+    return balanceObj?.balance?.amount || 0;
+  }, [accounts, searchParams]);
 
   const getDestinationCountry = useCallback(
     (currency: string) => {
@@ -162,6 +192,16 @@ const InternationalSinglePayments = () => {
   };
 
   useEffect(() => {
+    if (!formData.source_currency) {
+      setFormData(prev => ({
+        ...prev,
+        source_currency: searchParams.get("currency") || "",
+        source_country: getSourceCountry(searchParams.get("currency") || ""),
+      }));
+    }
+  }, [searchParams, getSourceCountry, formData.source_currency]);
+
+  useEffect(() => {
     if (Object.values(formData).every(val => Boolean(val))) {
       runQuoteFunction();
     }
@@ -206,7 +246,6 @@ const InternationalSinglePayments = () => {
                     <Select
                       className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
                       style={{ backgroundColor: "#0B3E81", color: "white" }}
-                      loading={sourceCountriesPending}
                       dropdownStyle={{
                         width: "100px",
                       }}
@@ -346,7 +385,10 @@ const InternationalSinglePayments = () => {
                       Rate
                     </th>
                     <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
-                      {quoteMutation.data?.rates.human_readable_rate || "N/A"}
+                      {quoteMutation.data?.rates.human_readable_rate
+                        ? toCurrencySymbol +
+                          quoteMutation.data?.rates.human_readable_rate
+                        : "N/A"}
                     </td>
                   </tr>
                   <tr className="[&:not(:last-child)]:mb-3">
@@ -354,19 +396,33 @@ const InternationalSinglePayments = () => {
                       Payable Amount
                     </th>
                     <td className="font-nunito text-grey-700 font-medium text-right w-1/2">
-                      {quoteMutation.data?.payable.amount_payable || "N/A"}
+                      {quoteMutation.data?.payable.amount_payable
+                        ? sourceCurrencySymbol +
+                          quoteMutation.data?.payable.amount_payable
+                        : "N/A"}
                     </td>
                   </tr>
                   <tr className="[&:not(:last-child)]:mb-3">
                     <th className="font-normal text-grey-500 text-base text-left w-2/3">
                       Got a valid promo code?{" "}
-                      <Button type="text" className="text-primary ">
+                      <Button
+                        onClick={() => setShowPromoCode(true)}
+                        type="text"
+                        className="text-primary ">
                         Enter here
                       </Button>
                     </th>
                   </tr>
                 </tbody>
               </table>
+              {showPromoCode && (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter Promo Code"
+                    onChange={e => setPromoCode(e.target.value)}
+                  />
+                </div>
+              )}
             </section>
           </div>
         </section>

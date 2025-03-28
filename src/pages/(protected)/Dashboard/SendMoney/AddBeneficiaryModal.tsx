@@ -11,7 +11,9 @@ import BusinessForm from "./BusinessForm";
 
 interface Props {
   currency: string | undefined | null;
+  isRemitter?: boolean;
   action?: () => Promise<void>;
+  targetCountry?: string;
 }
 
 const AddBeneficiaryModal = forwardRef<HM.ModalRefObject, Props>(
@@ -57,12 +59,16 @@ const AddBeneficiaryModal = forwardRef<HM.ModalRefObject, Props>(
                 setOpen={closeModal}
                 currency={props?.currency as string}
                 action={props?.action}
+                targetCountry={props.targetCountry}
+                isRemitter={props.isRemitter}
               />
             ) : (
               <BusinessForm
                 setOpen={closeModal}
                 currency={props?.currency as string}
                 action={props?.action}
+                targetCountry={props.targetCountry}
+                isRemitter={props.isRemitter}
               />
             )}
           </section>

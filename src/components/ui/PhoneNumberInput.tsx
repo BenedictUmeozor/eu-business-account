@@ -95,7 +95,7 @@ const PhoneNumberInput = ({
               onChange={handleCodeChange}
               value={dialCode}
               virtual={false}
-              options={countries.map(c => ({
+              options={countries.map((c, index) => ({
                 label: (
                   <div className="flex items-center gap-2">
                     <img
@@ -107,6 +107,7 @@ const PhoneNumberInput = ({
                   </div>
                 ),
                 value: c.callingCode,
+                key: index,
               }))}
               filterOption={(input, option) =>
                 (option?.value as string)

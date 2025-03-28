@@ -1,55 +1,61 @@
 import { Button, Input, message, Select, Spin } from "antd";
 import { ArrowDownIcon, Loader2Icon } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { NumericFormat } from "react-number-format";
 import ENDPOINTS from "@/constants/endpoints";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
-import useAccountBalances from "@/hooks/use-account-balances";
 import usePartnerCurrency from "@/hooks/use-partner-currency";
 import { useAppSelector } from "@/hooks";
+import useAccounts from "@/hooks/use-accounts";
 
 interface ConversionFormProps {
   onClose: () => void;
 }
 
 const ConversionForm = ({ onClose }: ConversionFormProps) => {
-  const [currencySymbol, setCurrencySymbol] = useState("£");
-  const [toCurrencySymbol, setToCurrencySymbol] = useState("$");
-  const [fromAmount, setFromAmount] = useState("");
-  const [formCurrency, setFormCurrency] = useState("GBP");
-  const [toCurrency, setToCurrency] = useState("USD");
-  const [toAmount, setToAmount] = useState<number>();
+  const [formData, setFormData] = useState({
+    currencySymbol: "",
+    toCurrencySymbol: "",
+    fromAmount: "",
+    fromCurrency: "GBP",
+    toCurrency: "USD",
+    toAmount: undefined as number | undefined,
+  });
   const [indication, setIndication] = useState("");
-  const balances = useAppSelector(state => state.accounts.balances);
+  const accounts = useAppSelector(state => state.accounts.accounts);
 
-  const { fetchBalance } = useAccountBalances();
+  const { fetchAccounts } = useAccounts();
   const { currencies, loading } = usePartnerCurrency();
 
   const handleCloseForm = () => {
     onClose();
-    setFromAmount("");
-    setFormCurrency("GBP");
-    setToCurrency("USD");
-    setToAmount(undefined);
+    setFormData({
+      currencySymbol: "",
+      toCurrencySymbol: "",
+      fromAmount: "",
+      fromCurrency: "GBP",
+      toCurrency: "USD",
+      toAmount: undefined,
+    });
     setIndication("");
   };
 
   const handleFromCurrencyChange = (value: string) => {
-    setFormCurrency(value);
-    if (value === toCurrency) {
+    setFormData(prev => ({ ...prev, fromCurrency: value }));
+    if (value === formData.toCurrency) {
       const alternativeCurrency =
         currencies.find(c => c.currencyCode !== value)?.currencyCode || "USD";
-      setToCurrency(alternativeCurrency);
+      setFormData(prev => ({ ...prev, toCurrency: alternativeCurrency }));
     }
   };
 
   const handleToCurrencyChange = (value: string) => {
-    setToCurrency(value);
-    if (value === formCurrency) {
+    setFormData(prev => ({ ...prev, toCurrency: value }));
+    if (value === formData.fromCurrency) {
       const alternativeCurrency =
         currencies.find(c => c.currencyCode !== value)?.currencyCode || "GBP";
-      setFormCurrency(alternativeCurrency);
+      setFormData(prev => ({ ...prev, fromCurrency: alternativeCurrency }));
     }
   };
 
@@ -59,7 +65,7 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
     invalidateQueries: ["conversions"],
     onSuccess: (data: HM.IndicativeRate) => {
       setIndication(data.indication);
-      setToAmount(data.target_amount);
+      setFormData(prev => ({ ...prev, toAmount: data.target_amount }));
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -77,13 +83,10 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
     url: ENDPOINTS.CONVERSION_RATE,
     method: "POST",
     invalidateQueries: ["conversions"],
-    onSuccess: async (data, variables) => {
+    onSuccess: async data => {
       message.success(data.message);
       handleCloseForm();
-      await Promise.all([
-        fetchBalance(variables.source_currency),
-        fetchBalance(variables.target_currency),
-      ]);
+      await fetchAccounts();
     },
     onError: error => {
       message.error(getErrorMessage(error));
@@ -91,31 +94,39 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
   });
 
   const currentCurrencyBalance = useMemo(() => {
-    return balances?.find(b => b.ccy === formCurrency)?.amount;
-  }, [balances, formCurrency]);
+    return (
+      accounts?.find(b => b.currency === formData.fromCurrency)?.balance
+        ?.amount || 0
+    );
+  }, [accounts, formData.fromCurrency]);
 
-  const handleConvert = async () => {
-    if (fromAmount && formCurrency && toCurrency) {
+  const handleConvert = useCallback(async () => {
+    if (formData.fromAmount && formData.fromCurrency && formData.toCurrency) {
       changeMutation.reset();
 
       await changeMutation.mutateAsync({
-        amount: fromAmount,
-        source_currency: formCurrency,
-        target_currency: toCurrency,
+        amount: formData.fromAmount,
+        source_currency: formData.fromCurrency,
+        target_currency: formData.toCurrency,
       });
     } else {
       message.error("Please fill in all fields");
     }
-  };
+  }, [
+    formData.fromAmount,
+    formData.fromCurrency,
+    formData.toCurrency,
+    changeMutation,
+  ]);
 
   const handleConversionRate = async () => {
-    if (fromAmount && formCurrency && toCurrency) {
-      rateMutation.reset();
+    rateMutation.reset();
 
+    if (formData.fromAmount && formData.fromCurrency && formData.toCurrency) {
       await rateMutation.mutateAsync({
-        amount: fromAmount,
-        source_currency: formCurrency,
-        target_currency: toCurrency,
+        amount: formData.fromAmount,
+        source_currency: formData.fromCurrency,
+        target_currency: formData.toCurrency,
       });
     } else {
       message.error("Please fill in all fields");
@@ -123,34 +134,49 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
   };
 
   useEffect(() => {
-    if (fromAmount && formCurrency && toCurrency && Number(fromAmount) > 4) {
+    if (
+      formData.fromAmount &&
+      formData.fromCurrency &&
+      formData.toCurrency &&
+      Number(formData.fromAmount) > 4
+    ) {
       rateMutation.reset();
 
       rateMutation.mutate({
-        amount: fromAmount,
-        source_currency: formCurrency,
-        target_currency: toCurrency,
+        amount: formData.fromAmount,
+        source_currency: formData.fromCurrency,
+        target_currency: formData.toCurrency,
       });
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromAmount, formCurrency, toCurrency]);
+  }, [formData.fromAmount, formData.fromCurrency, formData.toCurrency]);
 
   useEffect(() => {
     const selectedFromCountry = currencies.find(
-      c => c.currencyCode === formCurrency
+      c => c.currencyCode === formData.fromCurrency
     );
     const selectedToCountry = currencies.find(
-      c => c.currencyCode === toCurrency
+      c => c.currencyCode === formData.toCurrency
     );
 
     if (selectedFromCountry) {
-      setCurrencySymbol(selectedFromCountry.currencySymbol);
+      setFormData(prev => ({
+        ...prev,
+        currencySymbol: selectedFromCountry.currencySymbol,
+      }));
     }
     if (selectedToCountry) {
-      setToCurrencySymbol(selectedToCountry.currencySymbol);
+      setFormData(prev => ({
+        ...prev,
+        toCurrencySymbol: selectedToCountry.currencySymbol,
+      }));
     }
-  }, [formCurrency, toCurrency, currencies]);
+  }, [formData.fromCurrency, formData.toCurrency, currencies]);
+
+  useEffect(() => {
+    handleToCurrencyChange("USD");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="w-full bg-white shadow-sm rounded-lg p-5 mb-12 max-w-lg mx-auto">
@@ -162,12 +188,12 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
 
       <section className="space-y-4">
         <div className="h-64 relative p-3 bg-primary-50 rounded-xl flex flex-col gap-2">
-          <div className="h-32 bg-primary rounded-lg py-3 px-4 flex items-center justify-center">
+          <div className="h-32 bg-secondary-400 rounded-lg py-3 px-4 flex items-center justify-center">
             <div className="space-y-4 w-full">
               <div className="flex items-center justify-between text-sm text-white">
                 <span>From</span>
                 <span className="font-nunito font-medium">
-                  {formCurrency} Bal: {currencySymbol}
+                  {formData.fromCurrency} Bal: {formData.currencySymbol}
                   {currentCurrencyBalance}
                 </span>
               </div>
@@ -178,18 +204,23 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
                     thousandSeparator={true}
                     decimalScale={2}
                     allowNegative={false}
-                    prefix={`${currencySymbol} `}
+                    prefix={`${formData.currencySymbol} `}
                     placeholder="Enter amount"
                     className="bg-transparent border-0 !text-lg text-white font-nunito placeholder:text-gray-400"
-                    value={fromAmount}
-                    onValueChange={values => setFromAmount(values.value)}
+                    value={formData.fromAmount}
+                    onValueChange={values =>
+                      setFormData(prev => ({
+                        ...prev,
+                        fromAmount: values.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="w-28">
                   <Select
-                    className="!bg-[#0B3E81] antd-select-custom page text-white rounded-lg"
+                    className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
                     style={{ backgroundColor: "#0B3E81", color: "white" }}
-                    value={formCurrency}
+                    value={formData.fromCurrency}
                     onChange={handleFromCurrencyChange}
                     loading={loading}
                     options={currencies.map(c => ({
@@ -201,32 +232,32 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
                             className="h-6 w-6 rounded-full object-cover"
                           />
                           <span
-                            className={`${formCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
+                            className={`${formData.fromCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
                             {c.currencyCode}
                           </span>
                         </div>
                       ),
                       value: c.currencyCode,
-                      disabled: c.currencyCode === toCurrency,
+                      disabled: c.currencyCode === formData.toCurrency,
                     }))}
                   />
                 </div>
               </div>
             </div>
           </div>
-          <div className="h-32 bg-primary rounded-lg py-3 px-4 flex items-center justify-center">
+          <div className="h-32 bg-secondary-400 rounded-lg py-3 px-4 flex items-center justify-center">
             <div className="space-y-4 text-white w-full">
               <span className="text-sm">Recipient gets</span>
               <div className="flex items-center justify-between">
                 <span className="text-lg font-medium font-nunito">
-                  {toAmount &&
-                    `${toCurrencySymbol} ${toAmount.toLocaleString()}`}
+                  {formData.toAmount &&
+                    `${formData.toCurrencySymbol} ${formData.toAmount.toLocaleString()}`}
                 </span>
                 <div className="w-28">
                   <Select
-                    className="!bg-[#0B3E81] antd-select-custom page text-white rounded-lg"
+                    className="!bg-[#0B3E81] antd-select-custom text-white rounded-lg"
                     style={{ backgroundColor: "#0B3E81", color: "white" }}
-                    value={toCurrency}
+                    value={formData.toCurrency}
                     onChange={handleToCurrencyChange}
                     loading={loading}
                     options={currencies.map(c => ({
@@ -238,13 +269,13 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
                             className="h-6 w-6 rounded-full object-cover"
                           />
                           <span
-                            className={`${toCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
+                            className={`${formData.toCurrency === c.currencyCode ? "text-white" : "text-grey-700"}`}>
                             {c.currencyCode}
                           </span>
                         </div>
                       ),
                       value: c.currencyCode,
-                      disabled: c.currencyCode === formCurrency,
+                      disabled: c.currencyCode === formData.fromCurrency,
                     }))}
                   />
                 </div>
@@ -252,7 +283,7 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
             </div>
           </div>
           <button
-            className="cursor-pointer flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary transform hover:bg-secondary-500"
+            className="cursor-pointer flex items-center justify-center h-12 w-12 rounded-full z-10 border-[5px] border-solid border-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-400 transform hover:bg-secondary-500"
             role="button"
             disabled={changeMutation.isPending}
             onClick={handleConversionRate}>
@@ -278,7 +309,7 @@ const ConversionForm = ({ onClose }: ConversionFormProps) => {
             type="primary"
             shape="round"
             className="w-48"
-            disabled={!toAmount || rateMutation.isPending}
+            disabled={!formData.toAmount || rateMutation.isPending}
             loading={changeMutation.isPending}
             onClick={handleConvert}>
             Deposit
