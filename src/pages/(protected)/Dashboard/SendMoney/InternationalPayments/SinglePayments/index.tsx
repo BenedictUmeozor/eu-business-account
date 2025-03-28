@@ -46,6 +46,11 @@ const InternationalSinglePayments = () => {
     amount: "",
   });
 
+  const disabled = useMemo(
+    () => Object.values(formData).some(value => value === ""),
+    [formData]
+  );
+
   const navigate = useNavigate();
   const accounts = useAppSelector(state => state.accounts.accounts);
   const {
@@ -180,7 +185,7 @@ const InternationalSinglePayments = () => {
 
   const runQuoteFunction = async () => {
     quoteMutation.reset();
-    await delay(1000);
+    await delay(300);
     await quoteMutation.mutateAsync(formData);
   };
 
@@ -433,7 +438,7 @@ const InternationalSinglePayments = () => {
             size="large"
             shape="round"
             loading={lockMutation.isPending}
-            disabled={!formData.amount || quoteMutation.isPending}
+            disabled={!formData.amount || quoteMutation.isPending || disabled}
             onClick={handleClick}
             block>
             Next
