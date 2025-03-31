@@ -83,6 +83,21 @@ declare global {
       cancel_reason?: any;
     }
 
+    interface HelloMePaymentDetails {
+      status: string;
+      message: string;
+      data: {
+        account_name: string;
+        account_number: string;
+        sort_code: string;
+        amount_payable: number;
+        currency: string;
+        bank_address: string;
+        corresponding_bank: string;
+      };
+      reference_number: string;
+    }
+
     interface DocumentType {
       name: string;
       code: string;

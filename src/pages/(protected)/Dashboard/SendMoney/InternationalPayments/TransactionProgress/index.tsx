@@ -42,7 +42,7 @@ const TransactionProgress = () => {
   useEffect(() => {
     if (!mutation.data && params.reference) {
       mutation.mutateAsync({
-        transaction_reference: `params.reference`,
+        transaction_reference: params.reference,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

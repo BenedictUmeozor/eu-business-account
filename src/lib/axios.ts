@@ -57,7 +57,7 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401) {
       store.dispatch(clearSession());
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
 
     return Promise.reject(error);
@@ -75,7 +75,7 @@ sharedApi.interceptors.response.use(
     // });
     if (error.response?.status === 401) {
       store.dispatch(clearSession());
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
     return Promise.reject(error);
   }
