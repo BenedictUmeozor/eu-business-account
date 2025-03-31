@@ -9,16 +9,16 @@ const SendMoneyLayout = () => {
   const navigate = useNavigate();
   const accounts = useAppSelector(state => state.accounts.currencies);
 
-  const { accountsLoading } = useAccountContext();
+  const { currencyLoading } = useAccountContext();
 
   useEffect(() => {
-    if (!accountsLoading && !accounts?.length) {
+    if (!currencyLoading && !accounts?.length) {
       message.error("No accounts found. Please create an account first.");
       navigate("/dashboard");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountsLoading, accounts]);
+  }, [currencyLoading, accounts]);
 
   return (
     <section className="h-full grid grid-rows-[auto_1fr]">
