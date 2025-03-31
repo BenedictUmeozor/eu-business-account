@@ -438,7 +438,12 @@ const InternationalSinglePayments = () => {
             size="large"
             shape="round"
             loading={lockMutation.isPending}
-            disabled={!formData.amount || quoteMutation.isPending || disabled}
+            disabled={
+              !formData.amount ||
+              quoteMutation.isPending ||
+              disabled ||
+              !quoteMutation.data
+            }
             onClick={handleClick}
             block>
             Next

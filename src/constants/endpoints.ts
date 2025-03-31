@@ -101,6 +101,7 @@ const ENDPOINTS = {
   PROCESS_REMITTANCE: "/remitter/process_request",
   SELECT_PAYMENT_ACCOUNT: "/remitter/select_account_payment",
   REMITTER_INITIATE_HELLOMEMONEY_PAYMENT: "/remitter/initiate_hellome_payment",
+  PAYMENT_PROGRESS: "/remitter/payment_progress",
 
   GENERATE_QUOTE: "/payment-services/fx_qoute",
   LOCK_QUOTE: "/payment-services/lock_qoute", // Returns the reference

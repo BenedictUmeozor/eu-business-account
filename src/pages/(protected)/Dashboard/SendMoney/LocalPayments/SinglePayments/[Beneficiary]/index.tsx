@@ -11,7 +11,7 @@ import { useAppSelector } from "@/hooks";
 
 const SendToBeneficiary = () => {
   const params = useParams() as { beneficiary: string };
-  const balances = useAppSelector(state => state.accounts.balances);
+  const accounts = useAppSelector(state => state.accounts.accounts);
   const [beneficiary, setBeneficiary] = useState<HM.Beneficiary>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -23,7 +23,11 @@ const SendToBeneficiary = () => {
   const [amountError, setAmountError] = useState<string>("");
 
   const isFormValid = useMemo(
-    () => formData.amount && formData.description && formData.sortCode && !amountError,
+    () =>
+      formData.amount &&
+      formData.description &&
+      formData.sortCode &&
+      !amountError,
     [formData, amountError]
   );
 
@@ -33,19 +37,21 @@ const SendToBeneficiary = () => {
     );
   }, [searchParams]);
 
-  const currBalance = useMemo(() => {
-    return balances?.find(b => b.ccy === searchParams.get("currency"));
-  }, [balances, searchParams]);
+  const account = useMemo(() => {
+    return accounts?.find(acc => acc.currency === searchParams.get("currency"));
+  }, [accounts, searchParams]);
 
   // Validate amount doesn't exceed balance
   const validateAmount = (value: string) => {
-    if (!value || !currBalance) return;
-    
+    if (!value || !account?.balance?.amount) return;
+
     const numAmount = parseFloat(value);
-    const numBalance = currBalance.amount;
-    
-    if (numAmount > numBalance) {
-      setAmountError(`Amount exceeds your available balance of ${currency?.currencySymbol}${currBalance.amount}`);
+    const numBalance = account?.balance?.amount;
+
+    if (!!numBalance && numAmount > numBalance) {
+      setAmountError(
+        `Amount exceeds your available balance of ${currency?.currencySymbol}${account?.balance?.amount}`
+      );
     } else {
       setAmountError("");
     }
@@ -122,7 +128,7 @@ const SendToBeneficiary = () => {
           <div className="flex items-center justify-between bg-secondary-400 rounded-lg py-3 px-4">
             <span className="font-nunito text-white text-sm font-medium">
               {currency?.currencyCode} Bal: {currency?.currencySymbol}
-              {currBalance?.amount}
+              {account?.balance?.amount}
             </span>
             <div className="flex items-center justify-center gap-1 p-1 rounded-md bg-primary-500/40">
               <img
@@ -155,7 +161,9 @@ const SendToBeneficiary = () => {
               }}
               status={amountError ? "error" : ""}
             />
-            {amountError && <Alert message={amountError} type="error" showIcon />}
+            {amountError && (
+              <Alert message={amountError} type="error" showIcon />
+            )}
           </div>
         </div>
 

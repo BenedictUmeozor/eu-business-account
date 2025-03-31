@@ -12,7 +12,7 @@ import { getErrorMessage } from "@/utils";
 import Beneficiary from "@/components/global/Beneficiary";
 import Loader from "@/components/app/Loader";
 import { useAppSelector } from "@/hooks";
-import useAccountBalances from "@/hooks/use-account-balances";
+import useAccounts from "@/hooks/use-accounts";
 
 interface LocationState {
   amount: string;
@@ -29,8 +29,7 @@ const TransferSummary = () => {
   const [searchParams] = useSearchParams();
   const scaApproved = useRef(false);
   const session = useAppSelector(state => state.session);
-
-  const { fetchBalance } = useAccountBalances();
+  const { fetchAccounts } = useAccounts()
 
   const modalRef = useRef<PinRefObject>(null);
   const successRef = useRef<TransferSuccessRefObject>(null);
@@ -49,7 +48,7 @@ const TransferSummary = () => {
       message.success(data?.message);
       successRef.current?.setReqId(data?.request_id);
       successRef.current?.openModal();
-      await fetchBalance(searchParams.get("currency") as string);
+      await fetchAccounts();
     },
     onError: error => {
       message.error(getErrorMessage(error));

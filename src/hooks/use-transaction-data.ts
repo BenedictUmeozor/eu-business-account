@@ -1,6 +1,6 @@
 import ENDPOINTS from "@/constants/endpoints";
 import useSharedQueryAction from "./use-shared-query-action";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 export const useTransactionData = (type: string) => {
   // Maintain separate page states for each transaction type
@@ -60,12 +60,15 @@ export const useTransactionData = (type: string) => {
   });
 
   // Function to update page for the current transaction type
-  const updatePage = (newPage: number) => {
-    setPages(prev => ({
-      ...prev,
-      [type.toLowerCase()]: newPage,
-    }));
-  };
+  const updatePage = useCallback(
+    (newPage: number) => {
+      setPages(prev => ({
+        ...prev,
+        [type.toLowerCase()]: newPage,
+      }));
+    },
+    [type]
+  );
 
   return {
     data: data?.transaction?.data || [],

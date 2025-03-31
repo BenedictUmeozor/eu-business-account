@@ -74,6 +74,15 @@ declare global {
       };
     }
 
+    interface PaymentProgress {
+      status: string;
+      hellome_money_status: string;
+      customer_bank_status: string;
+      receipient_bank_status: string;
+      is_profile_updated: string;
+      cancel_reason?: any;
+    }
+
     interface DocumentType {
       name: string;
       code: string;
@@ -164,7 +173,7 @@ declare global {
       iso: string;
     }
 
-     interface ProcessRemitterResponse {
+    interface ProcessRemitterResponse {
       status: string;
       message: string;
       transaction_reference: string;

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { TableRowSelection } from "antd/es/table/interface";
 import clsx from "clsx";
-import { useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useTransactionData } from "@/hooks/use-transaction-data";
 import { TablePaginationConfig } from "antd/es/table";
@@ -23,7 +23,7 @@ const Transactions = () => {
 
   const { data, isPending, updatePage } = useTransactionData(selected);
 
-  const getColumns = (): ColumnsType<any> => {
+  const getColumns = useCallback((): ColumnsType<any> => {
     const baseColumns: ColumnsType<any> = [
       {
         title: "Date & Time",
@@ -123,7 +123,7 @@ const Transactions = () => {
     }
 
     return baseColumns;
-  };
+  }, [selected, getStatusStyle]);
 
   const rowSelection: TableRowSelection<any> = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -135,11 +135,14 @@ const Transactions = () => {
     },
   };
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    if (pagination.current) {
-      updatePage(pagination.current);
-    }
-  };
+  const handleTableChange = useCallback(
+    (pagination: TablePaginationConfig) => {
+      if (pagination.current) {
+        updatePage(pagination.current);
+      }
+    },
+    [updatePage]
+  );
 
   return (
     <section className="space-y-4">
@@ -193,4 +196,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default memo(Transactions);

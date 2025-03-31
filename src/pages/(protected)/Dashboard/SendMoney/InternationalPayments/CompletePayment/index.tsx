@@ -20,27 +20,24 @@ const CompletePayment = () => {
     navigate("/dashboard", { state: null });
   };
 
-  const handleConfirm = async () => {
-    await mutation.mutateAsync({});
-  };
-
   const mutation = useSharedMutationAction<any>({
     url: ENDPOINTS.REMITTER_INITIATE_HELLOMEMONEY_PAYMENT,
-    onSuccess: () => {
-      navigate(
-        `/dashboard/send-money/international-payments/single/transaction-progress/${state.transaction_reference}`
-      );
-    },
     onError: error => {
       message.error(getErrorMessage(error));
     },
   });
 
+  const handleNext = () => {
+    navigate(
+      `/dashboard/send-money/international-payments/single/transaction-progress/${state.transaction_reference}`
+    );
+  };
+
   useEffect(() => {
     if (state) {
       mutation.mutateAsync({
         transaction_reference: state.transaction_reference,
-        payment_method: state.payment_method,
+        payment_method: "HELLOMEPAYMENT",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,7 +145,7 @@ const CompletePayment = () => {
             type="primary"
             size="large"
             shape="round"
-            onClick={handleConfirm}
+            onClick={handleNext}
             loading={mutation.isPending}>
             Continue
           </Button>
