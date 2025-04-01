@@ -1,7 +1,7 @@
 import Loader from "@/components/app/Loader";
 import { useAppSelector } from "@/hooks";
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import { APP_FEATURES } from "@/constants";
 
 const GetStartedLayout = () => {
@@ -53,9 +53,7 @@ const GetStartedLayout = () => {
       </div>
       <div ref={ref} />
       <section className="w-full max-w-7xl mx-auto space-y-8 lg:px-8 px-4 min-h-screen z-10 pt-8">
-        <a
-          href="https://hellomemoney.com/"
-          className="flex items-center gap-2 max-lg:justify-center">
+        <Link to="/" className="flex items-center gap-2 max-lg:justify-center">
           <img
             src="/images/hellome.png"
             alt="Hellomemoney"
@@ -64,7 +62,7 @@ const GetStartedLayout = () => {
           <p className="font-cabinet text-2xl font-extrabold text-white no-underline">
             HelloMe Money
           </p>
-        </a>
+        </Link>
         <div className="relative mx-auto grid grid-cols-1 items-start gap-12 lg:grid-cols-2 justify-between">
           {/* QR code positioned on the dividing line */}
           {/* <div className="absolute left-0 top-[72.5%] z-10 space-y-2 max-lg:hidden flex flex-col items-center justify-center mb-2">
