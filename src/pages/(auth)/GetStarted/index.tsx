@@ -304,6 +304,7 @@ const GetStarted = () => {
             phoneNumberRules={[
               { required: true, message: "Please enter your phone number" },
             ]}
+            disableSelect
           />
         </section>
         <Button

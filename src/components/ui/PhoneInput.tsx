@@ -20,6 +20,7 @@ interface PhoneInputProps {
   phoneCodeRules?: Rule[];
   phoneNumberRules?: Rule[];
   countries?: Code[];
+  disableSelect?: boolean;
 }
 
 const PhoneInput = ({
@@ -30,6 +31,7 @@ const PhoneInput = ({
   phoneCodeRules,
   phoneNumberRules,
   countries,
+  disableSelect = false,
 }: PhoneInputProps) => {
   const array = useMemo(() => {
     return countries || codes;
@@ -47,7 +49,7 @@ const PhoneInput = ({
             <Select
               showSearch
               className="w-20"
-              disabled={disabled}
+              disabled={disabled || disableSelect}
               dropdownStyle={{ minWidth: "200px" }}
               virtual={false}
               options={array.map((c, index) => ({
