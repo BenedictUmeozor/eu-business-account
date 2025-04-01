@@ -1,8 +1,8 @@
 import { memo, useEffect } from "react";
 import { Form, FormProps, Input, Select, Button } from "antd";
-import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import { useAppSelector } from "@/hooks";
 import { formatPhoneNumber } from "@/utils";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 interface FormValues {
   email: string;
@@ -41,23 +41,6 @@ const ContactAddressInfo = ({
     nextStep();
   };
 
-  const setFieldsValue = ({
-    dialCode,
-    phoneNumber,
-  }: {
-    dialCode: string;
-    phoneNumber: string;
-  }) => {
-    form.setFieldsValue({
-      phone_code: dialCode,
-      phone_number: phoneNumber,
-    });
-  };
-
-  const setPhoneValue = (phoneNumber: string) => {
-    form.setFieldsValue({ phone_number: phoneNumber });
-  };
-
   useEffect(() => {
     form.setFieldsValue({
       email: session.user?.email,
@@ -89,11 +72,9 @@ const ContactAddressInfo = ({
         <Input placeholder="Enter your email address" disabled />
       </Form.Item>
 
-      <PhoneNumberInput
-        dialCodeName="phone_code"
-        name="phone_number"
-        setFieldsValue={setFieldsValue}
-        setPhoneValue={setPhoneValue}
+      <PhoneInput
+        phoneCodeName="phone_code"
+        phoneNumberName="phone_number"
         phoneNumberRules={[
           { required: true, message: "Please enter your phone number" },
         ]}

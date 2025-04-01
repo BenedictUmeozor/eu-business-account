@@ -11,11 +11,11 @@ import {
 } from "antd";
 import { useCallback, useState } from "react";
 import countries from "@/data/codes.json";
-import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import { Link, useNavigate } from "react-router";
 import useMutationAction from "@/hooks/use-mutation-action";
 import ENDPOINTS from "@/constants/endpoints";
 import { formatPhoneNumber, getErrorMessage } from "@/utils";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 interface FormValues {
   fname: string;
@@ -35,11 +35,6 @@ const GetStarted = () => {
   const navigate = useNavigate();
   const [apiError, setApiError] = useState<string | null>(null);
 
-  const findCountryByPhoneCode = useCallback((phoneCode: string) => {
-    const foundCountry = countries.find(c => c.callingCode === phoneCode);
-    return foundCountry?.countryCode || "GB";
-  }, []);
-
   const getPhoneCodeByCountry = useCallback((countryCode: string) => {
     const foundCountry = countries.find(c => c.countryCode === countryCode);
     return foundCountry?.callingCode || "+44";
@@ -54,26 +49,6 @@ const GetStarted = () => {
       phone_number: phoneCode,
     });
   };
-
-  const setFieldsValue = useCallback(
-    ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
-      const countryCode = findCountryByPhoneCode(dialCode);
-      setCountry(countryCode);
-      form.setFieldsValue({
-        phone_code: dialCode,
-        phone_number: phoneNumber,
-        country: countryCode,
-      });
-    },
-    [form, findCountryByPhoneCode]
-  );
-
-  const setPhoneValue = useCallback(
-    (phoneNumber: string) => {
-      form.setFieldsValue({ phone_number: phoneNumber });
-    },
-    [form]
-  );
 
   const mutation = useMutationAction<HM.QueryResponse, FormValues>({
     url: ENDPOINTS.CREATE_ACCOUNT,
@@ -316,28 +291,20 @@ const GetStarted = () => {
               </div>
             </Radio.Group>
           </Form.Item>
-          <Form.Item
-            name="phone_number"
-            rules={[
+          <PhoneInput
+            label={
+              (
+                <p className="text-sm font-semibold text-grey-600">
+                  Business Phone Number
+                </p>
+              ) as unknown as string
+            }
+            phoneCodeName="phone_code"
+            phoneNumberName="phone_number"
+            phoneNumberRules={[
               { required: true, message: "Please enter your phone number" },
-            ]}>
-            <PhoneNumberInput
-              dialCodeName="phone_code"
-              name="phone_number"
-              setFieldsValue={setFieldsValue}
-              setPhoneValue={setPhoneValue}
-              phoneNumberRules={[
-                { required: true, message: "Please enter your phone number" },
-              ]}
-              label={
-                (
-                  <p className="text-sm font-semibold text-grey-600">
-                    Business Phone Number
-                  </p>
-                ) as unknown as string
-              }
-            />
-          </Form.Item>
+            ]}
+          />
         </section>
         <Button
           className="w-full"
@@ -348,15 +315,15 @@ const GetStarted = () => {
           loading={mutation.isPending}>
           Get Started
         </Button>
-        <p className="text-center font-medium text-grey-600">
-          Already got an account?{" "}
-          <Link
-            to="/login"
-            className="text-primary-600 underline hover:text-primary-700">
-            Sign in
-          </Link>
-        </p>
       </Form>
+      <p className="text-center font-medium text-grey-600 test-sm">
+        Already got an account?{" "}
+        <Link
+          to="/login"
+          className="text-primary-600 underline hover:text-primary-700">
+          Sign in
+        </Link>
+      </p>
     </section>
   );
 };

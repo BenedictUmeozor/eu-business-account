@@ -1,14 +1,14 @@
 import HeaderTitle from "@/components/ui/HeaderTitle";
-import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import ENDPOINTS from "@/constants/endpoints";
 import useMutationAction from "@/hooks/use-mutation-action";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { Button, DatePicker, Form, FormProps, Input, message } from "antd";
 import clsx from "clsx";
 import { Add } from "iconsax-react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import moment, { Moment } from "moment";
 import { formatPhoneNumber, getErrorMessage } from "@/utils";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 interface FormValues {
   business_name: string;
@@ -31,20 +31,6 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
   const searchForm = Form.useForm<{ value: string }>()[0];
   const [form] = Form.useForm<FormValues>();
   const searchValue = Form.useWatch("value", searchForm);
-
-  const setFieldsValue = useCallback(
-    ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
-      form.setFieldsValue({ phone_code: dialCode, phone_number: phoneNumber });
-    },
-    [form]
-  );
-
-  const setPhoneValue = useCallback(
-    (phoneNumber: string) => {
-      form.setFieldsValue({ phone_number: phoneNumber });
-    },
-    [form]
-  );
 
   const mutation = useMutationAction<HM.CompanyDetails>({
     url: ENDPOINTS.SEARCH_COMPANY,
@@ -280,12 +266,10 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
               </Form.Item>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <PhoneNumberInput
-                dialCodeName="phone_code"
+              <PhoneInput
                 label="Business Phone Number"
-                name="phone_number"
-                setFieldsValue={setFieldsValue}
-                setPhoneValue={setPhoneValue}
+                phoneNumberName="phone_number"
+                phoneCodeName="phone_code"
                 phoneNumberRules={[
                   { required: true, message: "Phone Number is required" },
                 ]}
