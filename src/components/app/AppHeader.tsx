@@ -3,17 +3,29 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { Notification } from "iconsax-react";
 import Colors from "@/constants/colors";
 import { useAppSelector } from "@/hooks";
+import { useNavigate } from "react-router";
+import { useMemo } from "react";
+import { getTimeBasedGreeting } from "@/utils";
 
 const AppHeader = () => {
   const session = useAppSelector(state => state.session);
-  
-  const userInitials = `${session.user?.fname?.[0] || ''}${session.user?.lname?.[0] || ''}`.toUpperCase();
+  const navigate = useNavigate();
+
+  const userInitials = useMemo(
+    () =>
+      `${session.user?.fname?.[0] || ""}${session.user?.lname?.[0] || ""}`.toUpperCase(),
+    [session.user?.fname, session.user?.lname]
+  );
+
+  const handleNavigate = () => {
+    navigate("/profile");
+  };
 
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white border-0 border-b border-solid border-grey-200">
       <div className="flex items-center gap-12">
         <h2 className="text-lg font-normal">
-          Good Morning, {session.user?.fname}
+          {getTimeBasedGreeting()}, {session.user?.fname}
         </h2>
         <div>
           <Input
@@ -37,8 +49,8 @@ const AppHeader = () => {
         <Space align="center">
           <Avatar
             size="large"
-            className="cursor-pointer bg-primary"
-          >
+            onClick={handleNavigate}
+            className="cursor-pointer bg-primary">
             {userInitials}
           </Avatar>
           <div className="flex flex-col items-start gap-0.5">
