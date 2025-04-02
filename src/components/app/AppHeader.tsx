@@ -6,10 +6,13 @@ import { useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router";
 import { useMemo } from "react";
 import { getTimeBasedGreeting } from "@/utils";
+import usePersonalDetails from "@/hooks/use-personal-details";
 
 const AppHeader = () => {
   const session = useAppSelector(state => state.session);
   const navigate = useNavigate();
+
+  const { personalDetails } = usePersonalDetails();
 
   const userInitials = useMemo(
     () =>
@@ -49,9 +52,10 @@ const AppHeader = () => {
         <Space align="center">
           <Avatar
             size="large"
+            src={personalDetails?.profile_picture || null}
             onClick={handleNavigate}
-            className="cursor-pointer bg-primary">
-            {userInitials}
+            className={`cursor-pointer ${!personalDetails?.profile_picture ? "bg-primary" : ""}`}>
+            {!personalDetails?.profile_picture ? userInitials : null}
           </Avatar>
           <div className="flex flex-col items-start gap-0.5">
             <h5 className="text-sm font-medium">{`${session.user?.fname} ${session.user?.lname}`}</h5>

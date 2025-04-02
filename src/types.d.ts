@@ -391,6 +391,7 @@ declare global {
       business_role: string;
       business_stake: string;
       percentage_stake: string;
+      profile_picture: string | null;
       authorized_signatory: string;
       document: {
         data: {

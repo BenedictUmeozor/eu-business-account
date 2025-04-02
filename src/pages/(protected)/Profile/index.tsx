@@ -1,4 +1,4 @@
-import { Button, Tabs, TabsProps } from "antd";
+import { Button, message, Tabs, TabsProps } from "antd";
 import { Edit } from "iconsax-react";
 import Personal from "./Personal";
 import Business from "./Business";
@@ -8,12 +8,44 @@ import Notification from "./Notification";
 import AboutUs from "./AboutUs";
 import PrivacyPolicy from "./PrivacyPolicy";
 import TermsAndConditions from "./TermsAndConditions";
-import { useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { useAppSelector } from "@/hooks";
+import usePersonalDetails from "@/hooks/use-personal-details";
+import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
+import ENDPOINTS from "@/constants/endpoints";
+import { getErrorMessage } from "@/utils";
 
 const BusinessProfile = () => {
   const [activeKey, setActiveKey] = useState("1");
   const session = useAppSelector(state => state.session);
+
+  const { personalDetails } = usePersonalDetails();
+  const ref = useRef<HTMLInputElement>(null);
+
+  const uploadMutation = useSharedMutationAction<any>({
+    url: ENDPOINTS.UPLOAD_PHOTO,
+    onSuccess: data => {
+      message.success(data?.message);
+      // Reset the file input after successful upload
+      if (ref.current) {
+        ref.current.value = "";
+      }
+    },
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+    invalidateQueries: ["personal_details"],
+  });
+
+  const handleClick = () => ref.current?.click();
+
+  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    await uploadMutation.mutateAsync(formData);
+  };
 
   const items: TabsProps["items"] = [
     {
@@ -105,7 +137,9 @@ const BusinessProfile = () => {
           <div className="w-32">
             <div className="flex items-center justify-center overflow-hidden h-28 w-28 rounded-full">
               <img
-                src="/images/profile-logo.png"
+                src={
+                  personalDetails?.profile_picture || "/images/empty-pic.png"
+                }
                 alt="Profile Logo"
                 className="h-full w-full object-cover rounded-full"
               />
@@ -119,8 +153,16 @@ const BusinessProfile = () => {
               </p>
               <span className="text-grey-600">{session.user?.email}</span>
             </div>
+            <input
+              ref={ref}
+              style={{ display: "none" }}
+              type="file"
+              onChange={handleChange}
+            />
             <Button
               type="text"
+              onClick={handleClick}
+              loading={uploadMutation.isPending}
               icon={<Edit className="w-4 h-4 text-primary" />}
               className="text-primary font-medium">
               Update logo

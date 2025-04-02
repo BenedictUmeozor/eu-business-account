@@ -90,6 +90,7 @@ const ENDPOINTS = {
   CHANGE_PIN: "/profile/change_pin",
   FETCH_USER_SECURITY_QUESTIONS: "/profile/fetch_security_questions",
   GET_CUSTOMER_PROFILE: "/profile/customer_profile",
+  UPLOAD_PHOTO: "/profile/upload_photo",
 
   // International Payments
   REMITTER_SOURCE: "/remitter/remittance_source",
