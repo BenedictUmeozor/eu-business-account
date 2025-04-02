@@ -18,12 +18,12 @@ import TransactionFilter from "../Transactions/components/TransactionFilter";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
 import useStatusStyle from "@/hooks/use-status-style";
+import Loader from "@/components/app/Loader";
 
 const ConversionsPage = () => {
   const [show, setShow] = useState(false);
   const [showConversionForm, setShowConversionForm] = useState(false);
-  const [tableState, setTableState] =
-    useState<HM.TableState<HM.Transaction>>();
+  const [tableState, setTableState] = useState<HM.TableState<HM.Transaction>>();
   const {
     fromDate,
     toDate,
@@ -78,7 +78,9 @@ const ConversionsPage = () => {
     key: ["conversions", tableState?.pagination?.current],
   });
 
-  const hasData = data?.transaction?.data && data.transaction.data.length > 0;
+  const hasData = useMemo(() => {
+    return data?.transaction?.data && data.transaction.data.length > 0;
+  }, [data]);
 
   const transactions: HM.Transaction[] | undefined = useMemo(() => {
     if (fromDate || toDate || currency || status) {
@@ -176,6 +178,7 @@ const ConversionsPage = () => {
 
   return (
     <div className="space-y-8">
+      {isPending && <Loader />}
       <header className="flex items-center justify-between">
         <h2 className="text-grey-600 text-xl font-medium">Conversions</h2>
         <Button
