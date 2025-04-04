@@ -26,6 +26,10 @@ const Login = () => {
     url: ENDPOINTS.LOGIN_USER,
     mutationKey: ["login"],
     onSuccess: response => {
+      if (response.data.account_type.toLowerCase() !== "business") {
+        message.error("Please login with a valid business account");
+        return;
+      }
       dispatch(setBusiness(response.business_data));
       dispatch(setUser(response.data));
       message.success("Successful");
