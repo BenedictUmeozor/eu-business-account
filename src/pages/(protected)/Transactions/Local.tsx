@@ -19,6 +19,7 @@ import TransactionFilter from "./components/TransactionFilter";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
 import useStatusStyle from "@/hooks/use-status-style";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const LocalTransactions = () => {
   const [show, setShow] = useState(false);
@@ -34,6 +35,8 @@ const LocalTransactions = () => {
     setStatus,
   } = useTransactionFilter();
   const { getStatusStyle } = useStatusStyle();
+
+  const [parent] = useAutoAnimate();
 
   const mutation = useSharedMutationAction<
     {
@@ -176,7 +179,7 @@ const LocalTransactions = () => {
   };
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4" ref={parent}>
       {show && (
         <TransactionFilter
           onClose={() => setShow(false)}

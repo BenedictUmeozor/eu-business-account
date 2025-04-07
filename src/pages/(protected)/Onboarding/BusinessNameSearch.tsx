@@ -9,6 +9,7 @@ import { useState } from "react";
 import moment, { Moment } from "moment";
 import { formatPhoneNumber, getErrorMessage } from "@/utils";
 import PhoneInput from "@/components/ui/PhoneInput";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface FormValues {
   business_name: string;
@@ -31,6 +32,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
   const searchForm = Form.useForm<{ value: string }>()[0];
   const [form] = Form.useForm<FormValues>();
   const searchValue = Form.useWatch("value", searchForm);
+  const [parent] = useAutoAnimate();
 
   const mutation = useMutationAction<HM.CompanyDetails>({
     url: ENDPOINTS.SEARCH_COMPANY,
@@ -96,7 +98,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
   };
 
   return (
-    <div className="h-full w-full space-y-8 p-8">
+    <div className="h-full w-full space-y-8 p-8" ref={parent}>
       <HeaderTitle
         headerTitle="Business Verification"
         headerDescription="Verify your business name to get started"

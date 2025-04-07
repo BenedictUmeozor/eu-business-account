@@ -17,6 +17,7 @@ import { Button } from "antd";
 import useLogout from "@/hooks/use-logout";
 import Loader from "./Loader";
 import { useAppSelector } from "@/hooks";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface MenuItem {
   key: string;
@@ -27,6 +28,7 @@ interface MenuItem {
 }
 
 const Sidebar = () => {
+  const [parent] = useAutoAnimate();
   const { pathname } = useLocation();
   const onboardingStatus = useAppSelector(
     state => state.session.onboardingStatus
@@ -50,28 +52,28 @@ const Sidebar = () => {
       active: pathname.startsWith("/dashboard"),
     },
     {
-      key: "5",
+      key: "3",
       label: "Transactions",
       icon: <WorkflowIcon className="h-4 w-4" />,
       to: "/transactions",
       active: pathname.startsWith("/transactions"),
     },
     {
-      key: "3",
+      key: "4",
       label: "Invoice",
       icon: <FileTextIcon className="h-4 w-4" />,
       to: "/invoice",
       active: pathname.startsWith("/invoice"),
     },
     {
-      key: "4",
+      key: "5",
       label: "Conversions",
       icon: <RotateCcwSquareIcon className="h-4 w-4" />,
       to: "/conversions",
       active: pathname.startsWith("/conversion"),
     },
     {
-      key: "5",
+      key: "6",
       label: "Beneficiaries",
       icon: <UsersIcon className="h-4 w-4" />,
       to: "/beneficiaries",
@@ -93,7 +95,9 @@ const Sidebar = () => {
   }, [pathname, onboardingStatus]);
 
   return (
-    <aside className="bg-secondary-500 max-lg:hidden relative h-screen w-[200px] overflow-y-auto grid grid-rows-[auto_1fr] pb-6 gap-6 no-scrollbar">
+    <aside
+      className="bg-secondary-500 max-lg:hidden relative h-screen w-[200px] overflow-y-auto grid grid-rows-[auto_1fr] pb-6 gap-6 no-scrollbar"
+    >
       {loading && <Loader />}
       <Link
         to="/"
@@ -103,7 +107,7 @@ const Sidebar = () => {
           HelloMe Money
         </p>
       </Link>
-      <div className="space-y-12">
+      <div className="space-y-12"   ref={parent}>
         <nav className="space-y-8">
           <ul className="space-y-2">
             {menuItems.map(item => (

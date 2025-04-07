@@ -93,20 +93,20 @@ const Onboarding = () => {
           </Link>
         </footer>
       </aside>
-      <div
-        ref={ref}
-        className="grid h-full place-items-center border border-solid border-grey-200 bg-white">
-        {current === -1 && <Welcome next={next} />}
-        {current === 0 && <BusinessNameSearch next={next} />}
-        {current === 1 && <BusinessInformation next={next} />}
-        {current === 2 && <PersonalInfo next={next} />}
-        {current === 3 && <SecurityQuestions next={next} />}
-        {current === 4 && <AuthorizationPin next={next} />}
-        {current === 5 && <IdentityVerification next={next} />}
-        {current === 6 && <AddShareholders next={next} />}
-        {current === 7 && <AddDocuments next={next} />}
-        {current === 8 && <Review nextAction={next} />}
-        {current === 9 && <OnboardingSuccess />}
+      <div ref={ref}>
+        <div className="grid h-full place-items-center border border-solid border-grey-200 bg-white">
+          {current === -1 && <Welcome next={next} />}
+          {current === 0 && <BusinessNameSearch next={next} />}
+          {current === 1 && <BusinessInformation next={next} />}
+          {current === 2 && <PersonalInfo next={next} />}
+          {current === 3 && <SecurityQuestions next={next} />}
+          {current === 4 && <AuthorizationPin next={next} />}
+          {current === 5 && <IdentityVerification next={next} />}
+          {current === 6 && <AddShareholders next={next} />}
+          {current === 7 && <AddDocuments next={next} />}
+          {current === 8 && <Review nextAction={next} />}
+          {current === 9 && <OnboardingSuccess />}
+        </div>
       </div>
     </section>
   );

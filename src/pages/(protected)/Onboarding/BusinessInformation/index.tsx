@@ -12,15 +12,18 @@ const BusinessInformation = ({
   isReview?: boolean;
 }) => {
   const [showSecondForm, setShowSecondForm] = useState(false);
-
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
-  }, [showSecondForm]);
+    if (!isReview) {
+      ref.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [showSecondForm, isReview]);
 
   return (
-    <div ref={ref} className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
+    <div
+      ref={ref}
+      className={clsx("h-full w-full space-y-8", !isReview && "p-8")}>
       <header className="flex items-center justify-between">
         <HeaderTitle
           headerDescription="Tell us more about your business"

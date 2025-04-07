@@ -28,6 +28,7 @@ import countries from "@/data/codes.json";
 import useSourceOfFunds from "@/hooks/use-source-of-funds";
 import useSourceOfWealth from "@/hooks/use-source-of-weath";
 import Loader from "@/components/app/Loader";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface FormValues {
   business_type: string;
@@ -69,6 +70,7 @@ const FirstForm = ({
   isReview: boolean;
 }) => {
   const [form] = Form.useForm<FormValues>();
+  const [parent] = useAutoAnimate();
   const session = useAppSelector(state => state.session);
   const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([]);
   const [selectedSendCountries, setSelectedSendCountries] = useState<string[]>(
@@ -276,8 +278,6 @@ const FirstForm = ({
             options={BUSINESS_INDUSTRIES.map(v => ({ label: v, value: v }))}
           />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Purpose of Account"
           name="account_purpose"
@@ -300,8 +300,6 @@ const FirstForm = ({
             placeholder="Enter Economic Activity of the Company"
           />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Business website/Social media link"
           name="website"
@@ -329,8 +327,6 @@ const FirstForm = ({
             }))}
           />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start">
         <Form.Item
           label="Expected currencies usage"
           name="expected_currency"
@@ -356,7 +352,7 @@ const FirstForm = ({
               value: v.code,
             }))}
           />
-          <div className="mt-1 flex flex-wrap gap-y-1">
+          <div className="mt-1 flex flex-wrap gap-y-1" ref={parent}>
             {selectedCurrencies.map(v => (
               <Tag
                 color="#ebf4ff"
@@ -371,6 +367,12 @@ const FirstForm = ({
         </Form.Item>
         <Form.Item
           label="Top 5 countries you send money to"
+          rules={[
+            {
+              required: true,
+              message: "Please select at least one country",
+            },
+          ]}
           name="source_countries">
           <Select
             className="w-full"
@@ -397,7 +399,7 @@ const FirstForm = ({
               value: v.countryCode,
             }))}
           />
-          <div className="mt-1 flex flex-wrap gap-y-1">
+          <div className="mt-1 flex flex-wrap gap-y-1" ref={parent}>
             {selectedSendCountries?.map(code => {
               const country = countries.find(c => c.countryCode === code)!;
               return (
@@ -420,11 +422,14 @@ const FirstForm = ({
             })}
           </div>
         </Form.Item>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start">
         <Form.Item
           label="Top 5 countries you receive money from"
+          rules={[
+            {
+              required: true,
+              message: "Please select at least one country",
+            },
+          ]}
           name="target_countries">
           <Select
             className="w-full"
@@ -451,7 +456,7 @@ const FirstForm = ({
               value: v.countryCode,
             }))}
           />
-          <div className="mt-1 flex flex-wrap gap-y-1">
+          <div className="mt-1 flex flex-wrap gap-y-1" ref={parent}>
             {selectedReceiveCountries?.map(code => {
               const country = countries.find(c => c.countryCode === code)!;
               return (
@@ -482,9 +487,6 @@ const FirstForm = ({
             placeholder="Enter names and separate with commas"
           />
         </Form.Item>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           name="partners_outgoing"
           label="Top 5 transacting partners - Outgoing">
@@ -517,8 +519,6 @@ const FirstForm = ({
             </div>
           </Radio.Group>
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Does you annual balance sheet exceed €2 million?"
           name="annual_balance_sheet_exceed_2m"
@@ -554,8 +554,6 @@ const FirstForm = ({
           ]}>
           <Input className="w-full" placeholder="Enter details" />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Is your company publicly listed"
           name="is_publicly_listed"
@@ -604,8 +602,6 @@ const FirstForm = ({
             </div>
           </Radio.Group>
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="VAT Number"
           name="vat_number"
@@ -636,8 +632,6 @@ const FirstForm = ({
             }))}
           />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Is your business a financial institution"
           name="is_financial_institution"
@@ -668,8 +662,6 @@ const FirstForm = ({
           rules={[{ required: true, message: "Please enter GIIN" }]}>
           <Input className="w-full" placeholder="Enter Details" />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Established security market where corporation is 
  traded regularly "
@@ -706,8 +698,6 @@ const FirstForm = ({
             </div>
           </Radio.Group>
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Regulatory entity (regularly traded entity/corporation)"
           name="regulatory_entity"
@@ -724,8 +714,6 @@ const FirstForm = ({
           ]}>
           <Input className="w-full" placeholder="Enter details" />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="FATCA - USA Tax liability US Indica (For US Businesses)"
           name="fatca"
@@ -750,8 +738,6 @@ const FirstForm = ({
             }))}
           />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Source of wealth"
           name="source_of_wealth"
@@ -774,8 +760,6 @@ const FirstForm = ({
           rules={[{ required: true, message: "Please enter number of UBOs" }]}>
           <InputNumber className="w-full" placeholder="Enter details" />
         </Form.Item>
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Form.Item
           label="Main Currency"
           name="main_currency"
