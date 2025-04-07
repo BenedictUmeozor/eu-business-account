@@ -141,10 +141,10 @@ const InternationalSinglePayments = () => {
 
   const currentBalance = useMemo(() => {
     const balanceObj = accounts?.find(
-      b => b.currency === searchParams.get("currency")
+      b => b.currency === formData.source_currency
     );
     return balanceObj?.balance?.amount || 0;
-  }, [accounts, searchParams]);
+  }, [accounts, formData.source_currency]);
 
   const getDestinationCountry = useCallback(
     (currency: string) => {
@@ -207,7 +207,10 @@ const InternationalSinglePayments = () => {
   }, [searchParams, getSourceCountry, formData.source_currency]);
 
   useEffect(() => {
-    if (Object.values(formData).every(val => Boolean(val))) {
+    if (
+      Object.values(formData).every(val => Boolean(val)) &&
+      Number(formData?.amount ?? 0) > 9
+    ) {
       runQuoteFunction();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,7 +227,7 @@ const InternationalSinglePayments = () => {
                 <div className="flex items-center justify-between text-sm text-white">
                   <span>You send</span>
                   <span className="font-nunito font-medium">
-                    {searchParams.get("currency")} Bal: {currencySymbol}
+                    {formData.source_currency} Bal: {currencySymbol}
                     {currentBalance.toLocaleString()}
                   </span>
                 </div>
