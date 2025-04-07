@@ -209,7 +209,8 @@ const InternationalSinglePayments = () => {
   useEffect(() => {
     if (
       Object.values(formData).every(val => Boolean(val)) &&
-      Number(formData?.amount ?? 0) > 9
+      Number(formData?.amount ?? 0) > 9 &&
+      formData.source_currency.length > 1
     ) {
       runQuoteFunction();
     }

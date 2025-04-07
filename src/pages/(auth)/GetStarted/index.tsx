@@ -158,6 +158,16 @@ const GetStarted = () => {
                 ),
                 value: c.countryCode,
               }))}
+              filterOption={(input, option) => {
+                const country = countries.find(
+                  c => c.countryCode === option?.value
+                );
+                return (
+                  country?.countryName
+                    .toLowerCase()
+                    .includes(input.toLowerCase()) || false
+                );
+              }}
             />
           </Form.Item>
           <Form.Item

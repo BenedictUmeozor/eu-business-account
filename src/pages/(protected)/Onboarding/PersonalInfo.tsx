@@ -92,7 +92,7 @@ const PersonalInfo = ({
       ...values,
       business_role: Array.isArray(values.business_role)
         ? values.business_role.join(",")
-        : values.business_role || "",
+        : values.business_role || "shareholder",
       oname: values.oname || "",
       business_stake: values.business_stake || "NO",
       percentage_stake: values.percentage_stake || "",
@@ -320,7 +320,7 @@ const PersonalInfo = ({
               validateTrigger={["onChange", "onBlur"]}
               rules={[
                 {
-                  required: hasBusinessStake === "YES",
+                  required: true,
                   message: "Please enter your stake percentage",
                   validator: async (_, value) => {
                     if (value === null || value === undefined) {

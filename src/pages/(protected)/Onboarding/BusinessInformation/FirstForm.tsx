@@ -188,11 +188,12 @@ const FirstForm = ({
             ? 1
             : 0
           : undefined,
-        annual_balance_sheet_exceed_2m: businessDetails.annual_balance_sheet_exceed_2m
-          ? businessDetails.annual_balance_sheet_exceed_2m === "YES"
-            ? 1
-            : 0
-          : undefined,
+        annual_balance_sheet_exceed_2m:
+          businessDetails.annual_balance_sheet_exceed_2m
+            ? businessDetails.annual_balance_sheet_exceed_2m === "YES"
+              ? 1
+              : 0
+            : undefined,
         product_services_sold: businessDetails.product_services_sold,
         is_publicly_listed: businessDetails.is_publicly_listed
           ? businessDetails.is_publicly_listed === "YES"
@@ -214,11 +215,12 @@ const FirstForm = ({
         giin: businessDetails.giin,
         established_security_market:
           businessDetails.established_security_market,
-        is_company_licensed_by_regulatory: businessDetails.is_company_licensed_by_regulatory
-          ? businessDetails.is_company_licensed_by_regulatory === "YES"
-            ? 1
-            : 0
-          : undefined,
+        is_company_licensed_by_regulatory:
+          businessDetails.is_company_licensed_by_regulatory
+            ? businessDetails.is_company_licensed_by_regulatory === "YES"
+              ? 1
+              : 0
+            : undefined,
         regulatory_entity: businessDetails.regulatory_entity,
         core_source_of_revenue: businessDetails.core_source_of_revenue,
         fatca: businessDetails.fatca,
@@ -228,7 +230,7 @@ const FirstForm = ({
         main_currency: businessDetails.main_currency,
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [businessDetails, isLoading]);
 
   return (
@@ -621,6 +623,13 @@ const FirstForm = ({
             placeholder="Select country"
             showSearch
             allowClear
+            filterOption={(input, option) => {
+              return (
+                (option?.label as string)
+                  ?.toLowerCase()
+                  .includes(input.toLowerCase()) || false
+              );
+            }}
             options={countries.map(v => ({
               label: v.countryName,
               value: v.countryCode,
