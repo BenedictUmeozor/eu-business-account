@@ -29,7 +29,7 @@ const TransferSummary = () => {
   const [searchParams] = useSearchParams();
   const scaApproved = useRef(false);
   const session = useAppSelector(state => state.session);
-  const { fetchAccounts } = useAccounts()
+  const { fetchAccounts } = useAccounts();
 
   const modalRef = useRef<PinRefObject>(null);
   const successRef = useRef<TransferSuccessRefObject>(null);
@@ -207,6 +207,14 @@ const TransferSummary = () => {
             I understand, confirm to proceed
           </span>
         </Space>
+
+        {!scaApproved.current && (
+          <Alert
+            message="This device needs to be authenticated for secure transfers. Please wait while we verify your device."
+            type="warning"
+            showIcon
+          />
+        )}
 
         <div className="flex items-center justify-center">
           <Button
