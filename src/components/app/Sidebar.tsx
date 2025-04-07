@@ -11,6 +11,7 @@ import {
   FileTextIcon,
   RotateCcwSquareIcon,
   BriefcaseIcon,
+  UsersIcon,
 } from "lucide-react";
 import { Button } from "antd";
 import useLogout from "@/hooks/use-logout";
@@ -68,6 +69,13 @@ const Sidebar = () => {
       icon: <RotateCcwSquareIcon className="h-4 w-4" />,
       to: "/conversions",
       active: pathname.startsWith("/conversion"),
+    },
+    {
+      key: "5",
+      label: "Beneficiaries",
+      icon: <UsersIcon className="h-4 w-4" />,
+      to: "/beneficiaries",
+      active: pathname.startsWith("/beneficiaries"),
     },
   ];
 
@@ -143,8 +151,14 @@ const Sidebar = () => {
                   "bg-secondary-400 border-r-secondary-200":
                     pathname.startsWith("/virtual-office"),
                 },
-                { "border-r-transparent": !pathname.startsWith("/virtual-office") },
-                { "opacity-50": disabled && !pathname.startsWith("/virtual-office") }
+                {
+                  "border-r-transparent":
+                    !pathname.startsWith("/virtual-office"),
+                },
+                {
+                  "opacity-50":
+                    disabled && !pathname.startsWith("/virtual-office"),
+                }
               )}>
               {disabled ? (
                 <p
@@ -162,7 +176,8 @@ const Sidebar = () => {
                   to="/virtual-office"
                   className={clsx(
                     "flex items-center gap-2 py-2.5 w-[80%] mx-auto text-base font-normal",
-                    !pathname.startsWith("/virtual-office") && "text-primary-300",
+                    !pathname.startsWith("/virtual-office") &&
+                      "text-primary-300",
                     pathname.startsWith("/virtual-office") && "text-white"
                   )}>
                   <BriefcaseIcon className="h-4 w-4" />

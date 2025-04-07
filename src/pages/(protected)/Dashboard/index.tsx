@@ -1,4 +1,4 @@
-import { Button, Card, Skeleton, Tabs, TabsProps } from "antd";
+import { Alert, Button, Card, Skeleton, Tabs, TabsProps } from "antd";
 import { useMemo, useRef } from "react";
 import Transactions from "./Transactions";
 import AssetLineChart from "./LineChart";
@@ -58,23 +58,33 @@ const Dashboard = () => {
 
   return (
     <section className="space-y-6">
-      {accountsLoading ? (
-        <Skeleton active />
-      ) : (
-        <Tabs
-          items={tabItems}
-          defaultActiveKey="1"
-          tabBarExtraContent={
-            <Button
-              type="text"
-              className="text-primary"
-              onClick={() => modalRef.current?.openModal()}
-              icon={<PlusIcon className="w-4 h-4 text-primary" />}>
-              Add Account
-            </Button>
-          }
-        />
-      )}
+      <div className="space-y-2">
+        {!accountsLoading && !accounts?.length && (
+          <Alert
+            message="Your account is currently under review, kindly check back in the next 24hours"
+            type="warning"
+            className="text-pending"
+            showIcon
+          />
+        )}
+        {accountsLoading ? (
+          <Skeleton active />
+        ) : (
+          <Tabs
+            items={tabItems}
+            defaultActiveKey="1"
+            tabBarExtraContent={
+              <Button
+                type="text"
+                className="text-primary"
+                onClick={() => modalRef.current?.openModal()}
+                icon={<PlusIcon className="w-4 h-4 text-primary" />}>
+                Add Account
+              </Button>
+            }
+          />
+        )}
+      </div>
       <Transactions />
       <Card>
         <AssetLineChart />

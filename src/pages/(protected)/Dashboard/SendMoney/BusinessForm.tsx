@@ -238,8 +238,6 @@ const BusinessForm = ({
                 }))
           }
           disabled={currency !== "EUR" || isRemitter}
-          showSearch
-          allowClear
         />
       </Form.Item>
       <section className="space-y-4">

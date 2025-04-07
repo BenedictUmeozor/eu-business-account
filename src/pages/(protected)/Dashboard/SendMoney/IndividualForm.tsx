@@ -111,30 +111,30 @@ const IndividualForm = ({
     }
 
     if (currency === "USD") {
-      form.setFieldsValue({ 
+      form.setFieldsValue({
         ben_country: "US",
-        phone_code: "+1" 
+        phone_code: "+1",
       });
       return;
     }
     if (currency === "GBP") {
-      form.setFieldsValue({ 
+      form.setFieldsValue({
         ben_country: "GB",
-        phone_code: "+44" 
+        phone_code: "+44",
       });
       return;
     }
     if (currency === "CAD") {
-      form.setFieldsValue({ 
+      form.setFieldsValue({
         ben_country: "CA",
-        phone_code: "+1" 
+        phone_code: "+1",
       });
       return;
     }
     if (currency === "AED") {
-      form.setFieldsValue({ 
+      form.setFieldsValue({
         ben_country: "AE",
-        phone_code: "+971" 
+        phone_code: "+971",
       });
       return;
     }
@@ -146,9 +146,9 @@ const IndividualForm = ({
       countryItem => countryItem.currencyCode === currency
     );
     if (c && currency !== "EUR") {
-      form.setFieldsValue({ 
+      form.setFieldsValue({
         ben_country: c.countryCode,
-        phone_code: c.callingCode
+        phone_code: c.callingCode,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -240,9 +240,7 @@ const IndividualForm = ({
                 }))
           }
           disabled={currency !== "EUR" || isRemitter}
-          showSearch
           virtual={false}
-          allowClear
         />
       </Form.Item>
       <section className="space-y-4">
