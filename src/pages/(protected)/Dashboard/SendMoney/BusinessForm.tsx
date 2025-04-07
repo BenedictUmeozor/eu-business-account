@@ -23,6 +23,7 @@ interface FormValues {
   iban?: string;
   bank_name?: string;
   bic?: string;
+  routing_number?: string;
 }
 
 const BusinessForm = ({
@@ -109,19 +110,31 @@ const BusinessForm = ({
     }
 
     if (currency === "USD") {
-      form.setFieldsValue({ ben_country: "US" });
+      form.setFieldsValue({ 
+        ben_country: "US",
+        phone_code: "+1" 
+      });
       return;
     }
     if (currency === "GBP") {
-      form.setFieldsValue({ ben_country: "GB" });
+      form.setFieldsValue({ 
+        ben_country: "GB",
+        phone_code: "+44" 
+      });
       return;
     }
     if (currency === "CAD") {
-      form.setFieldsValue({ ben_country: "CA" });
+      form.setFieldsValue({ 
+        ben_country: "CA",
+        phone_code: "+1" 
+      });
       return;
     }
     if (currency === "AED") {
-      form.setFieldsValue({ ben_country: "AE" });
+      form.setFieldsValue({ 
+        ben_country: "AE",
+        phone_code: "+971" 
+      });
       return;
     }
     if (currency === "EUR") {
@@ -132,7 +145,10 @@ const BusinessForm = ({
       countryItem => countryItem.currencyCode === currency
     );
     if (c && currency !== "EUR") {
-      form.setFieldsValue({ ben_country: c.countryCode });
+      form.setFieldsValue({ 
+        ben_country: c.countryCode,
+        phone_code: c.callingCode
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency, open]);
@@ -344,6 +360,18 @@ const BusinessForm = ({
               )}
             </Form.Item>
           </>
+        )}
+
+        {currency === "USD" && (
+          <Form.Item
+            name="routing_number"
+            label={
+              <span className="text-sm text-grey-500 font-medium">
+                Routing Number
+              </span>
+            }>
+            <Input placeholder="Enter Routing Number" className="w-full" />
+          </Form.Item>
         )}
 
         {currency === "USD" ||
