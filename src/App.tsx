@@ -13,6 +13,7 @@ import ErrorBoundary from "./pages/error";
 import AccountsProvider from "./providers/AccountsProvider";
 
 const NotFound = () => import("./pages/not-found");
+const TwoFactorAuth = () => import("./pages/(protected)/2FA");
 
 // Auth Pages
 const GetStarted = () => import("./pages/(auth)/GetStarted");
@@ -109,6 +110,7 @@ const App = () => {
 
           <Route path="dashboard/send-money" Component={SendMoneyLayout}>
             <Route index lazy={SendMoney} />
+            <Route path="2fa" lazy={TwoFactorAuth} />
             <Route path="local-payments">
               <Route index lazy={LocalPayments} />
               <Route path="single">
