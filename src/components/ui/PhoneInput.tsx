@@ -1,5 +1,5 @@
 import { Form, Input, Select } from "antd";
-import { Rule } from "antd/es/form";
+import { FormInstance, Rule } from "antd/es/form";
 import { memo, ReactNode, useMemo } from "react";
 import codes from "@/data/codes.json";
 
@@ -21,6 +21,7 @@ interface PhoneInputProps {
   phoneNumberRules?: Rule[];
   countries?: Code[];
   disableSelect?: boolean;
+  form?: FormInstance;
 }
 
 const PhoneInput = ({
@@ -32,7 +33,20 @@ const PhoneInput = ({
   phoneNumberRules,
   countries,
   disableSelect = false,
+  form,
 }: PhoneInputProps) => {
+  const handleCodeChange = () => {
+    if (form) {
+      const phoneCode = form?.getFieldValue(phoneCodeName);
+
+      if (phoneCode) {
+        form?.setFieldsValue({
+          [phoneNumberName]: `${phoneCode}`,
+        });
+      }
+    }
+  };
+
   const array = useMemo(() => {
     return countries || codes;
   }, [countries]);
@@ -49,6 +63,7 @@ const PhoneInput = ({
             <Select
               showSearch
               className="w-20"
+              onChange={handleCodeChange}
               disabled={disabled || disableSelect}
               dropdownStyle={{ minWidth: "200px" }}
               virtual={false}

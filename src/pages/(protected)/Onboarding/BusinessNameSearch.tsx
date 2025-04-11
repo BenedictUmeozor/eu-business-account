@@ -272,6 +272,7 @@ const BusinessNameSearch = ({ next }: { next: () => void }) => {
                 label="Business Phone Number"
                 phoneNumberName="phone_number"
                 phoneCodeName="phone_code"
+                form={form}
                 phoneNumberRules={[
                   { required: true, message: "Phone Number is required" },
                 ]}
