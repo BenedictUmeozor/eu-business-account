@@ -4,6 +4,7 @@ const ENDPOINTS = {
   APP_BASE_URL: "https://hellomemoney-api.hellomepay.online/api/business",
   APP_SHARED_BASE_URL: "https://hellomemoney-api.hellomepay.online/api",
   API_SUBSCRIPTION_KEY: "6293e6ec4f1949128067d751774bd709",
+  AUTHENTICATOR_APP_LINK: "https://resdfebjsssodkrioi.com",
 
   //Enums
   SOURCE_OF_FUNDS: "/enums/financial_source_of_income",

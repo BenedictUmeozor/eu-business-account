@@ -1,10 +1,6 @@
 import { Alert, Button, Divider, message, Space, Switch } from "antd";
 import ENDPOINTS from "@/constants/endpoints";
-import PinModal, { PinRefObject } from "@/components/global/PinModal";
 import { useEffect, useMemo, useRef, useState } from "react";
-import TransferSuccessModal, {
-  TransferSuccessRefObject,
-} from "./TransferSuccessModal";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { CURRENCIES } from "@/constants/currencies";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
@@ -12,7 +8,6 @@ import { getErrorMessage } from "@/utils";
 import Beneficiary from "@/components/global/Beneficiary";
 import Loader from "@/components/app/Loader";
 import { useAppSelector } from "@/hooks";
-import useAccounts from "@/hooks/use-accounts";
 
 interface LocationState {
   amount: string;
@@ -29,45 +24,16 @@ const TransferSummary = () => {
   const [searchParams] = useSearchParams();
   const scaApproved = useRef(false);
   const session = useAppSelector(state => state.session);
-  const { fetchAccounts } = useAccounts();
-
-  const modalRef = useRef<PinRefObject>(null);
-  const successRef = useRef<TransferSuccessRefObject>(null);
 
   const currency = useMemo(
     () => CURRENCIES.find(c => c.currencyCode === searchParams.get("currency")),
     [searchParams]
   );
 
-  const paymentMutation = useSharedMutationAction<{
-    request_id: string;
-    message: string;
-  }>({
-    url: ENDPOINTS.INITIATE_LOCAL_PAYMENT,
-    onSuccess: async data => {
-      message.success(data?.message);
-      successRef.current?.setReqId(data?.request_id);
-      successRef.current?.openModal();
-      await fetchAccounts();
-    },
-    onError: error => {
-      message.error(getErrorMessage(error));
-    },
-    invalidateQueries: ["local-transactions"],
-  });
-
-  const handleTransfer = (pin: string) => {
-    modalRef.current?.closeModal();
-
-    const payload = {
-      beneficiary_id: location.state.beneficiary_id,
-      amount: location.state.amount,
-      narrative: location.state.description,
-      currency: currency?.currencyCode,
-      passcode: pin,
-    };
-
-    paymentMutation.mutate(payload);
+  const handleClick = () => {
+    navigate("/dashboard/send-money/local-payments/single/2fa", {
+      state: { ...location.state, currency: currency?.currencyCode },
+    });
   };
 
   const benMutation = useSharedMutationAction<{ beneficiary: HM.Beneficiary }>({
@@ -223,18 +189,17 @@ const TransferSummary = () => {
             type="primary"
             shape="round"
             disabled={!confirmed || !scaApproved.current}
-            loading={paymentMutation.isPending}
-            onClick={() => modalRef.current?.openModal()}>
+            onClick={handleClick}>
             Transfer
           </Button>
         </div>
       </div>
-      <PinModal
+      {/* <PinModal
         ref={modalRef}
         onSubmit={handleTransfer}
         loading={false} // Add loading state if needed
-      />
-      <TransferSuccessModal ref={successRef} />
+      /> */}
+      {/* <TransferSuccessModal ref={successRef} /> */}
     </div>
   );
 };

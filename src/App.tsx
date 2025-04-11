@@ -13,7 +13,14 @@ import ErrorBoundary from "./pages/error";
 import AccountsProvider from "./providers/AccountsProvider";
 
 const NotFound = () => import("./pages/not-found");
-const TwoFactorAuth = () => import("./pages/(protected)/2FA");
+const TwoFactorAuth = () =>
+  import(
+    "./pages/(protected)/Dashboard/SendMoney/LocalPayments/SinglePayments/2FA"
+  );
+const TokenPage = () =>
+  import(
+    "./pages/(protected)/Dashboard/SendMoney/LocalPayments/SinglePayments/2FA/TokenPage"
+  );
 
 // Auth Pages
 const GetStarted = () => import("./pages/(auth)/GetStarted");
@@ -83,6 +90,9 @@ const Conversions = () => import("./pages/(protected)/Conversions");
 // Profile
 const Profile = () => import("./pages/(protected)/Profile");
 
+// Beneficiaries
+const Beneficiaries = () => import("./pages/(protected)/Beneficiaries");
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -110,13 +120,14 @@ const App = () => {
 
           <Route path="dashboard/send-money" Component={SendMoneyLayout}>
             <Route index lazy={SendMoney} />
-            <Route path="2fa" lazy={TwoFactorAuth} />
             <Route path="local-payments">
               <Route index lazy={LocalPayments} />
               <Route path="single">
                 <Route index lazy={LocalSinglePayments} />
                 <Route path=":beneficiary" lazy={SendToBeneficiary} />
                 <Route path="summary" lazy={TransferSummary} />
+                <Route path="2fa" lazy={TwoFactorAuth} />
+                <Route path="2fa/confirm" lazy={TokenPage} />
               </Route>
             </Route>
             <Route path="international-payments">
@@ -160,6 +171,9 @@ const App = () => {
           {/* Profile */}
           <Route path="profile" lazy={Profile} />
           <Route path="business-profile" lazy={Profile} />
+
+          {/* Beneficiaries */}
+          <Route path="beneficiaries" lazy={Beneficiaries} />
         </Route>
         <Route path="*" lazy={NotFound} />
       </Route>

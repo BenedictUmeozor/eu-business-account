@@ -4,7 +4,7 @@ import { DotIcon } from "lucide-react";
 import PinModal, { PinRefObject } from "@/components/global/PinModal";
 import { useRef } from "react";
 import { BENEFICIARIES } from "../../constants";
-import TransferSuccessModal, { TransferSuccessRefObject } from "../../LocalPayments/SinglePayments/Summary/TransferSuccessModal";
+import TransferSuccessModal, { TransferSuccessRefObject } from "../../LocalPayments/SinglePayments/TransferSuccessModal";
 const OnlinePayment = () => {
   const beneficiary = BENEFICIARIES[0];
 
