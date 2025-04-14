@@ -71,6 +71,7 @@ const ENDPOINTS = {
   REGISTER_DEVICE: "/customer-services/register_device_web",
   INITIATE_LOCAL_PAYMENT: "/payment-services/initiate_sca_payment",
   DEVICE_SCA_STATUS: "/customer-services/sca_status",
+  PAYMENT_2FA: "/payment-services/secondary_factor",
 
   // Accounts
   GET_ACCOUNTS: "/account-services/get_accounts",

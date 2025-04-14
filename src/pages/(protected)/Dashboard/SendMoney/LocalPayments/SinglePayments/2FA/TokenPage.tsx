@@ -60,9 +60,24 @@ const TokenPage = () => {
     paymentMutation.mutate(payload);
   };
 
+  const tokenMutation = useSharedMutationAction<
+    HM.QueryResponse,
+    { otp: string }
+  >({
+    url: ENDPOINTS.PAYMENT_2FA,
+    onSuccess: data => {
+      console.log(data);
+      message.success(data?.message);
+      modalRef.current?.openModal();
+    },
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
   const onFinish = (values: { token: string }) => {
     console.log(values.token);
-    modalRef.current?.openModal();
+    tokenMutation.mutate({ otp: values.token });
   };
 
   useEffect(() => {
@@ -108,6 +123,7 @@ const TokenPage = () => {
             type="primary"
             size="large"
             shape="round"
+            loading={tokenMutation.isPending}
             disabled={paymentMutation.isPending}
             className="w-48 mx-auto block"
             htmlType="submit">
