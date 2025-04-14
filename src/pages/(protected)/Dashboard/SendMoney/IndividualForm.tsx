@@ -1,5 +1,4 @@
 import { Button, Form, FormProps, Input, message, Select, Spin } from "antd";
-import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import nations from "@/data/codes.json";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
@@ -7,7 +6,8 @@ import ENDPOINTS from "@/constants/endpoints";
 import { formatPhoneNumber, getErrorMessage } from "@/utils";
 import useNgBanks from "@/hooks/use-ng-banks";
 import useResolveBankDetails from "@/hooks/use-resolve-bank-details";
-import useSepaCountries from "@/hooks/use-sepa-countries";
+import sepaCountries from "@/data/sepa-countries.json";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 interface FormValues {
   first_name: string;
@@ -56,7 +56,26 @@ const IndividualForm = ({
     return nations.find(c => c.currencyCode === currency);
   }, [currency]);
 
-  const { countries, loading: sepaLoading } = useSepaCountries();
+  const countries = useMemo(() => {
+    return currency?.toUpperCase() === "EUR" ? sepaCountries : nations;
+  }, [currency]);
+
+  const getPhoneCodeByCountry = useCallback(
+    (countryCode: string) => {
+      const foundCountry = countries.find(c => c.countryCode === countryCode);
+      return foundCountry?.callingCode || "+44";
+    },
+    [countries]
+  );
+
+  const handleCountryChange = (value: string) => {
+    const phoneCode = getPhoneCodeByCountry(value);
+    form.setFieldsValue({
+      ben_country: value,
+      phone_code: phoneCode,
+      phone_number: phoneCode,
+    });
+  };
 
   const mutation = useSharedMutationAction<any>({
     url: ENDPOINTS.SAVE_BENEFICIARY,
@@ -72,20 +91,6 @@ const IndividualForm = ({
       message.error(getErrorMessage(error));
     },
   });
-
-  const setFieldsValue = useCallback(
-    ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
-      form.setFieldsValue({ phone_code: dialCode, phone_number: phoneNumber });
-    },
-    [form]
-  );
-
-  const setPhoneValue = useCallback(
-    (phoneNumber: string) => {
-      form.setFieldsValue({ phone_number: phoneNumber });
-    },
-    [form]
-  );
 
   const onFinish: FormProps["onFinish"] = values => {
     mutation.mutate({
@@ -105,6 +110,7 @@ const IndividualForm = ({
         form.setFieldsValue({
           ben_country: country.countryCode,
           phone_code: country.callingCode,
+          phone_number: country.callingCode,
         });
       }
       return;
@@ -113,28 +119,32 @@ const IndividualForm = ({
     if (currency === "USD") {
       form.setFieldsValue({
         ben_country: "US",
-        phone_code: "+1",
+        phone_code: getPhoneCodeByCountry("US"),
+        phone_number: getPhoneCodeByCountry("US"),
       });
       return;
     }
     if (currency === "GBP") {
       form.setFieldsValue({
         ben_country: "GB",
-        phone_code: "+44",
+        phone_code: getPhoneCodeByCountry("GB"),
+        phone_number: getPhoneCodeByCountry("GB"),
       });
       return;
     }
     if (currency === "CAD") {
       form.setFieldsValue({
         ben_country: "CA",
-        phone_code: "+1",
+        phone_code: getPhoneCodeByCountry("CA"),
+        phone_number: getPhoneCodeByCountry("CA"),
       });
       return;
     }
     if (currency === "AED") {
       form.setFieldsValue({
         ben_country: "AE",
-        phone_code: "+971",
+        phone_code: getPhoneCodeByCountry("AE"),
+        phone_number: getPhoneCodeByCountry("AE"),
       });
       return;
     }
@@ -205,40 +215,22 @@ const IndividualForm = ({
         <Select
           className="w-full"
           placeholder="Select Country"
-          loading={sepaLoading && currency === "EUR"}
-          options={
-            currency !== "EUR"
-              ? nations.map(c => ({
-                  label: (
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={c.flag}
-                        alt={c.countryCode}
-                        className="h-6 w-6 rounded-full object-cover"
-                      />
-                      <span className="text-grey-700">
-                        {c.countryName} ({c.currencyCode})
-                      </span>
-                    </div>
-                  ),
-                  value: c.countryCode,
-                }))
-              : countries.map(c => ({
-                  label: (
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={ENDPOINTS.FLAG_URL(c.iso.toLowerCase())}
-                        alt={c.iso}
-                        className="h-6 w-6 rounded-full object-cover"
-                      />
-                      <span className="text-grey-700">
-                        {c.country} ({c.iso})
-                      </span>
-                    </div>
-                  ),
-                  value: c.iso,
-                }))
-          }
+          onChange={handleCountryChange}
+          options={countries.map(c => ({
+            label: (
+              <div className="flex items-center gap-2">
+                <img
+                  src={c.flag}
+                  alt={c.countryCode}
+                  className="h-6 w-6 rounded-full object-cover"
+                />
+                <span className="text-grey-700">
+                  {c.countryName} ({c.currencyCode})
+                </span>
+              </div>
+            ),
+            value: c.countryCode,
+          }))}
           disabled={currency !== "EUR" || isRemitter}
           virtual={false}
         />
@@ -441,13 +433,13 @@ const IndividualForm = ({
             </>
           ))}
 
-        <PhoneNumberInput
-          dialCodeName="phone_code"
+        <PhoneInput
+          phoneCodeName="phone_code"
           label="Mobile Number"
-          name="phone_number"
-          setFieldsValue={setFieldsValue}
-          setPhoneValue={setPhoneValue}
-          currency={currency}
+          phoneNumberName="phone_number"
+          disableSelect
+          form={form}
+          isEuro={currency === "EUR"}
         />
         <Form.Item
           name="receiver_email"

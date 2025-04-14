@@ -1,0 +1,258 @@
+[
+  {
+    "countryName": "Andorra",
+    "countryCode": "AD",
+    "callingCode": "+376",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/19/Flag_of_Andorra.svg"
+  },
+  {
+    "countryName": "Austria",
+    "countryCode": "AT",
+    "callingCode": "+43",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_Austria.svg"
+  },
+  {
+    "countryName": "Belgium",
+    "countryCode": "BE",
+    "callingCode": "+32",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/6/65/Flag_of_Belgium.svg"
+  },
+  {
+    "countryName": "Croatia",
+    "countryCode": "HR",
+    "callingCode": "+385",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Croatia.svg"
+  },
+  {
+    "countryName": "Cyprus",
+    "countryCode": "CY",
+    "callingCode": "+357",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Cyprus.svg"
+  },
+  {
+    "countryName": "Czech Republic",
+    "countryCode": "CZ",
+    "callingCode": "+420",
+    "currencyCode": "CZK",
+    "currencySymbol": "Kč",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_Czech_Republic.svg"
+  },
+  {
+    "countryName": "Denmark",
+    "countryCode": "DK",
+    "callingCode": "+45",
+    "currencyCode": "DKK",
+    "currencySymbol": "kr",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Flag_of_Denmark.svg"
+  },
+  {
+    "countryName": "Estonia",
+    "countryCode": "EE",
+    "callingCode": "+372",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Flag_of_Estonia.svg"
+  },
+  {
+    "countryName": "Finland",
+    "countryCode": "FI",
+    "callingCode": "+358",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Finland.svg"
+  },
+  {
+    "countryName": "France",
+    "countryCode": "FR",
+    "callingCode": "+33",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"
+  },
+  {
+    "countryName": "Germany",
+    "countryCode": "DE",
+    "callingCode": "+49",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg"
+  },
+  {
+    "countryName": "Greece",
+    "countryCode": "GR",
+    "callingCode": "+30",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg"
+  },
+  {
+    "countryName": "Hungary",
+    "countryCode": "HU",
+    "callingCode": "+36",
+    "currencyCode": "HUF",
+    "currencySymbol": "Ft",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Flag_of_Hungary.svg"
+  },
+  {
+    "countryName": "Ireland",
+    "countryCode": "IE",
+    "callingCode": "+353",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/4/45/Flag_of_Ireland.svg"
+  },
+  {
+    "countryName": "Italy",
+    "countryCode": "IT",
+    "callingCode": "+39",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg"
+  },
+  {
+    "countryName": "Latvia",
+    "countryCode": "LV",
+    "callingCode": "+371",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Latvia.svg"
+  },
+  {
+    "countryName": "Lithuania",
+    "countryCode": "LT",
+    "callingCode": "+370",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/1/11/Flag_of_Lithuania.svg"
+  },
+  {
+    "countryName": "Luxembourg",
+    "countryCode": "LU",
+    "callingCode": "+352",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/da/Flag_of_Luxembourg.svg"
+  },
+  {
+    "countryName": "Malta",
+    "countryCode": "MT",
+    "callingCode": "+356",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_Malta.svg"
+  },
+  {
+    "countryName": "Monaco",
+    "countryCode": "MC",
+    "callingCode": "+377",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Flag_of_Monaco.svg"
+  },
+  {
+    "countryName": "Netherlands",
+    "countryCode": "NL",
+    "callingCode": "+31",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/2/20/Flag_of_the_Netherlands.svg"
+  },
+  {
+    "countryName": "Norway",
+    "countryCode": "NO",
+    "callingCode": "+47",
+    "currencyCode": "NOK",
+    "currencySymbol": "kr",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Norway.svg"
+  },
+  {
+    "countryName": "Poland",
+    "countryCode": "PL",
+    "callingCode": "+48",
+    "currencyCode": "PLN",
+    "currencySymbol": "zł",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg"
+  },
+  {
+    "countryName": "Portugal",
+    "countryCode": "PT",
+    "callingCode": "+351",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg"
+  },
+  {
+    "countryName": "Romania",
+    "countryCode": "RO",
+    "callingCode": "+40",
+    "currencyCode": "RON",
+    "currencySymbol": "lei",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_Romania.svg"
+  },
+  {
+    "countryName": "San Marino",
+    "countryCode": "SM",
+    "callingCode": "+378",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Flag_of_San_Marino.svg"
+  },
+  {
+    "countryName": "Slovakia",
+    "countryCode": "SK",
+    "callingCode": "+421",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Flag_of_Slovakia.svg"
+  },
+  {
+    "countryName": "Slovenia",
+    "countryCode": "SI",
+    "callingCode": "+386",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Flag_of_Slovenia.svg"
+  },
+  {
+    "countryName": "Spain",
+    "countryCode": "ES",
+    "callingCode": "+34",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/9/9a/Flag_of_Spain.svg"
+  },
+  {
+    "countryName": "Sweden",
+    "countryCode": "SE",
+    "callingCode": "+46",
+    "currencyCode": "SEK",
+    "currencySymbol": "kr",
+    "flag": "https://upload.wikimedia.org/wikipedia/en/4/4c/Flag_of_Sweden.svg"
+  },
+  {
+    "countryName": "Switzerland",
+    "countryCode": "CH",
+    "callingCode": "+41",
+    "currencyCode": "CHF",
+    "currencySymbol": "CHF",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Switzerland.svg"
+  },
+  {
+    "countryName": "Vatican City",
+    "countryCode": "VA",
+    "callingCode": "+379",
+    "currencyCode": "EUR",
+    "currencySymbol": "€",
+    "flag": "https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_the_Vatican_City.svg"
+  }
+]

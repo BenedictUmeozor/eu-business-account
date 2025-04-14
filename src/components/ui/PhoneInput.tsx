@@ -1,6 +1,7 @@
 import { Form, Input, Select } from "antd";
 import { FormInstance, Rule } from "antd/es/form";
 import { memo, ReactNode, useMemo } from "react";
+import sepaCodes from "@/data/sepa-countries.json";
 import codes from "@/data/codes.json";
 
 interface Code {
@@ -22,6 +23,7 @@ interface PhoneInputProps {
   countries?: Code[];
   disableSelect?: boolean;
   form?: FormInstance;
+  isEuro?: boolean;
 }
 
 const PhoneInput = ({
@@ -34,6 +36,7 @@ const PhoneInput = ({
   countries,
   disableSelect = false,
   form,
+  isEuro,
 }: PhoneInputProps) => {
   const handleCodeChange = () => {
     if (form) {
@@ -48,8 +51,11 @@ const PhoneInput = ({
   };
 
   const array = useMemo(() => {
+    if (isEuro) {
+      return sepaCodes;
+    }
     return countries || codes;
-  }, [countries]);
+  }, [countries, isEuro]);
 
   return (
     <Form.Item label={label} name={phoneNumberName} rules={phoneNumberRules}>
@@ -75,7 +81,7 @@ const PhoneInput = ({
                       alt={c.countryCode}
                       className="h-6 w-6 rounded-full object-cover"
                     />
-                    <span>{c.countryCode}</span>
+                    <span>{c.countryCode} ({c.callingCode})</span>
                   </div>
                 ),
                 value: c.callingCode,
