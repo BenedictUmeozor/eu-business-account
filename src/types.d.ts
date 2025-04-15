@@ -24,6 +24,15 @@ declare global {
       extra: TableCurrentDataSource<RecordType>;
     };
 
+    interface UserBeneficiary {
+      beneficiary_type: string;
+      beneficiary_category: string;
+      beneficiary_name: string;
+      country: string;
+      currency: string;
+      account_number: string;
+    }
+
     interface QueryResponseWithData<T> {
       data: T;
       message: string;

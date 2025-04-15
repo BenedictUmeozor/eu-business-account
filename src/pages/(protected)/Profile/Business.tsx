@@ -4,6 +4,7 @@ import moment, { Moment } from "moment";
 import { useCallback, useEffect } from "react";
 import { DatePicker } from "antd";
 import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface FormValues {
   business_name: string;
@@ -24,6 +25,7 @@ interface FormValues {
 const Business = () => {
   const [form] = Form.useForm<FormValues>();
   const { businessDetails, isLoading } = useBusinessDetails();
+  const [parent] = useAutoAnimate()
 
   const setFieldsValue = useCallback(
     ({ dialCode, phoneNumber }: { dialCode: string; phoneNumber: string }) => {
@@ -60,7 +62,7 @@ const Business = () => {
   }, [businessDetails, isLoading, form]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" ref={parent}>
       <header className="space-y-1">
         <h3 className="text-lg font-semibold text-grey-700">
           Business Details

@@ -66,6 +66,7 @@ const ENDPOINTS = {
   BANK_LIST: "/account-services/bank_list",
   RESOLVE_BANK_DETAILS: "/account-services/resolve_bank_details",
   FETCH_BENEFICIARY: "/account-services/fetch_beneficiary",
+  FETCH_BENEFICIARIES: "/account-services/fetch_beneficiaries",
 
   // Payments
   REGISTER_DEVICE: "/customer-services/register_device_web",
