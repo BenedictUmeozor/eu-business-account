@@ -66,6 +66,7 @@ const BeneficiariesPage = () => {
           </span>
         </div>
       ),
+      className: "text-grey-500 text-sm",
     },
     {
       title: "Currency",
@@ -82,6 +83,7 @@ const BeneficiariesPage = () => {
           {type.toLowerCase() === "business" ? "Business" : "Individual"}
         </span>
       ),
+      className: "text-grey-500 text-sm",
     },
     {
       title: "Category",
@@ -92,6 +94,7 @@ const BeneficiariesPage = () => {
           {category.toLowerCase() === "banking" ? "Local" : "International"}
         </span>
       ),
+      className: "text-grey-500 text-sm",
     },
     {
       title: "Action",
