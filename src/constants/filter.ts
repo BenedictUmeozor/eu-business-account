@@ -62,3 +62,38 @@ export const TRANSACTIONS_TABLE_FILTER = {
     },
   ],
 };
+
+export const BENEFICIARIES_TABLE_FILTER = {
+  currency: [
+    {
+      label: "USD",
+      value: "USD",
+    },
+    {
+      label: "EUR",
+      value: "EUR",
+    },
+    {
+      label: "GBP",
+      value: "GBP",
+    },
+    {
+      label: "NGN",
+      value: "NGN",
+    },
+    {
+      label: "DKK",
+      value: "DKK",
+    },
+  ],
+  type: [
+    {
+      label: "Individual",
+      value: "Personal",
+    },
+    {
+      label: "Business",
+      value: "business",
+    },
+  ],
+};

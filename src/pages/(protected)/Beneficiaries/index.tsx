@@ -77,7 +77,11 @@ const BeneficiariesPage = () => {
       title: "Type",
       dataIndex: "beneficiary_type",
       key: "beneficiary_type",
-      className: "text-grey-500 text-sm",
+      render: (type: string) => (
+        <span className="text-grey-500 text-sm">
+          {type.toLowerCase() === "business" ? "Business" : "Individual"}
+        </span>
+      ),
     },
     {
       title: "Category",
