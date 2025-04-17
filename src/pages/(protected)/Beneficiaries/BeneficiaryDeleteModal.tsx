@@ -56,7 +56,7 @@ const BeneficiaryDeleteModal = forwardRef<
   return (
     <Modal
       open={open}
-      onClose={closeModal}
+      onCancel={closeModal}
       footer={null}
       width={400}
       title={
