@@ -1,11 +1,22 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Button, Input } from "antd";
-import { SearchIcon, XIcon } from "lucide-react";
-import { useState } from "react";
+import { Loader2Icon, SearchIcon, XIcon } from "lucide-react";
+import { memo, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
-const BeneficiariesFilter = () => {
+const BeneficiariesFilter = ({
+  setSearchTerm,
+  loading,
+}: {
+  setSearchTerm: (term: string) => void;
+  loading: boolean;
+}) => {
   const [open, setOpen] = useState(false);
   const [parent] = useAutoAnimate();
+
+  const debounced = useDebouncedCallback((value: string) => {
+    setSearchTerm(value);
+  }, 1000);
 
   return (
     <div className="mb-6 space-y-2" ref={parent}>
@@ -15,11 +26,18 @@ const BeneficiariesFilter = () => {
             <Input
               className="max-lg:w-full w-64 h-12"
               placeholder="Search name"
+              onChange={e => debounced(e.target.value)}
               suffix={
                 <Button
                   type="primary"
                   shape="circle"
-                  icon={<SearchIcon className="w-4 h-4 text-white" />}
+                  icon={
+                    loading ? (
+                      <Loader2Icon className="w-4 h-4 text-white animate-spin" />
+                    ) : (
+                      <SearchIcon className="w-4 h-4 text-white" />
+                    )
+                  }
                 />
               }
             />
@@ -49,4 +67,4 @@ const BeneficiariesFilter = () => {
   );
 };
 
-export default BeneficiariesFilter;
+export default memo(BeneficiariesFilter);

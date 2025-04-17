@@ -1,6 +1,6 @@
 import { Button, message, Table, TableProps } from "antd";
 import countries from "@/data/codes.json";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ENDPOINTS from "@/constants/endpoints";
 import { TrashIcon } from "lucide-react";
 import BeneficiariesFilter from "./BeneficiariesFilter";
@@ -11,18 +11,7 @@ import BeneficiaryDeleteModal, {
 } from "./BeneficiaryDeleteModal";
 
 const BeneficiariesPage = () => {
-  // const tabs: TabsProps["items"] = [
-  //   {
-  //     key: "1",
-  //     label: "Local",
-  //     children: <Local />,
-  //   },
-  //   {
-  //     key: "2",
-  //     label: "International",
-  //     children: <International />,
-  //   },
-  // ];
+  const [searchTerm, setSearchTerm] = useState("");
   const [tableState, setTableState] =
     useState<HM.TableState<HM.UserBeneficiary>>();
 
@@ -36,7 +25,35 @@ const BeneficiariesPage = () => {
     },
   });
 
+  const searchMutation = useSharedMutationAction<
+    { beneficiary: { data: HM.UserBeneficiary[] } },
+    { search_criteria: string }
+  >({
+    url: ENDPOINTS.SEARCH_BENEFICIARY,
+    onError: error => {
+      message.error(getErrorMessage(error));
+    },
+  });
+
+  useEffect(() => {
+    if (searchTerm) {
+      searchMutation.mutateAsync({
+        search_criteria: searchTerm,
+      });
+    } else {
+      searchMutation.reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
+
   const modalRef = useRef<BeneficiariesDeleteRefObject>(null);
+
+  const data = useMemo(() => {
+    if (searchMutation.data?.beneficiary?.data) {
+      return searchMutation.data?.beneficiary?.data || [];
+    }
+    return mutation.data?.beneficiary?.data || [];
+  }, [searchMutation.data, mutation.data]);
 
   const handleFetchBeneficiaries = useCallback(async () => {
     await mutation.mutateAsync({
@@ -138,21 +155,28 @@ const BeneficiariesPage = () => {
       <h2 className="text-xl font-medium text-grey-600">Beneficiaries</h2>
       {/* <Tabs items={tabs} /> */}
       <div>
-        <BeneficiariesFilter />
+        <BeneficiariesFilter
+          loading={searchMutation.isPending}
+          setSearchTerm={setSearchTerm}
+        />
         <Table
           columns={columns}
-          dataSource={mutation.data?.beneficiary.data}
+          dataSource={data}
           rowKey="name"
-          loading={mutation.isPending}
-          pagination={{
-            current: tableState?.pagination?.current || 1,
-            pageSize: 15,
-            total: mutation?.data?.pagination
-              ? mutation?.data?.pagination?.total_record
-              : 0,
-            showSizeChanger: false,
-            showQuickJumper: false,
-          }}
+          loading={mutation.isPending || searchMutation.isPending}
+          pagination={
+            searchMutation.data
+              ? false
+              : {
+                  current: tableState?.pagination?.current || 1,
+                  pageSize: 15,
+                  total: mutation?.data?.pagination
+                    ? mutation?.data?.pagination?.total_record
+                    : 0,
+                  showSizeChanger: false,
+                  showQuickJumper: false,
+                }
+          }
           onChange={(pagination, filters, sorter, extra) => {
             setTableState({ pagination, filters, sorter, extra });
           }}

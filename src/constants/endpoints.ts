@@ -68,6 +68,7 @@ const ENDPOINTS = {
   FETCH_BENEFICIARY: "/account-services/fetch_beneficiary",
   FETCH_BENEFICIARIES: "/account-services/fetch_beneficiaries",
   DELETE_BENEFICIARY: "/account-services/delete_beneficiary",
+  SEARCH_BENEFICIARY: "/account-services/search_beneficiary",
 
   // Payments
   REGISTER_DEVICE: "/customer-services/register_device_web",

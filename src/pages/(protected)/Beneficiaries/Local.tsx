@@ -1,5 +1,5 @@
 import { Button, Table, TableProps } from "antd";
-import BeneficiariesFilter from "./BeneficiariesFilter";
+// import BeneficiariesFilter from "./BeneficiariesFilter";
 import data from "./data.json";
 import { TrashIcon } from "lucide-react";
 
@@ -52,7 +52,7 @@ const Local = () => {
 
   return (
     <>
-      <BeneficiariesFilter />
+      {/* <BeneficiariesFilter /> */}
       <Table
         columns={columns}
         dataSource={data}
