@@ -1,9 +1,7 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { Button, Input, Select } from "antd";
+import { Button, Input } from "antd";
 import { SearchIcon, XIcon } from "lucide-react";
 import { useState } from "react";
-import countries from "@/data/codes.json";
-import { BENEFICIARIES_TABLE_FILTER } from "@/constants/filter";
 
 const BeneficiariesFilter = () => {
   const [open, setOpen] = useState(false);
@@ -24,47 +22,6 @@ const BeneficiariesFilter = () => {
                   icon={<SearchIcon className="w-4 h-4 text-white" />}
                 />
               }
-            />
-            <Select
-              className="w-32"
-              placeholder="Select Type"
-              options={BENEFICIARIES_TABLE_FILTER.type}
-            />
-            <Select
-              className="w-56"
-              placeholder="Select Country"
-              dropdownStyle={{ minWidth: "200px" }}
-              virtual={false}
-              options={countries.map(c => ({
-                label: (
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={c.flag}
-                      alt={c.countryCode}
-                      className="h-6 w-6 rounded-full object-cover"
-                    />
-                    <span className="text-grey-700">
-                      {c.countryName} ({c.currencyCode})
-                    </span>
-                  </div>
-                ),
-                value: c.countryCode,
-              }))}
-              filterOption={(input, option) => {
-                const country = countries.find(
-                  c => c.countryCode === option?.value
-                );
-                return (
-                  country?.countryName
-                    .toLowerCase()
-                    .includes(input.toLowerCase()) || false
-                );
-              }}
-            />
-            <Select
-              className="w-28"
-              placeholder="Select Currency"
-              options={BENEFICIARIES_TABLE_FILTER.currency}
             />
           </div>
           <Button
