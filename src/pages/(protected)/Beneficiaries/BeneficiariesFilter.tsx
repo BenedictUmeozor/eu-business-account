@@ -14,6 +14,11 @@ const BeneficiariesFilter = ({
   const [open, setOpen] = useState(false);
   const [parent] = useAutoAnimate();
 
+  const closeModal = () => {
+    setOpen(false);
+    setSearchTerm("");
+  };
+
   const debounced = useDebouncedCallback((value: string) => {
     setSearchTerm(value);
   }, 1000);
@@ -45,7 +50,7 @@ const BeneficiariesFilter = ({
           <Button
             type="primary"
             icon={<XIcon className="w-4 h-4 text-grey-100" />}
-            onClick={() => setOpen(false)}
+            onClick={closeModal}
             className="bg-grey-400 text-grey-100">
             Close
           </Button>
