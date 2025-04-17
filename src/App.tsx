@@ -93,6 +93,8 @@ const Profile = () => import("./pages/(protected)/Profile");
 // Beneficiaries
 const Beneficiaries = () => import("./pages/(protected)/Beneficiaries");
 
+// Invoices
+
 const queryClient = new QueryClient();
 
 const App = () => {

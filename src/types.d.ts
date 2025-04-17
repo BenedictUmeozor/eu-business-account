@@ -25,6 +25,7 @@ declare global {
     };
 
     interface UserBeneficiary {
+      beneficiary_id: number;
       beneficiary_type: string;
       beneficiary_category: string;
       beneficiary_name: string;

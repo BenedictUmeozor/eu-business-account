@@ -1,11 +1,14 @@
 import { Button, message, Table, TableProps } from "antd";
 import countries from "@/data/codes.json";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ENDPOINTS from "@/constants/endpoints";
 import { TrashIcon } from "lucide-react";
 import BeneficiariesFilter from "./BeneficiariesFilter";
 import useSharedMutationAction from "@/hooks/use-shared-mutation-action";
 import { getErrorMessage } from "@/utils";
+import BeneficiaryDeleteModal, {
+  BeneficiariesDeleteRefObject,
+} from "./BeneficiaryDeleteModal";
 
 const BeneficiariesPage = () => {
   // const tabs: TabsProps["items"] = [
@@ -20,15 +23,28 @@ const BeneficiariesPage = () => {
   //     children: <International />,
   //   },
   // ];
+  const [tableState, setTableState] =
+    useState<HM.TableState<HM.UserBeneficiary>>();
 
   const mutation = useSharedMutationAction<{
     beneficiary: { data: HM.UserBeneficiary[] };
+    pagination: HM.Pagination;
   }>({
     url: ENDPOINTS.FETCH_BENEFICIARIES,
     onError: error => {
       message.error(getErrorMessage(error));
     },
   });
+
+  const modalRef = useRef<BeneficiariesDeleteRefObject>(null);
+
+  const handleFetchBeneficiaries = useCallback(async () => {
+    await mutation.mutateAsync({
+      row_per_page: 15,
+      page: tableState?.pagination?.current || 1,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableState?.pagination?.current]);
 
   const getCountryByCode = useCallback((code: string) => {
     return (
@@ -100,10 +116,11 @@ const BeneficiariesPage = () => {
       title: "Action",
       key: "action",
       className: "text-grey-500 text-sm",
-      render: () => (
+      render: (_, record) => (
         <Button
           type="text"
           icon={<TrashIcon className="h-4 w-4 text-grey-500" />}
+          onClick={() => modalRef.current?.openModal(record)}
           className="text-grey-500">
           Delete
         </Button>
@@ -112,9 +129,9 @@ const BeneficiariesPage = () => {
   ];
 
   useEffect(() => {
-    mutation.mutate({});
+    handleFetchBeneficiaries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tableState?.pagination?.current]);
 
   return (
     <section className="space-y-8">
@@ -128,11 +145,23 @@ const BeneficiariesPage = () => {
           rowKey="name"
           loading={mutation.isPending}
           pagination={{
-            pageSize: 10,
-            hideOnSinglePage: true,
+            current: tableState?.pagination?.current || 1,
+            pageSize: 15,
+            total: mutation?.data?.pagination
+              ? mutation?.data?.pagination?.total_record
+              : 0,
+            showSizeChanger: false,
+            showQuickJumper: false,
+          }}
+          onChange={(pagination, filters, sorter, extra) => {
+            setTableState({ pagination, filters, sorter, extra });
           }}
         />
       </div>
+      <BeneficiaryDeleteModal
+        ref={modalRef}
+        refetch={handleFetchBeneficiaries}
+      />
     </section>
   );
 };
